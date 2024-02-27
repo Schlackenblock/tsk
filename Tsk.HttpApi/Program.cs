@@ -22,7 +22,7 @@ string SelectSummary(int temperatureC, string[] summaries)
 {
     double temp = Convert.ToDouble(temperatureC);
     string summary = "";
-    if(temp <= -12.5)
+    if (temp <= -12.5)
     {
         summary = summaries[0];
     }
@@ -67,7 +67,7 @@ string SelectSummary(int temperatureC, string[] summaries)
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         {
             var temperatureRange = Random.Shared.Next(-20, 55);
             return new WeatherForecast
