@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,39 +14,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-string SelectSummary(int temperatureC)
-{
-    var summary = temperatureC switch
-    {
-        <= -12 => summaries[0],
-        <= -5 => summaries[1],
-        <= 2 => summaries[2],
-        <= 10 => summaries[3],
-        <= 17 => summaries[4],
-        <= 25 => summaries[5],
-        <= 32 => summaries[6],
-        <= 40 => summaries[7],
-        <= 47 => summaries[8],
-        _ => summaries[9]
-    };
-    return summary;
-}
-
 app.MapGet("/weatherforecast", () =>
 {
     var forecast = Enumerable.Range(1, 5).Select(index =>
         {
-            var temperatureRange = Random.Shared.Next(-20, 55);
+            var temperatureC = Random.Shared.Next(-20, 55);
             return new WeatherForecast
             (
                 DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                temperatureRange,
-                SelectSummary(temperatureRange)
+                temperatureC
             );
         }).ToArray();
     return forecast;
@@ -54,7 +31,21 @@ app.MapGet("/weatherforecast", () =>
 app.Run();
 
 [PublicAPI]
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string Summary)
+internal record WeatherForecast(DateOnly Date, int TemperatureC)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+    public string Summary => TemperatureC switch
+    {
+        <= -10 => "Freezing",
+        <= 0 => "Cold",
+        <= 4 => "Chilly",
+        <= 8 => "Brisk",
+        <= 13 => "Cool",
+        <= 18 => "Mild",
+        <= 25 => "Perfect",
+        <= 29 => "Warm",
+        <= 33 => "Hot",
+        _ => "Roasting"
+    };
 }
