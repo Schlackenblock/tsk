@@ -1,0 +1,35 @@
+name: Lint Solution
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint-solution:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet restore
+      - run: dotnet tool restore
+      - run: dotnet build --no-restore
+      - run: dotnet format --verify-no-changes
+      - run: dotnet jb inspectcode ./Tsk.sln --output=./linter-reports/jb-report.txt --format=Text
+      - uses: actions/upload-artifact@v4
+        with:
+          path: linter-reports/**
+      - run: |
+          REPORT_LENGTH=$(wc -l < "./linter-reports/jb-report.txt")
+          if [ "$REPORT_LENGTH" -eq 0 ]; then
+            echo "InspectCode Warnings: none."
+          else
+            echo "InspectCode Warnings:"
+            cat ./linter-reports/jb-report.txt 
+            exit 1
+          fi
