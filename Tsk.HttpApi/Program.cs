@@ -18,50 +18,21 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-string SelectSummary(int temperatureC, string[] summaries)
+string SelectSummary(int temperatureC)
 {
-    double temp = Convert.ToDouble(temperatureC);
-    string summary = "";
-    if (temp <= -12.5)
+    var summary = temperatureC switch
     {
-        summary = summaries[0];
-    }
-    else if (temp <= -5)
-    {
-        summary = summaries[1];
-    }
-    else if (temp <= 2.5)
-    {
-        summary = summaries[2];
-    }
-    else if (temp <= 10)
-    {
-        summary = summaries[3];
-    }
-    else if (temp <= 17.5)
-    {
-        summary = summaries[4];
-    }
-    else if (temp <= 25)
-    {
-        summary = summaries[5];
-    }
-    else if (temp <= 32.5)
-    {
-        summary = summaries[6];
-    }
-    else if (temp <= 40)
-    {
-        summary = summaries[7];
-    }
-    else if (temp <= 47.5)
-    {
-        summary = summaries[8];
-    }
-    else
-    {
-        summary = summaries[9];
-    }
+        <= -12 => summaries[0],
+        <= -5 => summaries[1],
+        <= 2 => summaries[2],
+        <= 10 => summaries[3],
+        <= 17 => summaries[4],
+        <= 25 => summaries[5],
+        <= 32 => summaries[6],
+        <= 40 => summaries[7],
+        <= 47 => summaries[8],
+        _ => summaries[9]
+    };
     return summary;
 }
 
@@ -74,7 +45,7 @@ app.MapGet("/weatherforecast", () =>
             (
                 DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 temperatureRange,
-                SelectSummary(temperatureRange, summaries)
+                SelectSummary(temperatureRange)
             );
         }).ToArray();
     return forecast;
