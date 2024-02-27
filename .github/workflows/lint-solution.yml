@@ -20,7 +20,9 @@ jobs:
       - run: dotnet tool restore
       - run: dotnet build --no-restore
       - run: dotnet format --verify-no-changes
-      - run: dotnet jb inspectcode ./Tsk.sln --output=linter-reports/jb-report.txt --format=Text
+      - run: dotnet jb inspectcode ./Tsk.sln --output=./linter-reports/jb-report.txt --format=Text
+      - run: wc -l ./linter-reports/jb-report.txt
+      - run: cat ./linter-reports/jb-report.txt
       - uses: actions/upload-artifact@v4
         with:
           path: linter-reports/**
