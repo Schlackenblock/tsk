@@ -1,4 +1,6 @@
 /.idea
 
+/linter-reports
+
 /Tsk.*/bin
 /Tsk.*/obj

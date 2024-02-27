@@ -17,5 +17,10 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - run: dotnet restore
+      - run: dotnet tool restore
       - run: dotnet build --no-restore
       - run: dotnet format --verify-no-changes
+      - run: dotnet jb inspectcode ./Tsk.sln --output=linter-reports/jb-report.txt --format=Text
+      - uses: actions/upload-artifact@v4
+        with:
+          path: linter-reports/**
