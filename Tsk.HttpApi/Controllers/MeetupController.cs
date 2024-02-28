@@ -11,7 +11,7 @@ public class MeetupController : ControllerBase
     [HttpGet]
     public IActionResult GetMeetup()
     {
-         return Ok(Meetups);
+        return Ok(Meetups);
     }
 
     [HttpPost]
