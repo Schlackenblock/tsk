@@ -13,6 +13,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var meetups = new List<Meetup>();
+
 app.Run();
 
 class Meetup
