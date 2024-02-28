@@ -59,7 +59,7 @@ app.Run();
 [PublicAPI]
 internal class Meetup
 {
-    public required Guid Id { get; set; }
+    public Guid? Id { get; set; }
     public required string Topic { get; set; }
     public required string Place { get; set; }
     public required int Duration { get; set; }
