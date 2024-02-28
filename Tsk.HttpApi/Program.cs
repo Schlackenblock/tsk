@@ -34,9 +34,8 @@ app.MapPost("/meetups", ([FromBody] Meetup newMeetup) =>
 {
     newMeetup.Id = Guid.NewGuid();
     meetups.Add(newMeetup);
-    
+
     return Results.Ok(newMeetup);
-    
 });
 
 app.MapPut("/meetups/{id:guid}", ([FromRoute] Guid id, [FromBody] Meetup updatedMeetup) =>
@@ -46,7 +45,7 @@ app.MapPut("/meetups/{id:guid}", ([FromRoute] Guid id, [FromBody] Meetup updated
     {
         return Results.NotFound();
     }
-    
+
     oldMeetup.Topic = updatedMeetup.Topic;
     oldMeetup.Place = updatedMeetup.Place;
     oldMeetup.Duration = updatedMeetup.Duration;
