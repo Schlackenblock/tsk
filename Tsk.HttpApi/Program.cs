@@ -17,6 +17,19 @@ var meetups = new List<Meetup>();
 
 app.MapGet("/meetups", () => Results.Ok(meetups));
 
+app.MapDelete("/meetups/{id:guid}", ([FromRoute] Guid id) =>
+{
+    var meetupToDelete = meetups.SingleOrDefault(meetup => meetup.Id == id);
+
+    if (meetupToDelete is null)
+    {
+        return Results.NotFound();
+    }
+
+    meetups.Remove(meetupToDelete);
+    return Results.Ok(meetupToDelete);
+});
+
 app.Run();
 
 class Meetup
