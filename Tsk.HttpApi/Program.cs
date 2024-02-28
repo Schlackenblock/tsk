@@ -30,6 +30,15 @@ app.MapDelete("/meetups/{id:guid}", ([FromRoute] Guid id) =>
     return Results.Ok(meetupToDelete);
 });
 
+app.MapPost("/meetups", ([FromBody] Meetup newMeetup) =>
+{
+    newMeetup.Id = Guid.NewGuid();
+    meetups.Add(newMeetup);
+    
+    return Results.Ok(newMeetup);
+    
+});
+
 app.Run();
 
 class Meetup
