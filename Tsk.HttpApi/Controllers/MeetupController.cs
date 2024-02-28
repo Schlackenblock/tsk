@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Tsk.HttpApi.Controllers;
@@ -6,42 +7,37 @@ namespace Tsk.HttpApi.Controllers;
 [Route("/meetups")]
 public class MeetupController : ControllerBase
 {
-    private static readonly ICollection<Meetup> Meetups = new List<Meetup>();
+    private static readonly List<Meetup> meetups = [];
 
     [HttpGet]
-    public IActionResult GetMeetup()
-    {
-        return Ok(Meetups);
-    }
+    public IActionResult GetMeetup() =>
+        Ok(meetups);
 
     [HttpPost]
     public IActionResult PostMeetup([FromBody] Meetup newMeetup)
     {
         newMeetup.Id = Guid.NewGuid();
-        Meetups.Add(newMeetup);
-
+        meetups.Add(newMeetup);
         return Ok(newMeetup);
     }
 
     [HttpDelete("{id:guid}")]
     public IActionResult DeleteMeetup([FromRoute] Guid id)
     {
-        var meetupToDelete = Meetups.SingleOrDefault(meetup => meetup.Id == id);
-
+        var meetupToDelete = meetups.SingleOrDefault(meetup => meetup.Id == id);
         if (meetupToDelete is null)
         {
             return NotFound();
         }
 
-        Meetups.Remove(meetupToDelete);
+        meetups.Remove(meetupToDelete);
         return Ok(meetupToDelete);
     }
 
     [HttpPut("{id:guid}")]
     public IActionResult UpdateMeetup([FromRoute] Guid id, [FromBody] Meetup updatedMeetup)
     {
-        var oldMeetup = Meetups.SingleOrDefault(meetup => meetup.Id == id);
-
+        var oldMeetup = meetups.SingleOrDefault(meetup => meetup.Id == id);
         if (oldMeetup is null)
         {
             return NotFound();
@@ -54,6 +50,7 @@ public class MeetupController : ControllerBase
         return NoContent();
     }
 
+    [PublicAPI]
     public class Meetup
     {
         public Guid? Id { get; set; }
