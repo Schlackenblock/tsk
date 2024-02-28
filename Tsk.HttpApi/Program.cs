@@ -15,6 +15,8 @@ if (app.Environment.IsDevelopment())
 
 var meetups = new List<Meetup>();
 
+app.MapGet("/meetups", () => Results.Ok(meetups));
+
 app.Run();
 
 class Meetup
