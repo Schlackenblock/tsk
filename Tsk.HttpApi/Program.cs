@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -13,3 +15,10 @@ if (app.Environment.IsDevelopment())
 
 app.Run();
 
+class Meetup
+{
+    public Guid? Id { get; set; }
+    public string Topic { get; set; }
+    public string Place { get; set; }
+    public int Duration { get; set; }
+}
