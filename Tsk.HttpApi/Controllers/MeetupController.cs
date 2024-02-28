@@ -11,15 +11,15 @@ public class MeetupController : ControllerBase
     [HttpGet]
     public IActionResult GetMeetup()
     {
-          return Ok(Meetups);
+         return Ok(Meetups);
     }
 
     [HttpPost]
     public IActionResult PostMeetup([FromBody] Meetup newMeetup)
-    { 
+    {
         newMeetup.Id = Guid.NewGuid();
         Meetups.Add(newMeetup);
- 
+
         return Ok(newMeetup);
     }
 
@@ -30,7 +30,7 @@ public class MeetupController : ControllerBase
 
         if (meetupToDelete is null)
         {
-             return NotFound();
+            return NotFound();
         }
 
         Meetups.Remove(meetupToDelete);
@@ -44,7 +44,7 @@ public class MeetupController : ControllerBase
 
         if (oldMeetup is null)
         {
-             return NotFound();
+            return NotFound();
         }
 
         oldMeetup.Topic = updatedMeetup.Topic;
@@ -56,9 +56,9 @@ public class MeetupController : ControllerBase
 
     public class Meetup
     {
-         public Guid? Id { get; set; }
-         public required string Topic { get; set; }
-         public required string Place { get; set; }
-         public required int Duration { get; set; }
+        public Guid? Id { get; set; }
+        public required string Topic { get; set; }
+        public required string Place { get; set; }
+        public required int Duration { get; set; }
     }
 }
