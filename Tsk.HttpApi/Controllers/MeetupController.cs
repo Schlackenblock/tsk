@@ -45,6 +45,15 @@ public class MeetupController : ControllerBase
           Meetups.Remove(meetupToDelete);
           return Ok(meetupToDelete);
      }
+
+     [HttpPost]
+     public IActionResult PostMeetup([FromBody] Meetup newMeetup)
+     {
+          newMeetup.Id = Guid.NewGuid();
+          Meetups.Add(newMeetup);
+
+          return Ok(newMeetup);
+     }
      
      public class Meetup
      {
