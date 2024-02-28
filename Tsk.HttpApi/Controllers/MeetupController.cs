@@ -7,6 +7,35 @@ namespace Tsk.HttpApi.Controllers;
 public class MeetupController : ControllerBase
 {
      private static readonly ICollection<Meetup> Meetups  = new List<Meetup>();
+
+     [HttpGet]
+     public IActionResult GetMeetup()
+     {
+          return Ok(Meetups);
+     }
+     
+     [HttpPost]
+     public IActionResult PostMeetup([FromBody] Meetup newMeetup)
+     {
+          newMeetup.Id = Guid.NewGuid();
+          Meetups.Add(newMeetup);
+
+          return Ok(newMeetup);
+     }
+
+     [HttpDelete("{id:guid}")]
+     public IActionResult DeleteMeetup([FromRoute] Guid id)
+     {
+          var meetupToDelete = Meetups.SingleOrDefault(meetup => meetup.Id == id);
+
+          if (meetupToDelete is null)
+          {
+               return NotFound();
+          }
+
+          Meetups.Remove(meetupToDelete);
+          return Ok(meetupToDelete);
+     }
      
      [HttpPut("{id:guid}")]
      public IActionResult UpdateMeetup([FromRoute] Guid id, [FromBody] Meetup updatedMeetup)
@@ -24,35 +53,6 @@ public class MeetupController : ControllerBase
           oldMeetup.Duration = updatedMeetup.Duration;
 
           return NoContent();
-     }
-
-     [HttpGet]
-     public IActionResult GetMeetup()
-     {
-          return Ok(Meetups);
-     }
-
-     [HttpDelete("{id:guid}")]
-     public IActionResult DeleteMeetup([FromRoute] Guid id)
-     {
-          var meetupToDelete = Meetups.SingleOrDefault(meetup => meetup.Id == id);
-
-          if (meetupToDelete is null)
-          {
-               return NotFound();
-          }
-
-          Meetups.Remove(meetupToDelete);
-          return Ok(meetupToDelete);
-     }
-
-     [HttpPost]
-     public IActionResult PostMeetup([FromBody] Meetup newMeetup)
-     {
-          newMeetup.Id = Guid.NewGuid();
-          Meetups.Add(newMeetup);
-
-          return Ok(newMeetup);
      }
      
      public class Meetup
