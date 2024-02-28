@@ -25,6 +25,26 @@ public class MeetupController : ControllerBase
 
           return NoContent();
      }
+
+     [HttpGet]
+     public IActionResult GetMeetup()
+     {
+          return Ok(Meetups);
+     }
+
+     [HttpDelete("{id:guid}")]
+     public IActionResult DeleteMeetup([FromRoute] Guid id)
+     {
+          var meetupToDelete = Meetups.SingleOrDefault(meetup => meetup.Id == id);
+
+          if (meetupToDelete is null)
+          {
+               return NotFound();
+          }
+
+          Meetups.Remove(meetupToDelete);
+          return Ok(meetupToDelete);
+     }
      
      public class Meetup
      {
