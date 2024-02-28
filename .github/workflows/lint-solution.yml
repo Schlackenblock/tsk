@@ -30,6 +30,6 @@ jobs:
             echo "InspectCode Warnings: none."
           else
             echo "InspectCode Warnings:"
-            cat ./linter-reports/jb-report.txt 
+            cat ./linter-reports/jb-report.txt
             exit 1
           fi
