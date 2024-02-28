@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,10 +56,11 @@ app.MapPut("/meetups/{id:guid}", ([FromRoute] Guid id, [FromBody] Meetup updated
 
 app.Run();
 
-class Meetup
+[PublicAPI]
+internal class Meetup
 {
-    public Guid? Id { get; set; }
-    public string Topic { get; set; }
-    public string Place { get; set; }
-    public int Duration { get; set; }
+    public required Guid Id { get; set; }
+    public required string Topic { get; set; }
+    public required string Place { get; set; }
+    public required int Duration { get; set; }
 }
