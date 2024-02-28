@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
