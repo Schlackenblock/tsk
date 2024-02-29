@@ -1,5 +1,8 @@
+using JetBrains.Annotations;
+
 namespace Tsk.HttpApi.Meetups;
 
+[PublicAPI]
 public record ReadMeetupDto(Guid Id, string Topic, string Place, int Duration);
 
 // public class ReadMeetupDto
