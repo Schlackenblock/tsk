@@ -32,11 +32,11 @@ public class MeetupController : ControllerBase
     public IActionResult DeleteMeetup([FromRoute] Guid id)
     {
         var meetupToDelete = meetups.SingleOrDefault(meetup => meetup.Id == id);
-
         if (meetupToDelete is null)
         {
             return NotFound();
         }
+
         meetups.Remove(meetupToDelete);
 
         var readDto = new ReadMeetupDto(
@@ -57,6 +57,7 @@ public class MeetupController : ControllerBase
         {
             return NotFound();
         }
+
         oldMeetup.Topic = updateMeetupDto.Topic;
         oldMeetup.Place = updateMeetupDto.Place;
         oldMeetup.Duration = updateMeetupDto.Duration;
