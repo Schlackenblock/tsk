@@ -22,6 +22,7 @@ public class MeetupController : ControllerBase
             Place = createDto.Place,
             Duration = createDto.Duration
         };
+
         meetups.Add(newMeetup);
 
         var readDto = new ReadMeetupDto(newMeetup.Id, newMeetup.Topic, newMeetup.Place, newMeetup.Duration);
@@ -45,7 +46,6 @@ public class MeetupController : ControllerBase
             meetupToDelete.Place,
             meetupToDelete.Duration
         );
-
         return Ok(readDto);
     }
 
@@ -68,7 +68,6 @@ public class MeetupController : ControllerBase
             updateMeetupDto.Place,
             updateMeetupDto.Duration
         );
-
         return Ok(readDto);
     }
 }
