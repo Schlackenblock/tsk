@@ -24,13 +24,7 @@ public class MeetupController : ControllerBase
         };
         meetups.Add(newMeetup);
 
-        var readDto = new ReadMeetupDto
-        {
-            Id = newMeetup.Id,
-            Topic = newMeetup.Topic,
-            Place = newMeetup.Place,
-            Duration = newMeetup.Duration
-        };
+        var readDto = new ReadMeetupDto(newMeetup.Id, newMeetup.Topic, newMeetup.Place, newMeetup.Duration);
         return Ok(readDto);
     }
 
@@ -45,13 +39,12 @@ public class MeetupController : ControllerBase
         }
         meetups.Remove(meetupToDelete);
 
-        var readDto = new ReadMeetupDto
-        {
-            Id = meetupToDelete.Id,
-            Topic = meetupToDelete.Topic,
-            Place = meetupToDelete.Place,
-            Duration = meetupToDelete.Duration
-        };
+        var readDto = new ReadMeetupDto(
+            meetupToDelete.Id,
+            meetupToDelete.Topic,
+            meetupToDelete.Place,
+            meetupToDelete.Duration
+        );
 
         return Ok(readDto);
     }
@@ -68,13 +61,12 @@ public class MeetupController : ControllerBase
         oldMeetup.Place = updateMeetupDto.Place;
         oldMeetup.Duration = updateMeetupDto.Duration;
 
-        var readDto = new ReadMeetupDto
-        {
-            Id = oldMeetup.Id,
-            Topic = updateMeetupDto.Topic,
-            Place = updateMeetupDto.Place,
-            Duration = updateMeetupDto.Duration
-        };
+        var readDto = new ReadMeetupDto(
+            oldMeetup.Id,
+            updateMeetupDto.Topic,
+            updateMeetupDto.Place,
+            updateMeetupDto.Duration
+        );
 
         return Ok(readDto);
     }
