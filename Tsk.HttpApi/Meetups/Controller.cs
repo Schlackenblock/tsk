@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tsk.HttpApi.Controllers;
+namespace Tsk.HttpApi.Meetups;
 
 [ApiController]
 [Route("/meetups")]
@@ -10,7 +10,7 @@ public class MeetupController : ControllerBase
     private static readonly List<Meetup> meetups = [];
 
     [HttpGet]
-    public IActionResult GetMeetup() =>
+    public IActionResult GetMeetups() =>
         Ok(meetups);
 
     [HttpPost]
