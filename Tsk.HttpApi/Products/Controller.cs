@@ -18,8 +18,8 @@ public class MeetupController : ControllerBase
         var newMeetup = new Product
         {
             Id = Guid.NewGuid(),
-            Title = createDto.Title,
-            Name = createDto.Name,
+            Description = createDto.Title,
+            Name = createDto.Description,
             Price = createDto.Price
         };
 
@@ -27,7 +27,7 @@ public class MeetupController : ControllerBase
 
         var readDto = new ReadProductDto(
             newMeetup.Id,
-            newMeetup.Title,
+            newMeetup.Description,
             newMeetup.Name,
             newMeetup.Price
         );
@@ -47,7 +47,7 @@ public class MeetupController : ControllerBase
 
         var readDto = new ReadProductDto(
             meetupToDelete.Id,
-            meetupToDelete.Title,
+            meetupToDelete.Description,
             meetupToDelete.Name,
             meetupToDelete.Price
         );
@@ -63,14 +63,14 @@ public class MeetupController : ControllerBase
             return NotFound();
         }
 
-        oldMeetup.Title = updateMeetupDto.Title;
-        oldMeetup.Name = updateMeetupDto.Name;
+        oldMeetup.Description = updateMeetupDto.Title;
+        oldMeetup.Name = updateMeetupDto.Description;
         oldMeetup.Price = updateMeetupDto.Price;
 
         var readDto = new ReadProductDto(
             oldMeetup.Id,
             updateMeetupDto.Title,
-            updateMeetupDto.Name,
+            updateMeetupDto.Description,
             updateMeetupDto.Price
         );
         return Ok(readDto);

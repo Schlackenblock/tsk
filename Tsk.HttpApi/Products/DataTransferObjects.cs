@@ -6,20 +6,20 @@ namespace Tsk.HttpApi.Products;
 public record ReadProductDto(
     Guid Id,
     string Title,
-    string Name,
+    string Description,
     double Price
 );
 
 [PublicAPI]
 public record CreateProductDto(
     string Title,
-    string Name,
+    string Description,
     double Price
 );
 
 [PublicAPI]
 public record UpdateProductDto(
     string Title,
-    string Name,
+    string Description,
     double Price
 );
