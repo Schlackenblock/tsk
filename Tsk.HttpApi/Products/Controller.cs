@@ -20,12 +20,7 @@ public class MeetupController : ControllerBase
             Id = Guid.NewGuid(),
             Title = createDto.Title,
             Name = createDto.Name,
-            Type = createDto.Type,
-            Length = createDto.Length,
-            Width = createDto.Width,
-            Height = createDto.Height,
-            Price = createDto.Price,
-            Discount = createDto.Discount
+            Price = createDto.Price
         };
 
         products.Add(newMeetup);
@@ -34,12 +29,7 @@ public class MeetupController : ControllerBase
             newMeetup.Id,
             newMeetup.Title,
             newMeetup.Name,
-            newMeetup.Type,
-            newMeetup.Length,
-            newMeetup.Width,
-            newMeetup.Height,
-            newMeetup.Price,
-            newMeetup.Discount
+            newMeetup.Price
         );
         return Ok(readDto);
     }
@@ -59,12 +49,7 @@ public class MeetupController : ControllerBase
             meetupToDelete.Id,
             meetupToDelete.Title,
             meetupToDelete.Name,
-            meetupToDelete.Type,
-            meetupToDelete.Length,
-            meetupToDelete.Width,
-            meetupToDelete.Height,
-            meetupToDelete.Price,
-            meetupToDelete.Discount
+            meetupToDelete.Price
         );
         return Ok(readDto);
     }
@@ -80,23 +65,13 @@ public class MeetupController : ControllerBase
 
         oldMeetup.Title = updateMeetupDto.Title;
         oldMeetup.Name = updateMeetupDto.Name;
-        oldMeetup.Type = updateMeetupDto.Type;
-        oldMeetup.Length = updateMeetupDto.Length;
-        oldMeetup.Width = updateMeetupDto.Width;
-        oldMeetup.Height = updateMeetupDto.Height;
         oldMeetup.Price = updateMeetupDto.Price;
-        oldMeetup.Discount = updateMeetupDto.Discount;
 
         var readDto = new ReadProductDto(
             oldMeetup.Id,
             updateMeetupDto.Title,
             updateMeetupDto.Name,
-            updateMeetupDto.Type,
-            updateMeetupDto.Length,
-            updateMeetupDto.Width,
-            updateMeetupDto.Height,
-            updateMeetupDto.Price,
-            updateMeetupDto.Discount
+            updateMeetupDto.Price
         );
         return Ok(readDto);
     }
