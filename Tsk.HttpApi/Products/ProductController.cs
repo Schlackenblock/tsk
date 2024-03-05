@@ -9,13 +9,13 @@ public class ProductController : ControllerBase
     private static readonly List<Product> products = [];
 
     [HttpGet]
-    public IActionResult GetMeetups() =>
+    public IActionResult GetProducts() =>
         Ok(products);
 
     [HttpPost]
-    public IActionResult CreateMeetup([FromBody] CreateProductDto createDto)
+    public IActionResult CreateProduct([FromBody] CreateProductDto createDto)
     {
-        var newMeetup = new Product
+        var newProduct = new Product
         {
             Id = Guid.NewGuid(),
             Description = createDto.Title,
@@ -23,55 +23,55 @@ public class ProductController : ControllerBase
             Price = createDto.Price
         };
 
-        products.Add(newMeetup);
+        products.Add(newProduct);
 
         var readDto = new ReadProductDto(
-            newMeetup.Id,
-            newMeetup.Description,
-            newMeetup.Name,
-            newMeetup.Price
+            newProduct.Id,
+            newProduct.Description,
+            newProduct.Name,
+            newProduct.Price
         );
         return Ok(readDto);
     }
 
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteMeetup([FromRoute] Guid id)
+    public IActionResult DeleteProduct([FromRoute] Guid id)
     {
-        var meetupToDelete = products.SingleOrDefault(meetup => meetup.Id == id);
-        if (meetupToDelete is null)
+        var productToDelete = products.SingleOrDefault(meetup => meetup.Id == id);
+        if (productToDelete is null)
         {
             return NotFound();
         }
 
-        products.Remove(meetupToDelete);
+        products.Remove(productToDelete);
 
         var readDto = new ReadProductDto(
-            meetupToDelete.Id,
-            meetupToDelete.Description,
-            meetupToDelete.Name,
-            meetupToDelete.Price
+            productToDelete.Id,
+            productToDelete.Description,
+            productToDelete.Name,
+            productToDelete.Price
         );
         return Ok(readDto);
     }
 
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateMeetup([FromRoute] Guid id, [FromBody] UpdateProductDto updateMeetupDto)
+    public IActionResult UpdateProduct([FromRoute] Guid id, [FromBody] UpdateProductDto updateProductDto)
     {
-        var oldMeetup = products.SingleOrDefault(meetup => meetup.Id == id);
-        if (oldMeetup is null)
+        var oldProduct = products.SingleOrDefault(product => product.Id == id);
+        if (oldProduct is null)
         {
             return NotFound();
         }
 
-        oldMeetup.Description = updateMeetupDto.Title;
-        oldMeetup.Name = updateMeetupDto.Description;
-        oldMeetup.Price = updateMeetupDto.Price;
+        oldProduct.Description = updateProductDto.Title;
+        oldProduct.Name = updateProductDto.Description;
+        oldProduct.Price = updateProductDto.Price;
 
         var readDto = new ReadProductDto(
-            oldMeetup.Id,
-            updateMeetupDto.Title,
-            updateMeetupDto.Description,
-            updateMeetupDto.Price
+            oldProduct.Id,
+            updateProductDto.Title,
+            updateProductDto.Description,
+            updateProductDto.Price
         );
         return Ok(readDto);
     }
