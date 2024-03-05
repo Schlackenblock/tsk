@@ -18,8 +18,8 @@ public class ProductController : ControllerBase
         var newProduct = new Product
         {
             Id = Guid.NewGuid(),
-            Description = createDto.Title,
-            Name = createDto.Description,
+            Title = createDto.Title,
+            Description = createDto.Description,
             Price = createDto.Price
         };
 
@@ -27,8 +27,8 @@ public class ProductController : ControllerBase
 
         var readDto = new ReadProductDto(
             newProduct.Id,
+            newProduct.Title,
             newProduct.Description,
-            newProduct.Name,
             newProduct.Price
         );
         return Ok(readDto);
@@ -37,7 +37,7 @@ public class ProductController : ControllerBase
     [HttpDelete("{id:guid}")]
     public IActionResult DeleteProduct([FromRoute] Guid id)
     {
-        var productToDelete = products.SingleOrDefault(meetup => meetup.Id == id);
+        var productToDelete = products.SingleOrDefault(product => product.Id == id);
         if (productToDelete is null)
         {
             return NotFound();
@@ -47,8 +47,8 @@ public class ProductController : ControllerBase
 
         var readDto = new ReadProductDto(
             productToDelete.Id,
+            productToDelete.Title,
             productToDelete.Description,
-            productToDelete.Name,
             productToDelete.Price
         );
         return Ok(readDto);
@@ -63,8 +63,8 @@ public class ProductController : ControllerBase
             return NotFound();
         }
 
-        oldProduct.Description = updateProductDto.Title;
-        oldProduct.Name = updateProductDto.Description;
+        oldProduct.Title = updateProductDto.Title;
+        oldProduct.Description = updateProductDto.Description;
         oldProduct.Price = updateProductDto.Price;
 
         var readDto = new ReadProductDto(
