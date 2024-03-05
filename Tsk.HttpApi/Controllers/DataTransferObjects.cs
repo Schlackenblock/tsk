@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace Tsk.HttpApi.Products;
+namespace Tsk.HttpApi.Controllers;
 
 [PublicAPI]
 public record ReadProductDto(

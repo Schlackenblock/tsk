@@ -1,4 +1,4 @@
-namespace Tsk.HttpApi.Products;
+namespace Tsk.HttpApi.Controllers;
 
 internal class Product
 {

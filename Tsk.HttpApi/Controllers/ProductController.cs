@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tsk.HttpApi.Products;
+namespace Tsk.HttpApi.Controllers;
 
 [ApiController]
 [Route("/products")]
-public class MeetupController : ControllerBase
+public class ProductController : ControllerBase
 {
     private static readonly List<Product> products = [];
 
