@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tsk.HttpApi.Controllers;
+namespace Tsk.HttpApi.Products;
 
 [ApiController]
 [Route("/products")]
