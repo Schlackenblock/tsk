@@ -19,12 +19,7 @@ public class ProductController : ControllerBase
         Ok(products);
 
     /// <summary>Post product.</summary>
-    /// <param name="createDto" example="
-    /// Id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx,
-    /// title: Schlackenblock,
-    /// description: Solid concrete brick M200 graphite 250x120x65,
-    /// price: 0.67
-    /// ">Product.Id, Product.Title, Product.Description, Product.Price</param>
+    /// <param name="createDto">Product details.</param>
     /// <response code="200">Post product.</response>
     /// <response code="400">Bad Request.</response>
     [HttpPost]
@@ -73,13 +68,9 @@ public class ProductController : ControllerBase
         return Ok(readDto);
     }
 
-    /// <summary>Post product.</summary>
+    /// <summary>Update product.</summary>
     /// <param name="id" example="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">Product id.</param>
-    /// <param name="updateProductDto" example="
-    /// title: Schlackenblock,
-    /// description: Solid concrete brick M200 graphite 250x120x65,
-    /// price: 0.67
-    /// ">Product.Title, Product.Description, Product.Price</param>
+    /// <param name="updateProductDto">Product details.</param>
     /// <response code="200">Product updated.</response>
     /// <response code="404">Product not found.</response>
     [HttpPut("{id:guid}")]
