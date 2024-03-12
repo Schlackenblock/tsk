@@ -45,7 +45,7 @@ public class ProductController : ControllerBase
     }
 
     /// <summary>Delete product with matching id.</summary>
-    /// <param name="id" example="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">Meetup id.</param>
+    /// <param name="id">Meetup id.</param>
     /// <response code="200">Deleted product.</response>
     /// <response code="404">Meetup with specified id was not found.</response>
     [HttpDelete("{id:guid}")]
@@ -69,7 +69,7 @@ public class ProductController : ControllerBase
     }
 
     /// <summary>Update product.</summary>
-    /// <param name="id" example="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">Product id.</param>
+    /// <param name="id">Product id.</param>
     /// <param name="updateProductDto">Product details.</param>
     /// <response code="200">Product updated.</response>
     /// <response code="404">Product not found.</response>
