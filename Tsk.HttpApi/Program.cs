@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen(
         options.IncludeXmlComments(Path.Combine(projectDirectory, xmlFileName));
     }
 );
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
