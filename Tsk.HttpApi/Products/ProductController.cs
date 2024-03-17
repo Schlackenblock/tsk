@@ -9,7 +9,7 @@ namespace Tsk.HttpApi.Products;
 [Produces(MediaTypeNames.Application.Json)]
 public class ProductController : ControllerBase
 {
-    private static readonly List<Product> products = [];
+    private static readonly List<ProductEntity> products = [];
 
     /// <summary>Get all products.</summary>
     /// <response code="200">Show products.</response>
@@ -19,13 +19,13 @@ public class ProductController : ControllerBase
         Ok(products);
 
     /// <summary>Post product.</summary>
-    /// <param name="createDto">Product details.</param>
+    /// <param name="createDto">ProductEntity details.</param>
     /// <response code="200">Post product.</response>
     /// <response code="400">Bad Request.</response>
     [HttpPost]
     public IActionResult CreateProduct([FromBody] CreateProductDto createDto)
     {
-        var newProduct = new Product
+        var newProduct = new ProductEntity
         {
             Id = Guid.NewGuid(),
             Title = createDto.Title,
@@ -69,10 +69,10 @@ public class ProductController : ControllerBase
     }
 
     /// <summary>Update product.</summary>
-    /// <param name="id">Product id.</param>
-    /// <param name="updateProductDto">Product details.</param>
-    /// <response code="200">Product updated.</response>
-    /// <response code="404">Product not found.</response>
+    /// <param name="id">ProductEntity id.</param>
+    /// <param name="updateProductDto">ProductEntity details.</param>
+    /// <response code="200">ProductEntity updated.</response>
+    /// <response code="404">ProductEntity not found.</response>
     [HttpPut("{id:guid}")]
     public IActionResult UpdateProduct([FromRoute] Guid id, [FromBody] UpdateProductDto updateProductDto)
     {

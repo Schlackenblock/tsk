@@ -1,6 +1,6 @@
 namespace Tsk.HttpApi.Products;
 
-internal class Product
+internal class ProductEntity
 {
     public Guid Id { get; init; }
     public required string Title { get; set; }
