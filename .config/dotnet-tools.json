@@ -2,16 +2,10 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "dotnetsay": {
-      "version": "2.1.7",
+    "jetbrains.resharper.globaltools": {
+      "version": "2023.3.3",
       "commands": [
-        "dotnetsay"
-      ]
-    },
-    "dotnet-ef": {
-      "version": "8.0.3",
-      "commands": [
-        "dotnet-ef"
+        "jb"
       ]
     }
   }
