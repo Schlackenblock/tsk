@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tsk.HttpApi.Products;
 
@@ -10,20 +11,33 @@ namespace Tsk.HttpApi.Products;
 public class ProductController : ControllerBase
 {
     private static readonly List<ProductEntity> products = [];
+    private readonly DatabaseContext _context = new();
 
     /// <summary>Get all products.</summary>
     /// <response code="200">Show products.</response>
     /// <response code="404">Products not found.</response>
     [HttpGet]
-    public IActionResult GetProducts() =>
-        Ok(products);
+    public async Task<IActionResult> GetProducts()
+    {
+        var productsAsync = await _context.Products.ToListAsync();
+
+        var readDtos = productsAsync.Select(
+            productEntity => new ReadProductDto(
+                productEntity.Id,
+                productEntity.Title,
+                productEntity.Description,
+                productEntity.Price
+            )
+        );
+        return Ok(readDtos);
+    }
 
     /// <summary>Post product.</summary>
     /// <param name="createDto">ProductEntity details.</param>
     /// <response code="200">Post product.</response>
     /// <response code="400">Bad Request.</response>
     [HttpPost]
-    public IActionResult CreateProduct([FromBody] CreateProductDto createDto)
+    public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createDto)
     {
         var newProduct = new ProductEntity
         {
@@ -33,7 +47,8 @@ public class ProductController : ControllerBase
             Price = createDto.Price
         };
 
-        products.Add(newProduct);
+        _context.Products.Add(newProduct);
+        await _context.SaveChangesAsync();
 
         var readDto = new ReadProductDto(
             newProduct.Id,
@@ -49,15 +64,16 @@ public class ProductController : ControllerBase
     /// <response code="200">Deleted product.</response>
     /// <response code="404">Meetup with specified id was not found.</response>
     [HttpDelete("{id:guid}")]
-    public IActionResult DeleteProduct([FromRoute] Guid id)
+    public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
     {
-        var productToDelete = products.SingleOrDefault(product => product.Id == id);
+        var productToDelete = await _context.Products.SingleOrDefaultAsync(product => product.Id == id);
         if (productToDelete is null)
         {
             return NotFound();
         }
 
-        products.Remove(productToDelete);
+        _context.Products.Remove(productToDelete);
+        await _context.SaveChangesAsync();
 
         var readDto = new ReadProductDto(
             productToDelete.Id,
@@ -74,9 +90,9 @@ public class ProductController : ControllerBase
     /// <response code="200">ProductEntity updated.</response>
     /// <response code="404">ProductEntity not found.</response>
     [HttpPut("{id:guid}")]
-    public IActionResult UpdateProduct([FromRoute] Guid id, [FromBody] UpdateProductDto updateProductDto)
+    public async Task<IActionResult> UpdateProduct([FromRoute] Guid id, [FromBody] UpdateProductDto updateProductDto)
     {
-        var oldProduct = products.SingleOrDefault(product => product.Id == id);
+        var oldProduct = await _context.Products.SingleOrDefaultAsync(product => product.Id == id);
         if (oldProduct is null)
         {
             return NotFound();
@@ -85,6 +101,7 @@ public class ProductController : ControllerBase
         oldProduct.Title = updateProductDto.Title;
         oldProduct.Description = updateProductDto.Description;
         oldProduct.Price = updateProductDto.Price;
+        await _context.SaveChangesAsync();
 
         var readDto = new ReadProductDto(
             oldProduct.Id,
