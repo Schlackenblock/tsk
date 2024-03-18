@@ -10,7 +10,7 @@ namespace Tsk.HttpApi.Products;
 [Produces(MediaTypeNames.Application.Json)]
 public class ProductController : ControllerBase
 {
-    private readonly DatabaseContext _context = new();
+    private readonly DatabaseContext context = new();
 
     /// <summary>Get all products.</summary>
     /// <response code="200">Show products.</response>
@@ -18,7 +18,7 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetProducts()
     {
-        var productsAsync = await _context.Products.ToListAsync();
+        var productsAsync = await context.Products.ToListAsync();
 
         var readDtos = productsAsync.Select(
             productEntity => new ReadProductDto(
@@ -46,8 +46,8 @@ public class ProductController : ControllerBase
             Price = createDto.Price
         };
 
-        _context.Products.Add(newProduct);
-        await _context.SaveChangesAsync();
+        context.Products.Add(newProduct);
+        await context.SaveChangesAsync();
 
         var readDto = new ReadProductDto(
             newProduct.Id,
@@ -65,14 +65,14 @@ public class ProductController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
     {
-        var productToDelete = await _context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        var productToDelete = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
         if (productToDelete is null)
         {
             return NotFound();
         }
 
-        _context.Products.Remove(productToDelete);
-        await _context.SaveChangesAsync();
+        context.Products.Remove(productToDelete);
+        await context.SaveChangesAsync();
 
         var readDto = new ReadProductDto(
             productToDelete.Id,
@@ -91,7 +91,7 @@ public class ProductController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateProduct([FromRoute] Guid id, [FromBody] UpdateProductDto updateProductDto)
     {
-        var oldProduct = await _context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        var oldProduct = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
         if (oldProduct is null)
         {
             return NotFound();
@@ -100,7 +100,7 @@ public class ProductController : ControllerBase
         oldProduct.Title = updateProductDto.Title;
         oldProduct.Description = updateProductDto.Description;
         oldProduct.Price = updateProductDto.Price;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         var readDto = new ReadProductDto(
             oldProduct.Id,
