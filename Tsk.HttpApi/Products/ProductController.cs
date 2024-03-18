@@ -85,9 +85,9 @@ public class ProductController : ControllerBase
 
     /// <summary>Update product.</summary>
     /// <param name="id">Product id.</param>
-    /// <param name="updateProductDto">ProductEntity details.</param>
-    /// <response code="200">ProductEntity updated.</response>
-    /// <response code="404">ProductEntity not found.</response>
+    /// <param name="updateProductDto">Product details.</param>
+    /// <response code="200">Product updated.</response>
+    /// <response code="404">Product not found.</response>
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateProduct([FromRoute] Guid id, [FromBody] UpdateProductDto updateProductDto)
     {
