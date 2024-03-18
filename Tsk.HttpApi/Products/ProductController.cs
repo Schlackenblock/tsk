@@ -10,7 +10,6 @@ namespace Tsk.HttpApi.Products;
 [Produces(MediaTypeNames.Application.Json)]
 public class ProductController : ControllerBase
 {
-    private static readonly List<ProductEntity> products = [];
     private readonly DatabaseContext _context = new();
 
     /// <summary>Get all products.</summary>
