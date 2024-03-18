@@ -16,10 +16,10 @@ dotnet tool restore
 
 Run all dependencies:
 ```bash
-docker-compose up --file ./dependencies.yml --detach
+docker-compose --file ./dependencies.yml up --detach
 ```
 
 Migrate the database:
 ```bash
-dotnet ef database migrate --project ./Tsk.HttpApi
+dotnet ef database update --project ./Tsk.HttpApi
 ```
