@@ -18,21 +18,21 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetProducts()
     {
-        var productsAsync = await context.Products.ToListAsync();
+        var products = await context.Products.ToListAsync();
 
-        var readDtos = productsAsync.Select(
-            productEntity => new ReadProductDto(
-                productEntity.Id,
-                productEntity.Title,
-                productEntity.Description,
-                productEntity.Price
+        var readDtos = products.Select(
+            product => new ReadProductDto(
+                product.Id,
+                product.Title,
+                product.Description,
+                product.Price
             )
         );
         return Ok(readDtos);
     }
 
     /// <summary>Post product.</summary>
-    /// <param name="createDto">ProductEntity details.</param>
+    /// <param name="createDto">Product details.</param>
     /// <response code="200">Post product.</response>
     /// <response code="400">Bad Request.</response>
     [HttpPost]
@@ -65,26 +65,26 @@ public class ProductController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
     {
-        var productToDelete = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
-        if (productToDelete is null)
+        var product = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        if (product is null)
         {
             return NotFound();
         }
 
-        context.Products.Remove(productToDelete);
+        context.Products.Remove(product);
         await context.SaveChangesAsync();
 
         var readDto = new ReadProductDto(
-            productToDelete.Id,
-            productToDelete.Title,
-            productToDelete.Description,
-            productToDelete.Price
+            product.Id,
+            product.Title,
+            product.Description,
+            product.Price
         );
         return Ok(readDto);
     }
 
     /// <summary>Update product.</summary>
-    /// <param name="id">ProductEntity id.</param>
+    /// <param name="id">Product id.</param>
     /// <param name="updateProductDto">ProductEntity details.</param>
     /// <response code="200">ProductEntity updated.</response>
     /// <response code="404">ProductEntity not found.</response>
