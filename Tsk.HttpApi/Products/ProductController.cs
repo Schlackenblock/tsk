@@ -46,7 +46,7 @@ public class ProductController : ControllerBase
             Price = createDto.Price
         };
 
-        context.Products?.Add(newProduct);
+        context.Products.Add(newProduct);
         await context.SaveChangesAsync();
 
         var readDto = new ReadProductDto(
