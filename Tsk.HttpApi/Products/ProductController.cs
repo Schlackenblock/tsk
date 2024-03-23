@@ -10,7 +10,10 @@ namespace Tsk.HttpApi.Products;
 [Produces(MediaTypeNames.Application.Json)]
 public class ProductController : ControllerBase
 {
-    private readonly DatabaseContext context = new();
+    private readonly DatabaseContext context;
+
+    public ProductController(DatabaseContext context) =>
+        context = context;
 
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
