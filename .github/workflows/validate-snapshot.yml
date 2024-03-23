@@ -1,4 +1,4 @@
-name: Build Solution
+name: Validate Snapshot
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     - master
 
 jobs:
-  build-solution:
+  validate-snapshot:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
