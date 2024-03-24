@@ -43,6 +43,5 @@ public class UpdateProductDto
     public required string Description { get; init; }
 
     [Required]
-    [MaxLength()]
     public required double Price { get; init; }
 }
