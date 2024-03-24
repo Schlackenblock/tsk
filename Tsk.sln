@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.HttpApi", "Tsk.HttpApi\Tsk.HttpApi.csproj", "{6D453D46-A3B4-4251-8438-259DAFF12F47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.Tests", "Tsk.Tests\Tsk.Tests.csproj", "{95F4A804-4B12-4A86-8DFE-5E27115044B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{6D453D46-A3B4-4251-8438-259DAFF12F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D453D46-A3B4-4251-8438-259DAFF12F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D453D46-A3B4-4251-8438-259DAFF12F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95F4A804-4B12-4A86-8DFE-5E27115044B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95F4A804-4B12-4A86-8DFE-5E27115044B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95F4A804-4B12-4A86-8DFE-5E27115044B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95F4A804-4B12-4A86-8DFE-5E27115044B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
