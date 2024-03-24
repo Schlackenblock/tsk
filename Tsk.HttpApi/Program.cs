@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<DatabaseContext>(
+builder.Services.AddDbContext<TskContext>(
     options =>
     {
         var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
