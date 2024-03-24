@@ -3,10 +3,26 @@ using JetBrains.Annotations;
 namespace Tsk.HttpApi.Products;
 
 [PublicAPI]
-public record ProductDto(Guid Id, string Title, string Description, double Price);
+public record ProductDto
+{
+    public Guid Id { get; init; }
+    public string Title { get; init; }
+    public string Description { get; init; }
+    public double Price { get; init; }
+}
 
 [PublicAPI]
-public record CreateProductDto(string Title, string Description, double Price);
+public class CreateProductDto
+{
+    public string Title { get; init; }
+    public string Description { get; init; }
+    public double Price { get; init; }
+}
 
 [PublicAPI]
-public record UpdateProductDto(string Title, string Description, double Price);
+public record UpdateProductDto
+{
+    public string Title { get; init; }
+    public string Description { get; init; }
+    public double Price { get; init; }
+}
