@@ -1,0 +1,22 @@
+name: Validate Snapshot
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  validate-snapshot:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - run: dotnet restore
+    - run: dotnet tool restore
+    - run: dotnet build --no-restore
+    - run: dotnet ef migrations has-pending-model-changes --project ./Tsk.HttpApi --no-build
