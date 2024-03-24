@@ -35,12 +35,10 @@ public class UpdateProductDto
 {
     [Required]
     [MaxLength(100)]
-    [RegularExpression(@"^[\w\s\.-–—]*$")]
     public required string Title { get; init; }
 
     [Required]
     [MaxLength(100)]
-    [RegularExpression(@"^[\w\s\.\d]*")]
     public required string Description { get; init; }
 
     [Required]
