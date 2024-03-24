@@ -1,12 +1,47 @@
+using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 
 namespace Tsk.HttpApi.Products;
 
 [PublicAPI]
-public record ProductDto(Guid Id, string Title, string Description, double Price);
+public class ProductDto
+{
+    public Guid Id { get; init; }
+    public required string Title { get; init; }
+    public required string Description { get; init; }
+    public required double Price { get; init; }
+}
 
 [PublicAPI]
-public record CreateProductDto(string Title, string Description, double Price);
+public class CreateProductDto
+{
+    [Required]
+    [MaxLength(100)]
+    [RegularExpression(@"^[\w\s\.-–—]*$")]
+    public required string Title { get; init; }
+
+    [Required]
+    [MaxLength(100)]
+    [RegularExpression(@"^[\w\s\.\d]*")]
+    public required string Description { get; init; }
+
+    [Required]
+    public required double Price { get; init; }
+}
 
 [PublicAPI]
-public record UpdateProductDto(string Title, string Description, double Price);
+public class UpdateProductDto
+{
+    [Required]
+    [MaxLength(100)]
+    [RegularExpression(@"^[\w\s\.-–—]*$")]
+    public required string Title { get; init; }
+
+    [Required]
+    [MaxLength(100)]
+    [RegularExpression(@"^[\w\s\.\d]*")]
+    public required string Description { get; init; }
+
+    [Required]
+    public required double Price { get; init; }
+}
