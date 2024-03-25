@@ -10,7 +10,7 @@ using Tsk.HttpApi;
 
 namespace Tsk.HttpApi.Migrations
 {
-    [DbContext(typeof(DatabaseContext))]
+    [DbContext(typeof(TskContext))]
     partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
