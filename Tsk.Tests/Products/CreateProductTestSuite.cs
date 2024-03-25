@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Tsk.Tests.Products;
 
-public class CreateProductTests : TestSuiteBase
+public class CreateProductTestSuite : TestSuiteBase
 {
     [Fact]
     public async Task CreateProduct_WhenValid_ShouldSucceed()

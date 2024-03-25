@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Tsk.Tests.Products;
 
-public class GetProductsTests : TestSuiteBase
+public class GetProductsTestSuite : TestSuiteBase
 {
     [Fact]
     public async Task GetProducts_WhenManyExist_ShouldReturnMany()

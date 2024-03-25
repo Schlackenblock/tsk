@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Tsk.Tests.Products;
 
-public class DeleteProductTests : TestSuiteBase
+public class DeleteProductTestSuite : TestSuiteBase
 {
     [Fact]
     public async Task DeleteProduct_WhenProductExists_ShouldSucceed()

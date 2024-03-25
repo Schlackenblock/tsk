@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Tsk.Tests.Products;
 
-public class UpdateProductTests : TestSuiteBase
+public class UpdateProductTestSuite : TestSuiteBase
 {
     [Fact]
     public async Task UpdateProduct_WhenProductExists_ShouldSucceed()
