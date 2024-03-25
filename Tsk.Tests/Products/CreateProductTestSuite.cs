@@ -1,9 +1,4 @@
-using System.Net;
-using System.Net.Http.Json;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Tsk.HttpApi.Products;
-using Xunit;
 
 namespace Tsk.Tests.Products;
 
