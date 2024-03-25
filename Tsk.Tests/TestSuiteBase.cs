@@ -5,22 +5,17 @@ namespace Tsk.Tests;
 
 public abstract class TestSuiteBase : IAsyncLifetime
 {
-    protected HttpClient HttpClient { get; }
-    protected TskContext Context { get; }
+    protected HttpClient HttpClient { get; private set; }
+    protected TskContext Context { get; private set; }
 
-    private readonly TskApiFactory apiFactory;
-
-    protected TestSuiteBase()
-    {
-        apiFactory = new TskApiFactory();
-
-        HttpClient = apiFactory.CreateClient();
-        Context = apiFactory.CreateContext();
-    }
+    private readonly TskApiFactory apiFactory = new TskApiFactory();
 
     public async Task InitializeAsync()
     {
         await apiFactory.InitializeAsync();
+
+        HttpClient = apiFactory.CreateClient();
+        Context = apiFactory.CreateContext();
     }
 
     public async Task DisposeAsync()
