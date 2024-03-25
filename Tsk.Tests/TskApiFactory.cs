@@ -31,8 +31,11 @@ public class TskApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
                 services.RemoveAll<DbContextOptions>();
                 services.RemoveAll<DbContextOptions<TskContext>>();
 
-                var testConnectionString = postgreSqlContainer.GetConnectionString();
-                services.AddDbContext<TskContext>(options => options.UseNpgsql(testConnectionString));
+                services.AddDbContext<TskContext>(
+                    options => options.UseNpgsql(postgreSqlContainer.GetConnectionString()),
+                    contextLifetime: ServiceLifetime.Singleton,
+                    optionsLifetime: ServiceLifetime.Singleton
+                );
             }
         );
     }
