@@ -1,23 +1,13 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Tsk.HttpApi;
 using Tsk.HttpApi.Products;
 using Xunit;
 
 namespace Tsk.Tests.Products;
 
-public class GetProductsTests
+public class GetProductsTests : TestSuiteBase
 {
-    private readonly HttpClient httpClient;
-    private readonly TskContext context;
-
-    public GetProductsTests(HttpClient httpClient, TskContext context)
-    {
-        this.httpClient = httpClient;
-        this.context = context;
-    }
-
     [Fact]
     public async Task GetProducts_WhenManyExist_ShouldReturnMany()
     {
@@ -38,10 +28,10 @@ public class GetProductsTests
                 Price = 28
             }
         };
-        context.Products.AddRange(existingProducts);
-        await context.SaveChangesAsync();
+        Context.Products.AddRange(existingProducts);
+        await Context.SaveChangesAsync();
 
-        var response = await httpClient.GetAsync("/products");
+        var response = await HttpClient.GetAsync("/products");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
@@ -58,10 +48,10 @@ public class GetProductsTests
             Description = "20 LB. BAG - High Performance Admixture for Concrete - gray color",
             Price = 47
         };
-        context.Products.Add(existingProduct);
-        await context.SaveChangesAsync();
+        Context.Products.Add(existingProduct);
+        await Context.SaveChangesAsync();
 
-        var response = await httpClient.GetAsync("/products");
+        var response = await HttpClient.GetAsync("/products");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
@@ -71,7 +61,7 @@ public class GetProductsTests
     [Fact]
     public async Task GetProducts_WhenNoneExist_ShouldReturnNone()
     {
-        var response = await httpClient.GetAsync("/products");
+        var response = await HttpClient.GetAsync("/products");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();

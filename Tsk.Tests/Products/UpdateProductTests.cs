@@ -1,23 +1,13 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Tsk.HttpApi;
 using Tsk.HttpApi.Products;
 using Xunit;
 
 namespace Tsk.Tests.Products;
 
-public class UpdateProductTests
+public class UpdateProductTests : TestSuiteBase
 {
-    private readonly HttpClient httpClient;
-    private readonly TskContext context;
-
-    public UpdateProductTests(HttpClient httpClient, TskContext context)
-    {
-        this.httpClient = httpClient;
-        this.context = context;
-    }
-
     [Fact]
     public async Task UpdateProduct_WhenProductExists_ShouldSucceed()
     {
@@ -29,8 +19,8 @@ public class UpdateProductTests
             Description = "20 LB. BAG - High Performance Admixture for Concrete - gray color",
             Price = 47
         };
-        context.Products.Add(existingProduct);
-        await context.SaveChangesAsync();
+        Context.Products.Add(existingProduct);
+        await Context.SaveChangesAsync();
 
         var updateProductDto = new UpdateProductDto(
             Title: "High Performance Concrete Admixture 10 lbs",
@@ -38,7 +28,7 @@ public class UpdateProductTests
             Price: 28
         );
 
-        var response = await httpClient.PutAsJsonAsync($"/products/{productId}", updateProductDto);
+        var response = await HttpClient.PutAsJsonAsync($"/products/{productId}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
@@ -58,7 +48,7 @@ public class UpdateProductTests
             Price: 28
         );
 
-        var response = await httpClient.PutAsJsonAsync($"/products/{notExistingProductId}", updateProductDto);
+        var response = await HttpClient.PutAsJsonAsync($"/products/{notExistingProductId}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

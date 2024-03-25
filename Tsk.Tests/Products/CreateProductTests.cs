@@ -2,23 +2,13 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Tsk.HttpApi;
 using Tsk.HttpApi.Products;
 using Xunit;
 
 namespace Tsk.Tests.Products;
 
-public class CreateProductTests
+public class CreateProductTests : TestSuiteBase
 {
-    private readonly HttpClient httpClient;
-    private readonly TskContext context;
-
-    public CreateProductTests(HttpClient httpClient, TskContext context)
-    {
-        this.httpClient = httpClient;
-        this.context = context;
-    }
-
     [Fact]
     public async Task CreateProduct_WhenValid_ShouldSucceed()
     {
@@ -28,13 +18,13 @@ public class CreateProductTests
             Price: 47
         );
 
-        var response = await httpClient.PostAsJsonAsync("/products", createProductDto);
+        var response = await HttpClient.PostAsJsonAsync("/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var createdProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
         createdProductDto.Should().BeEquivalentTo(createProductDto);
 
-        var persistedProduct = await context.Products.SingleAsync();
+        var persistedProduct = await Context.Products.SingleAsync();
         persistedProduct.Should().BeEquivalentTo(createdProductDto);
     }
 }
