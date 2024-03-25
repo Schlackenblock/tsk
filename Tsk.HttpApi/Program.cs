@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Tsk.HttpApi;
 
@@ -27,4 +28,5 @@ app.MapControllers();
 
 app.Run();
 
+[UsedImplicitly]
 public partial class Program;
