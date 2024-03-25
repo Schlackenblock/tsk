@@ -17,13 +17,10 @@ public class TskApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
             .WithImage("postgres:latest")
             .Build();
 
-    public TskContext CreateContext()
-    {
-        return Services.GetRequiredService<TskContext>();
-    }
+    public TskContext CreateContext() =>
+        Services.GetRequiredService<TskContext>();
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
+    protected override void ConfigureWebHost(IWebHostBuilder builder) =>
         builder.ConfigureTestServices(
             services =>
             {
@@ -38,7 +35,6 @@ public class TskApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
                 );
             }
         );
-    }
 
     public async Task InitializeAsync()
     {
@@ -48,8 +44,6 @@ public class TskApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         await context.Database.EnsureCreatedAsync();
     }
 
-    public new async Task DisposeAsync()
-    {
+    public new async Task DisposeAsync() =>
         await postgreSqlContainer.StopAsync();
-    }
 }

@@ -18,8 +18,6 @@ public abstract class TestSuiteBase : IAsyncLifetime
         Context = apiFactory.CreateContext();
     }
 
-    public async Task DisposeAsync()
-    {
+    public async Task DisposeAsync() =>
         await apiFactory.DisposeAsync();
-    }
 }
