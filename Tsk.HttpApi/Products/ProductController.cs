@@ -17,12 +17,13 @@ public class ProductController(TskContext context) : ControllerBase
         var products = await context.Products.ToListAsync();
 
         var productDtos = products.Select(
-            product => new ProductDto(
-                product.Id,
-                product.Title,
-                product.Description,
-                product.Price
-            )
+            product => new ProductDto
+            {
+                Id = product.Id,
+                Title = product.Title,
+                Description = product.Description,
+                Price = product.Price
+            }
         );
         return Ok(productDtos);
     }
@@ -43,12 +44,13 @@ public class ProductController(TskContext context) : ControllerBase
         context.Products.Add(product);
         await context.SaveChangesAsync();
 
-        var productDto = new ProductDto(
-            product.Id,
-            product.Title,
-            product.Description,
-            product.Price
-        );
+        var productDto = new ProductDto
+        {
+            Id = product.Id,
+            Title = product.Title,
+            Description = product.Description,
+            Price = product.Price
+        };
         return Ok(productDto);
     }
 
@@ -69,12 +71,13 @@ public class ProductController(TskContext context) : ControllerBase
         product.Price = updateProductDto.Price;
         await context.SaveChangesAsync();
 
-        var productDto = new ProductDto(
-            product.Id,
-            updateProductDto.Title,
-            updateProductDto.Description,
-            updateProductDto.Price
-        );
+        var productDto = new ProductDto
+        {
+            Id = product.Id,
+            Title = product.Title,
+            Description = product.Description,
+            Price = product.Price
+        };
         return Ok(productDto);
     }
 
@@ -92,12 +95,13 @@ public class ProductController(TskContext context) : ControllerBase
         context.Products.Remove(product);
         await context.SaveChangesAsync();
 
-        var productDto = new ProductDto(
-            product.Id,
-            product.Title,
-            product.Description,
-            product.Price
-        );
+        var productDto = new ProductDto
+        {
+            Id = product.Id,
+            Title = product.Title,
+            Description = product.Description,
+            Price = product.Price
+        };
         return Ok(productDto);
     }
 }
