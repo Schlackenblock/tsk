@@ -29,7 +29,7 @@ public class DeleteProductTestSuite : TestSuiteBase
     }
 
     [Fact]
-    public async Task UpdateProduct_WhenProductDoesNotExist_ShouldFail()
+    public async Task DeleteProduct_WhenProductDoesNotExist_ShouldFail()
     {
         var notExistingProductId = Guid.NewGuid();
         var response = await HttpClient.DeleteAsync($"/products/{notExistingProductId}");
