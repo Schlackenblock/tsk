@@ -24,7 +24,7 @@ public class CreateProductDto
     public required string Description { get; init; }
 
     [Required]
-    [Range(0, 1000)]
+    [Range(0, double.PositiveInfinity, MinimumIsExclusive = true)]
     public required double Price { get; init; }
 }
 
@@ -40,6 +40,6 @@ public class UpdateProductDto
     public required string Description { get; init; }
 
     [Required]
-    [Range(0, 1000)]
+    [Range(0, double.PositiveInfinity, MinimumIsExclusive = true)]
     public required double Price { get; init; }
 }
