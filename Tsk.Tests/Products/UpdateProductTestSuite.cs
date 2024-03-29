@@ -18,11 +18,12 @@ public class UpdateProductTestSuite : TestSuiteBase
         Context.Products.Add(existingProduct);
         await Context.SaveChangesAsync();
 
-        var updateProductDto = new UpdateProductDto(
-            Title: "High Performance Concrete Admixture 10 lbs",
-            Description: "10 LB. BAG - High Performance Admixture for Concrete - gray color",
-            Price: 28
-        );
+        var updateProductDto = new UpdateProductDto
+        {
+            Title = "High Performance Concrete Admixture 10 lbs",
+            Description = "10 LB. BAG - High Performance Admixture for Concrete - gray color",
+            Price = 28
+        };
 
         var response = await HttpClient.PutAsJsonAsync($"/products/{productId}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -38,11 +39,12 @@ public class UpdateProductTestSuite : TestSuiteBase
     public async Task UpdateProduct_WhenProductDoesNotExist_ShouldFail()
     {
         var notExistingProductId = Guid.NewGuid();
-        var updateProductDto = new UpdateProductDto(
-            Title: "High Performance Concrete Admixture 10 lbs",
-            Description: "10 LB. BAG - High Performance Admixture for Concrete - gray color",
-            Price: 28
-        );
+        var updateProductDto = new UpdateProductDto
+        {
+            Title = "High Performance Concrete Admixture 10 lbs",
+            Description = "10 LB. BAG - High Performance Admixture for Concrete - gray color",
+            Price = 28
+        };
 
         var response = await HttpClient.PutAsJsonAsync($"/products/{notExistingProductId}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
