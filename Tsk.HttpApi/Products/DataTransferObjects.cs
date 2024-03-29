@@ -6,7 +6,7 @@ namespace Tsk.HttpApi.Products;
 [PublicAPI]
 public class ProductDto
 {
-    public Guid Id { get; init; }
+    public required Guid Id { get; init; }
     public required string Title { get; init; }
     public required string Description { get; init; }
     public required double Price { get; init; }
