@@ -1,12 +1,45 @@
+using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 
 namespace Tsk.HttpApi.Products;
 
 [PublicAPI]
-public record ProductDto(Guid Id, string Title, string Description, double Price);
+public class ProductDto
+{
+    public required Guid Id { get; init; }
+    public required string Title { get; init; }
+    public required string Description { get; init; }
+    public required double Price { get; init; }
+}
 
 [PublicAPI]
-public record CreateProductDto(string Title, string Description, double Price);
+public class CreateProductDto
+{
+    [Required]
+    [MaxLength(100)]
+    public required string Title { get; init; }
+
+    [Required]
+    [MaxLength(100)]
+    public required string Description { get; init; }
+
+    [Required]
+    [Range(0, double.PositiveInfinity, MinimumIsExclusive = true)]
+    public required double Price { get; init; }
+}
 
 [PublicAPI]
-public record UpdateProductDto(string Title, string Description, double Price);
+public class UpdateProductDto
+{
+    [Required]
+    [MaxLength(100)]
+    public required string Title { get; init; }
+
+    [Required]
+    [MaxLength(100)]
+    public required string Description { get; init; }
+
+    [Required]
+    [Range(0, double.PositiveInfinity, MinimumIsExclusive = true)]
+    public required double Price { get; init; }
+}
