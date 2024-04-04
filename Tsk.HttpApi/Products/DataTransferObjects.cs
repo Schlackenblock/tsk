@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
+using Tsk.HttpApi.Validation;
 
 namespace Tsk.HttpApi.Products;
 
@@ -24,7 +25,7 @@ public class CreateProductDto
     public required string Description { get; init; }
 
     [Required]
-    [Range(0, double.PositiveInfinity, MinimumIsExclusive = true)]
+    [GreaterThan(0)]
     public required double Price { get; init; }
 }
 
@@ -40,6 +41,6 @@ public class UpdateProductDto
     public required string Description { get; init; }
 
     [Required]
-    [Range(0, double.PositiveInfinity, MinimumIsExclusive = true)]
+    [GreaterThan(0)]
     public required double Price { get; init; }
 }
