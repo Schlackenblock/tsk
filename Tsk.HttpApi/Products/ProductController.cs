@@ -21,7 +21,6 @@ public class ProductController(TskContext context) : ControllerBase
             {
                 Id = product.Id,
                 Title = product.Title,
-                Description = product.Description,
                 Price = product.Price
             }
         );
@@ -37,7 +36,6 @@ public class ProductController(TskContext context) : ControllerBase
         {
             Id = Guid.NewGuid(),
             Title = createProductDto.Title,
-            Description = createProductDto.Description,
             Price = createProductDto.Price
         };
 
@@ -48,7 +46,6 @@ public class ProductController(TskContext context) : ControllerBase
         {
             Id = product.Id,
             Title = product.Title,
-            Description = product.Description,
             Price = product.Price
         };
         return Ok(productDto);
@@ -67,7 +64,6 @@ public class ProductController(TskContext context) : ControllerBase
         }
 
         product.Title = updateProductDto.Title;
-        product.Description = updateProductDto.Description;
         product.Price = updateProductDto.Price;
         await context.SaveChangesAsync();
 
@@ -75,7 +71,6 @@ public class ProductController(TskContext context) : ControllerBase
         {
             Id = product.Id,
             Title = product.Title,
-            Description = product.Description,
             Price = product.Price
         };
         return Ok(productDto);
@@ -99,7 +94,6 @@ public class ProductController(TskContext context) : ControllerBase
         {
             Id = product.Id,
             Title = product.Title,
-            Description = product.Description,
             Price = product.Price
         };
         return Ok(productDto);

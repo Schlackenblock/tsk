@@ -9,7 +9,6 @@ public class ProductDto
 {
     public required Guid Id { get; init; }
     public required string Title { get; init; }
-    public required string Description { get; init; }
     public required double Price { get; init; }
 }
 
@@ -19,10 +18,6 @@ public class CreateProductDto
     [Required]
     [MaxLength(100)]
     public required string Title { get; init; }
-
-    [Required]
-    [MaxLength(100)]
-    public required string Description { get; init; }
 
     [Required]
     [GreaterThan(0)]
@@ -35,10 +30,6 @@ public class UpdateProductDto
     [Required]
     [MaxLength(100)]
     public required string Title { get; init; }
-
-    [Required]
-    [MaxLength(100)]
-    public required string Description { get; init; }
 
     [Required]
     [GreaterThan(0)]

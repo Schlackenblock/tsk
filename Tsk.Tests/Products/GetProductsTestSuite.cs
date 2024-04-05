@@ -13,14 +13,12 @@ public class GetProductsTestSuite : TestSuiteBase
             {
                 Id = Guid.NewGuid(),
                 Title = "High Performance Concrete Admixture 20 lbs",
-                Description = "20 LB. BAG - High Performance Admixture for Concrete - gray color",
                 Price = 47
             },
             new ProductEntity
             {
                 Id = Guid.NewGuid(),
                 Title = "High Performance Concrete Admixture 10 lbs",
-                Description = "10 LB. BAG - High Performance Admixture for Concrete - gray color",
                 Price = 28
             }
         };
@@ -41,7 +39,6 @@ public class GetProductsTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "High Performance Concrete Admixture 20 lbs",
-            Description = "20 LB. BAG - High Performance Admixture for Concrete - gray color",
             Price = 47
         };
         Context.Products.Add(existingProduct);

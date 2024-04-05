@@ -12,7 +12,6 @@ public class UpdateProductTestSuite : TestSuiteBase
         {
             Id = productId,
             Title = "High Performance Concrete Admixture 20 lbs",
-            Description = "20 LB. BAG - High Performance Admixture for Concrete - gray color",
             Price = 47
         };
         Context.Products.Add(existingProduct);
@@ -21,7 +20,6 @@ public class UpdateProductTestSuite : TestSuiteBase
         var updateProductDto = new UpdateProductDto
         {
             Title = "High Performance Concrete Admixture 10 lbs",
-            Description = "10 LB. BAG - High Performance Admixture for Concrete - gray color",
             Price = 28
         };
 
@@ -42,7 +40,6 @@ public class UpdateProductTestSuite : TestSuiteBase
         var updateProductDto = new UpdateProductDto
         {
             Title = "High Performance Concrete Admixture 10 lbs",
-            Description = "10 LB. BAG - High Performance Admixture for Concrete - gray color",
             Price = 28
         };
 
