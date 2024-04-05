@@ -11,9 +11,6 @@ public class ProductEntity
     [Column("title")]
     public required string Title { get; set; }
 
-    [Column("description")]
-    public required string Description { get; set; }
-
     [Column("price")]
     public required double Price { get; set; }
 }

@@ -10,7 +10,6 @@ public class CreateProductTestSuite : TestSuiteBase
         var createProductDto = new CreateProductDto
         {
             Title = "High Performance Concrete Admixture 20 lbs",
-            Description = "20 LB. BAG - High Performance Admixture for Concrete - gray color",
             Price = 47
         };
 
