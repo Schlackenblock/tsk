@@ -7,27 +7,17 @@ public class UpdateProductTestSuite : TestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductExists_ShouldSucceed()
     {
-        var productId = Guid.NewGuid();
-        var existingProduct = new ProductEntity
-        {
-            Id = productId,
-            Title = "High Performance Concrete Admixture 20 lbs",
-            Price = 47
-        };
+        var existingProduct = ProductTestData.GenerateProduct();
         Context.Products.Add(existingProduct);
         await Context.SaveChangesAsync();
 
-        var updateProductDto = new UpdateProductDto
-        {
-            Title = "High Performance Concrete Admixture 10 lbs",
-            Price = 28
-        };
+        var updateProductDto = ProductTestData.GenerateUpdateProductDto();
 
-        var response = await HttpClient.PutAsJsonAsync($"/products/{productId}", updateProductDto);
+        var response = await HttpClient.PutAsJsonAsync($"/products/{existingProduct.Id}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
-        updatedProductDto!.Id.Should().Be(productId);
+        updatedProductDto!.Id.Should().Be(existingProduct.Id);
         updatedProductDto.Should().BeEquivalentTo(updateProductDto);
 
         existingProduct.Should().BeEquivalentTo(updatedProductDto);
@@ -37,11 +27,7 @@ public class UpdateProductTestSuite : TestSuiteBase
     public async Task UpdateProduct_WhenProductDoesNotExist_ShouldFail()
     {
         var notExistingProductId = Guid.NewGuid();
-        var updateProductDto = new UpdateProductDto
-        {
-            Title = "High Performance Concrete Admixture 10 lbs",
-            Price = 28
-        };
+        var updateProductDto = ProductTestData.GenerateUpdateProductDto();
 
         var response = await HttpClient.PutAsJsonAsync($"/products/{notExistingProductId}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

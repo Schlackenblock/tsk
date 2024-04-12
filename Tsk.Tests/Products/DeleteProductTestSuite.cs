@@ -7,17 +7,11 @@ public class DeleteProductTestSuite : TestSuiteBase
     [Fact]
     public async Task DeleteProduct_WhenProductExists_ShouldSucceed()
     {
-        var productId = Guid.NewGuid();
-        var existingProduct = new ProductEntity
-        {
-            Id = productId,
-            Title = "High Performance Concrete Admixture 20 lbs",
-            Price = 47
-        };
+        var existingProduct = ProductTestData.GenerateProduct();
         Context.Products.Add(existingProduct);
         await Context.SaveChangesAsync();
 
-        var response = await HttpClient.DeleteAsync($"/products/{productId}");
+        var response = await HttpClient.DeleteAsync($"/products/{existingProduct.Id}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var deletedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();

@@ -7,21 +7,7 @@ public class GetProductsTestSuite : TestSuiteBase
     [Fact]
     public async Task GetProducts_WhenManyExist_ShouldReturnMany()
     {
-        var existingProducts = new List<ProductEntity>
-        {
-            new ProductEntity
-            {
-                Id = Guid.NewGuid(),
-                Title = "High Performance Concrete Admixture 20 lbs",
-                Price = 47
-            },
-            new ProductEntity
-            {
-                Id = Guid.NewGuid(),
-                Title = "High Performance Concrete Admixture 10 lbs",
-                Price = 28
-            }
-        };
+        var existingProducts = ProductTestData.GenerateProducts(2);
         Context.Products.AddRange(existingProducts);
         await Context.SaveChangesAsync();
 
@@ -35,12 +21,7 @@ public class GetProductsTestSuite : TestSuiteBase
     [Fact]
     public async Task GetProducts_WhenOneExists_ShouldReturnOne()
     {
-        var existingProduct = new ProductEntity
-        {
-            Id = Guid.NewGuid(),
-            Title = "High Performance Concrete Admixture 20 lbs",
-            Price = 47
-        };
+        var existingProduct = ProductTestData.GenerateProduct();
         Context.Products.Add(existingProduct);
         await Context.SaveChangesAsync();
 

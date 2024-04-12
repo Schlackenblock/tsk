@@ -7,11 +7,7 @@ public class CreateProductTestSuite : TestSuiteBase
     [Fact]
     public async Task CreateProduct_WhenValid_ShouldSucceed()
     {
-        var createProductDto = new CreateProductDto
-        {
-            Title = "High Performance Concrete Admixture 20 lbs",
-            Price = 47
-        };
+        var createProductDto = ProductTestData.GenerateCreateProductDto();
 
         var response = await HttpClient.PostAsJsonAsync("/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
