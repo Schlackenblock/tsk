@@ -4,17 +4,16 @@ namespace Tsk.HttpApi.Validation;
 
 public class GreaterThanAttribute : RangeAttribute
 {
-    public GreaterThanAttribute(double exclusiveMin)
-        : base(exclusiveMin, double.PositiveInfinity)
+    public bool IsExclusive
     {
-        MinimumIsExclusive = true;
+        get => MinimumIsExclusive;
+        set => MinimumIsExclusive = value;
+    }
+
+    public GreaterThanAttribute(double min)
+        : base(min, double.PositiveInfinity)
+    {
+        IsExclusive = true;
         ErrorMessage = "The field {0} must be greater than {1}.";
     }
-}
-
-public class GreaterThanOrEqualToAttribute : RangeAttribute
-{
-    public GreaterThanOrEqualToAttribute(double min)
-        : base(min, double.PositiveInfinity) =>
-        ErrorMessage = "The field {0} must be greater than or equal to {1}.";
 }

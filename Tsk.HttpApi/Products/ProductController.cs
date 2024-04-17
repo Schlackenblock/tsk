@@ -15,7 +15,7 @@ public class ProductController(TskContext context) : ControllerBase
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts(
-        [FromQuery] [Required] [GreaterThanOrEqualTo(0)] int pageNumber,
+        [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)] int pageNumber,
         [FromQuery] [Required] [Range(1, 25)] int pageSize)
     {
         var products = await context
