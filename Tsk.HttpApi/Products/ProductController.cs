@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tsk.HttpApi.Validation;
 
 namespace Tsk.HttpApi.Products;
 
@@ -12,9 +14,12 @@ public class ProductController(TskContext context) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    public async Task<IActionResult> GetProducts(
+        [FromQuery] [Required] [GreaterThanOrEqualTo(0)] int pageNumber,
+        [FromQuery] [Required] [Range(1, 25)] int pageSize)
     {
-        var products = await context.Products
+        var products = await context
+            .Products
             .OrderBy(product => product.Id)
             .Skip(pageNumber * pageSize)
             .Take(pageSize)
