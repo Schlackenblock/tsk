@@ -16,11 +16,16 @@ public class ProductController(TskContext context) : ControllerBase
     [HttpGet]
     [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts(
-        [FromQuery] [GreaterThan(0)] double? minPrice,
-        [FromQuery] [GreaterThan(0)] double? maxPrice,
-        [FromQuery] [Required] ProductsOrderingOption orderingOption,
-        [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)] int pageNumber,
-        [FromQuery] [Required] [Range(1, 25)] int pageSize)
+        [FromQuery] [GreaterThan(0)]
+        double? minPrice,
+        [FromQuery] [GreaterThan(0)]
+        double? maxPrice,
+        [FromQuery] [Required]
+        ProductsOrderingOption orderingOption,
+        [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)]
+        int pageNumber,
+        [FromQuery] [Required] [Range(1, 25)]
+        int pageSize)
     {
         var filteredProductsQuery = context
             .Products
@@ -61,7 +66,6 @@ public class ProductController(TskContext context) : ControllerBase
             ProductsCount = filteredProductsCount,
             PagesCount = pagesCount
         };
-
         return Ok(productsPageDto);
     }
 
