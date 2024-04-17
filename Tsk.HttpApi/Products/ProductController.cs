@@ -13,7 +13,7 @@ namespace Tsk.HttpApi.Products;
 public class ProductController(TskContext context) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts(
         [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)] int pageNumber,
         [FromQuery] [Required] [Range(1, 25)] int pageSize)
@@ -25,15 +25,28 @@ public class ProductController(TskContext context) : ControllerBase
             .Take(pageSize)
             .ToListAsync();
 
-        var productDtos = products.Select(
-            product => new ProductDto
-            {
-                Id = product.Id,
-                Title = product.Title,
-                Price = product.Price
-            }
-        );
-        return Ok(productDtos);
+        var productDtos = products
+            .Select(
+                product => new ProductDto
+                {
+                    Id = product.Id,
+                    Title = product.Title,
+                    Price = product.Price
+                }
+            )
+            .ToList();
+
+        var totalProductsCount = await context.Products.CountAsync();
+        var pagesCount = (int)Math.Ceiling((double)totalProductsCount / pageSize);
+
+        var productsPageDto = new ProductsPageDto
+        {
+            Products = productDtos,
+            TotalProductsCount = totalProductsCount,
+            PagesCount = pagesCount
+        };
+
+        return Ok(productsPageDto);
     }
 
     [HttpPost]

@@ -5,6 +5,14 @@ using Tsk.HttpApi.Validation;
 namespace Tsk.HttpApi.Products;
 
 [PublicAPI]
+public class ProductsPageDto
+{
+    public required IReadOnlyCollection<ProductDto> Products { get; init; }
+    public required int TotalProductsCount { get; init; }
+    public required int PagesCount { get; init; }
+}
+
+[PublicAPI]
 public class ProductDto
 {
     public required Guid Id { get; init; }
