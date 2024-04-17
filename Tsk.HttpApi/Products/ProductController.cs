@@ -15,11 +15,25 @@ public class ProductController(TskContext context) : ControllerBase
     [HttpGet]
     [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts(
+        [FromQuery] [GreaterThan(0)] double? minPrice,
+        [FromQuery] [GreaterThan(0)] double? maxPrice,
         [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)] int pageNumber,
         [FromQuery] [Required] [Range(1, 25)] int pageSize)
     {
-        var pagedProducts = await context
-            .Products
+        var filteredProductsQuery = context.Products.AsQueryable();
+        if (minPrice is not null)
+        {
+            filteredProductsQuery = filteredProductsQuery.Where(product => product.Price >= minPrice);
+        }
+        if (maxPrice is not null)
+        {
+            filteredProductsQuery = filteredProductsQuery.Where(product => product.Price <= maxPrice);
+        }
+
+        var filteredProductsCount = await filteredProductsQuery.CountAsync();
+        var pagesCount = (int)Math.Ceiling((double)filteredProductsCount / pageSize);
+
+        var pagedProducts = await filteredProductsQuery
             .OrderBy(product => product.Id)
             .Skip(pageNumber * pageSize)
             .Take(pageSize)
@@ -36,13 +50,10 @@ public class ProductController(TskContext context) : ControllerBase
             )
             .ToList();
 
-        var productsCount = await context.Products.CountAsync();
-        var pagesCount = (int)Math.Ceiling((double)productsCount / pageSize);
-
         var productsPageDto = new ProductsPageDto
         {
             Products = pagedProductDtos,
-            ProductsCount = productsCount,
+            ProductsCount = filteredProductsCount,
             PagesCount = pagesCount
         };
 
