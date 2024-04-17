@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using Tsk.HttpApi.Products;
 
 namespace Tsk.Tests.Products;
