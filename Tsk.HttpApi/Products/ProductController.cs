@@ -18,14 +18,14 @@ public class ProductController(TskContext context) : ControllerBase
         [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)] int pageNumber,
         [FromQuery] [Required] [Range(1, 25)] int pageSize)
     {
-        var products = await context
+        var pagedProducts = await context
             .Products
             .OrderBy(product => product.Id)
             .Skip(pageNumber * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        var productDtos = products
+        var pagedProductDtos = pagedProducts
             .Select(
                 product => new ProductDto
                 {
@@ -36,13 +36,13 @@ public class ProductController(TskContext context) : ControllerBase
             )
             .ToList();
 
-        var totalProductsCount = await context.Products.CountAsync();
-        var pagesCount = (int)Math.Ceiling((double)totalProductsCount / pageSize);
+        var productsCount = await context.Products.CountAsync();
+        var pagesCount = (int)Math.Ceiling((double)productsCount / pageSize);
 
         var productsPageDto = new ProductsPageDto
         {
-            Products = productDtos,
-            TotalProductsCount = totalProductsCount,
+            Products = pagedProductDtos,
+            ProductsCount = productsCount,
             PagesCount = pagesCount
         };
 
