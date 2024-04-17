@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ public class ProductController(TskContext context) : ControllerBase
     public async Task<IActionResult> GetProducts(
         [FromQuery] [GreaterThan(0)] double? minPrice,
         [FromQuery] [GreaterThan(0)] double? maxPrice,
+        [FromQuery] [Required] ProductsOrderingOption orderingOption,
         [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)] int pageNumber,
         [FromQuery] [Required] [Range(1, 25)] int pageSize)
     {
@@ -28,8 +30,16 @@ public class ProductController(TskContext context) : ControllerBase
         var filteredProductsCount = await filteredProductsQuery.CountAsync();
         var pagesCount = (int)Math.Ceiling((double)filteredProductsCount / pageSize);
 
-        var pagedProducts = await filteredProductsQuery
-            .OrderBy(product => product.Id)
+        var orderedProductsQuery = orderingOption switch
+        {
+            ProductsOrderingOption.TitleAscending => filteredProductsQuery.OrderBy(product => product.Title),
+            ProductsOrderingOption.TitleDescending => filteredProductsQuery.OrderByDescending(product => product.Title),
+            ProductsOrderingOption.PriceAscending => filteredProductsQuery.OrderBy(product => product.Price),
+            ProductsOrderingOption.PriceDescending => filteredProductsQuery.OrderByDescending(product => product.Price),
+            _ => throw new UnreachableException()
+        };
+
+        var pagedProducts = await orderedProductsQuery
             .Skip(pageNumber * pageSize)
             .Take(pageSize)
             .ToListAsync();

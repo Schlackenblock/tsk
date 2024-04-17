@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 using Tsk.HttpApi.Validation;
 
@@ -18,6 +19,15 @@ public class ProductDto
     public required Guid Id { get; init; }
     public required string Title { get; init; }
     public required double Price { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ProductsOrderingOption
+{
+    TitleAscending,
+    TitleDescending,
+    PriceAscending,
+    PriceDescending
 }
 
 [PublicAPI]
