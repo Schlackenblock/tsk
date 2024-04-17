@@ -12,9 +12,13 @@ public class ProductController(TskContext context) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts()
+    public async Task<IActionResult> GetProducts([FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
-        var products = await context.Products.ToListAsync();
+        var products = await context.Products
+            .OrderBy(product => product.Id)
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
         var productDtos = products.Select(
             product => new ProductDto
