@@ -20,15 +20,10 @@ public class ProductController(TskContext context) : ControllerBase
         [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)] int pageNumber,
         [FromQuery] [Required] [Range(1, 25)] int pageSize)
     {
-        var filteredProductsQuery = context.Products.AsQueryable();
-        if (minPrice is not null)
-        {
-            filteredProductsQuery = filteredProductsQuery.Where(product => product.Price >= minPrice);
-        }
-        if (maxPrice is not null)
-        {
-            filteredProductsQuery = filteredProductsQuery.Where(product => product.Price <= maxPrice);
-        }
+        var filteredProductsQuery = context
+            .Products
+            .Where(product => minPrice == null || product.Price >= minPrice)
+            .Where(product => maxPrice == null || product.Price <= maxPrice);
 
         var filteredProductsCount = await filteredProductsQuery.CountAsync();
         var pagesCount = (int)Math.Ceiling((double)filteredProductsCount / pageSize);
