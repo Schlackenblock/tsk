@@ -1,4 +1,4 @@
-﻿using Tsk.HttpApi.Products;
+using Tsk.HttpApi.Products;
 
 namespace Tsk.Tests.Products;
 
