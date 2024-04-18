@@ -82,7 +82,7 @@ public class GetProductsTestSuite : TestSuiteBase
         var expectedProductsCount = existingProducts.ThatWillNotBeFilteredOut.Count;
         productsPageDto!.ProductsCount.Should().Be(expectedProductsCount);
 
-        var expectedPagesCount = (int)(Math.Ceiling((double)expectedProductsCount / pageSize));
+        var expectedPagesCount = (int)Math.Ceiling((double)expectedProductsCount / pageSize);
         productsPageDto.PagesCount.Should().Be(expectedPagesCount);
 
         var expectedProducts = existingProducts
