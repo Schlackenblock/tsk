@@ -1,9 +1,36 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Mvc;
 using Tsk.HttpApi.Validation;
 
 namespace Tsk.HttpApi.Products;
+
+[PublicAPI]
+public class GetProductsDto
+{
+    [FromQuery]
+    [GreaterThan(0)]
+    public double? MinPrice { get; set; }
+
+    [FromQuery]
+    [GreaterThan(0)]
+    public double? MaxPrice { get; set; }
+
+    [FromQuery]
+    [Required]
+    public ProductsOrderingOption OrderingOption { get; set; }
+
+    [FromQuery]
+    [Required]
+    [GreaterThan(0, IsExclusive = false)]
+    public int PageNumber { get; set; }
+
+    [FromQuery]
+    [Required]
+    [Range(1, 25)]
+    public int PageSize { get; set; }
+}
 
 [PublicAPI]
 public class ProductsPageDto

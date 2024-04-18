@@ -1,9 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tsk.HttpApi.Validation;
 
 namespace Tsk.HttpApi.Products;
 
@@ -15,27 +13,17 @@ public class ProductController(TskContext context) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts(
-        [FromQuery] [GreaterThan(0)]
-        double? minPrice,
-        [FromQuery] [GreaterThan(0)]
-        double? maxPrice,
-        [FromQuery] [Required]
-        ProductsOrderingOption orderingOption,
-        [FromQuery] [Required] [GreaterThan(0, IsExclusive = false)]
-        int pageNumber,
-        [FromQuery] [Required] [Range(1, 25)]
-        int pageSize)
+    public async Task<IActionResult> GetProducts([AsParameters] GetProductsDto requestDto)
     {
         var filteredProductsQuery = context
             .Products
-            .Where(product => minPrice == null || product.Price >= minPrice)
-            .Where(product => maxPrice == null || product.Price <= maxPrice);
+            .Where(product => requestDto.MinPrice == null || product.Price >= requestDto.MinPrice)
+            .Where(product => requestDto.MaxPrice == null || product.Price <= requestDto.MaxPrice);
 
         var filteredProductsCount = await filteredProductsQuery.CountAsync();
-        var pagesCount = (int)Math.Ceiling((double)filteredProductsCount / pageSize);
+        var pagesCount = (int)Math.Ceiling((double)filteredProductsCount / requestDto.PageSize);
 
-        var orderedProductsQuery = orderingOption switch
+        var orderedProductsQuery = requestDto.OrderingOption switch
         {
             ProductsOrderingOption.TitleAscending => filteredProductsQuery.OrderBy(product => product.Title),
             ProductsOrderingOption.TitleDescending => filteredProductsQuery.OrderByDescending(product => product.Title),
@@ -45,8 +33,8 @@ public class ProductController(TskContext context) : ControllerBase
         };
 
         var pagedProducts = await orderedProductsQuery
-            .Skip(pageNumber * pageSize)
-            .Take(pageSize)
+            .Skip(requestDto.PageNumber * requestDto.PageSize)
+            .Take(requestDto.PageSize)
             .ToListAsync();
 
         var pagedProductDtos = pagedProducts
