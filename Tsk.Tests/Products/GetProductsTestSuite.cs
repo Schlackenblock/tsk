@@ -7,6 +7,10 @@ public class GetProductsTestSuite : TestSuiteBase
     [Fact]
     public async Task GetProducts_WhenOrderingApplied_ShouldReturnOrdered()
     {
+        var existingProducts = ProductTestData.GenerateProducts(10);
+        Context.Products.AddRange(existingProducts);
+        await Context.SaveChangesAsync();
+
         var supportedOrderingOptions = new (string, Func<IEnumerable<ProductEntity>, IEnumerable<ProductEntity>>)[]
         {
             ("TitleAscending", products => products.OrderBy(product => product.Title)),
@@ -19,11 +23,11 @@ public class GetProductsTestSuite : TestSuiteBase
         {
             var (orderingOptionName, sortProducts) = supportedOrderingOption;
 
-            var existingProducts = ProductTestData.GenerateProducts(10);
-            Context.Products.AddRange(existingProducts);
-            await Context.SaveChangesAsync();
-
-            var requestUri = $"/products?OrderingOption={orderingOptionName}&PageNumber=0&PageSize=10";
+            var requestUri =
+                "/products" +
+                $"?OrderingOption={orderingOptionName}" +
+                "&PageNumber=0" +
+                $"&PageSize={existingProducts.Count}";
             var response = await HttpClient.GetAsync(requestUri);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -34,8 +38,6 @@ public class GetProductsTestSuite : TestSuiteBase
             var orderedExistingProducts = sortProducts(existingProducts);
             var productDtos = productsPageDto.Products;
             productDtos.Should().BeEquivalentTo(orderedExistingProducts, options => options.WithStrictOrdering());
-
-            await Context.Products.ExecuteDeleteAsync();
         }
     }
 
