@@ -48,11 +48,11 @@ public class GetProductsTestSuite : TestSuiteBase
         {
             ThatWillBeFilteredOutByMinPrice = ProductTestData.GenerateProducts(
                 count: 5,
-                priceRange: new() { Max = 9.99 }
+                priceRange: new() { Max = minPrice - 0.01 }
             ),
             ThatWillBeFilteredOutByMaxPrice = ProductTestData.GenerateProducts(
                 count: 5,
-                priceRange: new() { Min = 99.99 }
+                priceRange: new() { Min = maxPrice + 0.01 }
             ),
             ThatWillNotBeFilteredOut = ProductTestData.GenerateProducts(
                 count: 15,
@@ -68,8 +68,8 @@ public class GetProductsTestSuite : TestSuiteBase
         var pageSize = 10;
 
         var requestUri =
-            "/products?" +
-            "OrderingOption=TitleAscending" +
+            "/products" +
+            "?OrderingOption=TitleAscending" +
             $"&PageNumber={pageNumber}" +
             $"&PageSize={pageSize}" +
             $"&MinPrice={minPrice}" +
@@ -92,7 +92,7 @@ public class GetProductsTestSuite : TestSuiteBase
             .Take(pageSize)
             .ToList();
         var returnedProductDtos = productsPageDto.Products;
-        returnedProductDtos.Should().BeEquivalentTo(expectedProducts);
+        returnedProductDtos.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
     }
 
     [Fact]
