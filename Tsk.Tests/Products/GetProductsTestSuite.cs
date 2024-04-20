@@ -11,12 +11,14 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.AddRange(existingProducts);
         await Context.SaveChangesAsync();
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=TitleAscending" +
-            "&PageNumber=0" +
-            $"&PageSize={existingProducts.Count}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var getProductsDto = new GetProductsDto
+        {
+            OrderingOption = ProductsOrderingOption.TitleAscending,
+            PageNumber = 0,
+            PageSize = existingProducts.Count
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -35,12 +37,14 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.AddRange(existingProducts);
         await Context.SaveChangesAsync();
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=TitleDescending" +
-            "&PageNumber=0" +
-            $"&PageSize={existingProducts.Count}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var getProductsDto = new GetProductsDto
+        {
+            OrderingOption = ProductsOrderingOption.TitleDescending,
+            PageNumber = 0,
+            PageSize = existingProducts.Count
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -59,12 +63,14 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.AddRange(existingProducts);
         await Context.SaveChangesAsync();
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=PriceAscending" +
-            "&PageNumber=0" +
-            $"&PageSize={existingProducts.Count}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var getProductsDto = new GetProductsDto
+        {
+            OrderingOption = ProductsOrderingOption.PriceAscending,
+            PageNumber = 0,
+            PageSize = existingProducts.Count
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -83,12 +89,14 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.AddRange(existingProducts);
         await Context.SaveChangesAsync();
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=PriceDescending" +
-            "&PageNumber=0" +
-            $"&PageSize={existingProducts.Count}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var getProductsDto = new GetProductsDto
+        {
+            OrderingOption = ProductsOrderingOption.PriceDescending,
+            PageNumber = 0,
+            PageSize = existingProducts.Count
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -125,14 +133,16 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.AddRange(existingProducts.ThatWillNotBeFilteredOut);
         await Context.SaveChangesAsync();
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=TitleAscending" +
-            "&PageNumber=0" +
-            $"&PageSize={existingProducts.ThatWillNotBeFilteredOut.Count}" +
-            $"&MinPrice={minPrice}" +
-            $"&MaxPrice={maxPrice}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var getProductsDto = new GetProductsDto
+        {
+            MinPrice = minPrice,
+            MaxPrice = maxPrice,
+            OrderingOption = ProductsOrderingOption.TitleAscending,
+            PageNumber = 0,
+            PageSize = existingProducts.ThatWillNotBeFilteredOut.Count
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -159,13 +169,14 @@ public class GetProductsTestSuite : TestSuiteBase
 
         var expectedPagesCount = CalculateExpectedPagesCount(productsCount, pageSize);
         var lastPageNumber = expectedPagesCount - 1;
+        var getProductsDto = new GetProductsDto
+        {
+            OrderingOption = ProductsOrderingOption.TitleAscending,
+            PageNumber = lastPageNumber,
+            PageSize = pageSize
+        };
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=TitleAscending" +
-            $"&PageNumber={lastPageNumber}" +
-            $"&PageSize={pageSize}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -191,12 +202,14 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.AddRange(existingProducts);
         await Context.SaveChangesAsync();
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=TitleAscending" +
-            $"&PageNumber={middlePageNumber}" +
-            $"&PageSize={pageSize}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var getProductsDto = new GetProductsDto
+        {
+            OrderingOption = ProductsOrderingOption.TitleAscending,
+            PageNumber = middlePageNumber,
+            PageSize = pageSize
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -221,7 +234,14 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.Add(existingProduct);
         await Context.SaveChangesAsync();
 
-        var response = await HttpClient.GetAsync("/products?OrderingOption=TitleAscending&PageNumber=1&PageSize=10");
+        var getProductsDto = new GetProductsDto
+        {
+            OrderingOption = ProductsOrderingOption.TitleAscending,
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -237,13 +257,15 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.Add(existingProduct);
         await Context.SaveChangesAsync();
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=TitleAscending" +
-            "&PageNumber=0" +
-            "&PageSize=10" +
-            $"&MinPrice={existingProduct.Price + 0.01}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var getProductsDto = new GetProductsDto
+        {
+            MinPrice = existingProduct.Price + 0.01,
+            OrderingOption = ProductsOrderingOption.TitleAscending,
+            PageNumber = 0,
+            PageSize = 10
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -259,13 +281,15 @@ public class GetProductsTestSuite : TestSuiteBase
         Context.Products.Add(existingProduct);
         await Context.SaveChangesAsync();
 
-        var requestUri =
-            "/products" +
-            "?OrderingOption=TitleAscending" +
-            "&PageNumber=0" +
-            "&PageSize=10" +
-            $"&MaxPrice={existingProduct.Price - 0.01}";
-        var response = await HttpClient.GetAsync(requestUri);
+        var getProductsDto = new GetProductsDto
+        {
+            MaxPrice = existingProduct.Price - 0.01,
+            OrderingOption = ProductsOrderingOption.TitleAscending,
+            PageNumber = 0,
+            PageSize = 10
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
@@ -277,7 +301,14 @@ public class GetProductsTestSuite : TestSuiteBase
     [Fact]
     public async Task GetProducts_WhenNoneExist_ShouldReturnNone()
     {
-        var response = await HttpClient.GetAsync("/products?OrderingOption=TitleAscending&PageNumber=0&PageSize=10");
+        var getProductsDto = new GetProductsDto
+        {
+            OrderingOption = ProductsOrderingOption.TitleAscending,
+            PageNumber = 0,
+            PageSize = 10
+        };
+
+        var response = await HttpClient.GetAsync("/products", getProductsDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
