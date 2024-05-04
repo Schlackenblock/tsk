@@ -12,6 +12,26 @@ namespace Tsk.HttpApi.Products;
 [Produces(MediaTypeNames.Application.Json)]
 public class ProductController(TskContext context) : ControllerBase
 {
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType<ProductDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetSingleProduct([FromRoute] Guid id)
+    {
+        var product = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        if (product is null)
+        {
+            return new NotFoundResult();
+        }
+
+        var productDto = new ProductDto
+        {
+            Id = product.Id,
+            Title = product.Title,
+            Price = product.Price
+        };
+        return Ok(productDto);
+    }
+
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts([FromQuery][Required] ProductOrderingOption orderBy)
