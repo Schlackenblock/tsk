@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +14,17 @@ public class ProductController(TskContext context) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts()
+    public async Task<IActionResult> GetProducts([FromQuery] [Required] ProductOrderingOption orderBy)
     {
-        var products = await context.Products.ToListAsync();
+        var productsQuery = orderBy switch
+        {
+            ProductOrderingOption.TitleAscending => context.Products.OrderBy(product => product.Title),
+            ProductOrderingOption.TitleDescending => context.Products.OrderByDescending(product => product.Title),
+            ProductOrderingOption.PriceAscending => context.Products.OrderBy(product => product.Price),
+            ProductOrderingOption.PriceDescending => context.Products.OrderByDescending(product => product.Price),
+            _ => throw new UnreachableException()
+        };
+        var products = await productsQuery.ToListAsync();
 
         var productDtos = products.Select(
             product => new ProductDto
