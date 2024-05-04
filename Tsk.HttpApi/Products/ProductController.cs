@@ -33,7 +33,7 @@ public class ProductController(TskContext context) : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts(
         [FromQuery][Required] ProductOrderingOption orderBy,
         [FromQuery][Required] int pageSize,
@@ -61,7 +61,16 @@ public class ProductController(TskContext context) : ControllerBase
                 Price = product.Price
             }
         );
-        return Ok(productDtos);
+
+        var totalProductsCount = await context.Products.CountAsync();
+        var pagesCount = (int)Math.Ceiling((double)totalProductsCount / pageSize);
+        var productsPageDto = new ProductsPageDto
+        {
+            Products = productDtos.ToList(),
+            TotalProductsCount = totalProductsCount,
+            PagesCount = pagesCount
+        };
+        return Ok(productsPageDto);
     }
 
     [HttpPost]

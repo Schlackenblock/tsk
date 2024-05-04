@@ -24,6 +24,14 @@ public enum ProductOrderingOption
 }
 
 [PublicAPI]
+public class ProductsPageDto
+{
+    public required IReadOnlyCollection<ProductDto> Products { get; init; }
+    public required int TotalProductsCount { get; init; }
+    public required int PagesCount { get; set; }
+}
+
+[PublicAPI]
 public class CreateProductDto
 {
     [Required]

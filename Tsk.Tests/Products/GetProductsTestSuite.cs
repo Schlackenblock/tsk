@@ -14,9 +14,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=titleAscending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount.Should().Be(1);
+
         var expectedProducts = existingProducts.OrderBy(product => product.Title);
-        var returnedProducts = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        returnedProducts.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
     }
 
     [Fact]
@@ -29,9 +32,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=titleDescending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount.Should().Be(1);
+
         var expectedProducts = existingProducts.OrderByDescending(product => product.Title);
-        var returnedProducts = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        returnedProducts.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
     }
 
     [Fact]
@@ -44,9 +50,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount.Should().Be(1);
+
         var expectedProducts = existingProducts.OrderBy(product => product.Price);
-        var returnedProducts = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        returnedProducts.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
     }
 
     [Fact]
@@ -59,9 +68,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceDescending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount.Should().Be(1);
+
         var expectedProducts = existingProducts.OrderByDescending(product => product.Price);
-        var returnedProducts = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        returnedProducts.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
     }
 
     [Fact]
@@ -74,9 +86,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount = 3;
+
         var expectedProducts = existingProducts.OrderBy(product => product.Price).Take(5);
-        var returnedProducts = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        returnedProducts.Should().BeEquivalentTo(expectedProducts);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts);
     }
 
     [Fact]
@@ -89,9 +104,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=1");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount = 3;
+
         var expectedProducts = existingProducts.OrderBy(product => product.Price).Skip(5).Take(5);
-        var returnedProducts = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        returnedProducts.Should().BeEquivalentTo(expectedProducts);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts);
     }
 
     [Fact]
@@ -104,9 +122,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=2");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var expectedProducts = existingProducts.OrderBy(product => product.Price).Skip(10).Take(5);
-        var returnedProducts = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        returnedProducts.Should().BeEquivalentTo(expectedProducts);
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount = 3;
+
+        var expectedProducts = existingProducts.OrderBy(product => product.Price).Skip(10);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts);
     }
 
     [Fact]
@@ -119,9 +140,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount.Should().Be(1);
+
         var expectedProducts = existingProducts.OrderBy(product => product.Price);
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
     }
 
     [Fact]
@@ -134,9 +158,12 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount.Should().Be(1);
+
         var expectedProducts = existingProducts.OrderBy(product => product.Price);
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProducts, options => options.WithStrictOrdering());
     }
 
     [Fact]
@@ -149,12 +176,16 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos!.Single().Should().BeEquivalentTo(existingProduct);
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.TotalProductsCount.Should().Be(1);
+        productsPageDto.PagesCount.Should().Be(1);
+
+        var productDto = productsPageDto.Products.Single();
+        productDto.Should().BeEquivalentTo(existingProduct);
     }
 
     [Fact]
-    public async Task GetProducts_WhenQueriedPageDoesNotExist_ShouldReturnNone()
+    public async Task GetProducts_WhenQueriedPageDoesNotExist_ShouldReturnEmptyPage()
     {
         var existingProducts = ProductTestData.GenerateProducts(2);
         Context.Products.AddRange(existingProducts);
@@ -163,17 +194,21 @@ public class GetProductsTestSuite : TestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=1");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEmpty();
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.Products.Should().BeEmpty();
+        productsPageDto.TotalProductsCount.Should().Be(existingProducts.Count);
+        productsPageDto.PagesCount.Should().Be(1);
     }
 
     [Fact]
-    public async Task GetProducts_WhenNoneExist_ShouldReturnNone()
+    public async Task GetProducts_WhenNoneExist_ShouldReturnEmptyPage()
     {
         var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageSize=5&pageNumber=0");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEmpty();
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.Products.Should().BeEmpty();
+        productsPageDto.TotalProductsCount.Should().Be(0);
+        productsPageDto.PagesCount.Should().Be(0);
     }
 }
