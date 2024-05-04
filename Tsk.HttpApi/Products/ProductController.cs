@@ -34,9 +34,12 @@ public class ProductController(TskContext context) : ControllerBase
 
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts([FromQuery][Required] ProductOrderingOption orderBy)
+    public async Task<IActionResult> GetProducts(
+        [FromQuery][Required] ProductOrderingOption orderBy,
+        [FromQuery][Required] int pageSize,
+        [FromQuery][Required] int pageNumber)
     {
-        var productsQuery = orderBy switch
+        var orderedProductsQuery = orderBy switch
         {
             ProductOrderingOption.TitleAscending => context.Products.OrderBy(product => product.Title),
             ProductOrderingOption.TitleDescending => context.Products.OrderByDescending(product => product.Title),
@@ -44,9 +47,13 @@ public class ProductController(TskContext context) : ControllerBase
             ProductOrderingOption.PriceDescending => context.Products.OrderByDescending(product => product.Price),
             _ => throw new UnreachableException()
         };
-        var products = await productsQuery.ToListAsync();
 
-        var productDtos = products.Select(
+        var paginatedProducts = await orderedProductsQuery
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var productDtos = paginatedProducts.Select(
             product => new ProductDto
             {
                 Id = product.Id,
