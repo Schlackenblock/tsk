@@ -27,7 +27,7 @@ public enum ProductOrderingOption
 public class ProductsPageDto
 {
     public required IReadOnlyCollection<ProductDto> Products { get; init; }
-    public required int TotalProductsCount { get; init; }
+    public required int ProductsCount { get; init; }
     public required int PagesCount { get; set; }
 }
 
