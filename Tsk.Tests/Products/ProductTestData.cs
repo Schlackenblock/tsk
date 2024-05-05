@@ -15,7 +15,7 @@ public static class ProductTestData
     public static ProductEntity GenerateProduct() =>
         GenerateProduct(defaultPriceRange);
 
-    public static ProductEntity GenerateProduct(PriceRange priceRange) =>
+    private static ProductEntity GenerateProduct(PriceRange priceRange) =>
         new ProductEntity
         {
             Id = GenerateProductId(),
@@ -64,5 +64,5 @@ public static class ProductTestData
 public class PriceRange
 {
     public double Min { get; init; }
-    public double Max { get; set; }
+    public double Max { get; init; }
 }
