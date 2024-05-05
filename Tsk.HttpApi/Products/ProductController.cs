@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tsk.HttpApi.Validation;
 
 namespace Tsk.HttpApi.Products;
 
@@ -36,8 +37,8 @@ public class ProductController(TskContext context) : ControllerBase
     [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts(
         [FromQuery][Required] ProductOrderingOption orderBy,
-        [FromQuery][Required] int pageSize,
-        [FromQuery][Required] int pageNumber)
+        [FromQuery][Required][Range(1, 100)] int pageSize,
+        [FromQuery][Required][GreaterThan(0, IsExclusive = false)] int pageNumber)
     {
         var orderedProductsQuery = orderBy switch
         {
