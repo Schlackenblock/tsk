@@ -14,7 +14,7 @@ public class ProductController(TskContext context) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts([FromQuery] [Required] ProductOrderingOption orderBy)
+    public async Task<IActionResult> GetProducts([FromQuery][Required] ProductOrderingOption orderBy)
     {
         var productsQuery = orderBy switch
         {
