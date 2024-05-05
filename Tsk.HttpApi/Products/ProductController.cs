@@ -38,17 +38,35 @@ public class ProductController(TskContext context) : ControllerBase
     public async Task<IActionResult> GetProducts(
         [FromQuery][Required] ProductOrderingOption orderBy,
         [FromQuery][Required][Range(1, 100)] int pageSize,
-        [FromQuery][Required][GreaterThan(0, IsExclusive = false)] int pageNumber)
+        [FromQuery][Required][GreaterThan(0, IsExclusive = false)] int pageNumber,
+        [FromQuery][GreaterThan(0)] double? minPrice,
+        [FromQuery][GreaterThan(0)] double? maxPrice)
     {
+        if (minPrice > maxPrice)
+        {
+            ModelState.AddModelError(nameof(minPrice), $"Can't be greater than \"{nameof(maxPrice)}\".");
+            return ValidationProblem();
+        }
+
+        var filteredProductsQuery = context.Products.AsQueryable();
+        if (minPrice is not null)
+        {
+            filteredProductsQuery = filteredProductsQuery.Where(product => product.Price >= minPrice);
+        }
+        if (maxPrice is not null)
+        {
+            filteredProductsQuery = filteredProductsQuery.Where(product => product.Price <= maxPrice);
+        }
+        var productsCount = await filteredProductsQuery.CountAsync();
+
         var orderedProductsQuery = orderBy switch
         {
-            ProductOrderingOption.TitleAscending => context.Products.OrderBy(product => product.Title),
-            ProductOrderingOption.TitleDescending => context.Products.OrderByDescending(product => product.Title),
-            ProductOrderingOption.PriceAscending => context.Products.OrderBy(product => product.Price),
-            ProductOrderingOption.PriceDescending => context.Products.OrderByDescending(product => product.Price),
+            ProductOrderingOption.TitleAscending => filteredProductsQuery.OrderBy(product => product.Title),
+            ProductOrderingOption.TitleDescending => filteredProductsQuery.OrderByDescending(product => product.Title),
+            ProductOrderingOption.PriceAscending => filteredProductsQuery.OrderBy(product => product.Price),
+            ProductOrderingOption.PriceDescending => filteredProductsQuery.OrderByDescending(product => product.Price),
             _ => throw new UnreachableException()
         };
-
         var paginatedProducts = await orderedProductsQuery
             .Skip(pageNumber * pageSize)
             .Take(pageSize)
@@ -63,12 +81,11 @@ public class ProductController(TskContext context) : ControllerBase
             }
         );
 
-        var totalProductsCount = await context.Products.CountAsync();
-        var pagesCount = (int)Math.Ceiling((double)totalProductsCount / pageSize);
+        var pagesCount = (int)Math.Ceiling((double)productsCount / pageSize);
         var productsPageDto = new ProductsPageDto
         {
             Products = productDtos.ToList(),
-            TotalProductsCount = totalProductsCount,
+            ProductsCount = productsCount,
             PagesCount = pagesCount
         };
         return Ok(productsPageDto);
