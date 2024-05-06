@@ -48,15 +48,10 @@ public class ProductController(TskContext context) : ControllerBase
             return ValidationProblem();
         }
 
-        var filteredProductsQuery = context.Products.AsQueryable();
-        if (minPrice is not null)
-        {
-            filteredProductsQuery = filteredProductsQuery.Where(product => product.Price >= minPrice);
-        }
-        if (maxPrice is not null)
-        {
-            filteredProductsQuery = filteredProductsQuery.Where(product => product.Price <= maxPrice);
-        }
+        var filteredProductsQuery = context
+            .Products
+            .Where(product => minPrice == null || product.Price >= minPrice)
+            .Where(product => maxPrice == null || product.Price <= maxPrice);
         var productsCount = await filteredProductsQuery.CountAsync();
 
         var orderedProductsQuery = orderBy switch
