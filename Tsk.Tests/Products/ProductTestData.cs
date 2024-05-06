@@ -6,44 +6,39 @@ namespace Tsk.Tests.Products;
 public static class ProductTestData
 {
     private static readonly Faker faker = new();
-    private static readonly PriceRange defaultPriceRange = new()
+
+    public static ProductEntity GenerateProduct(Action<ProductEntity>? configureProduct = null)
     {
-        Min = 0.01,
-        Max = 100.00
-    };
-
-    public static ProductEntity GenerateProduct() =>
-        GenerateProduct(defaultPriceRange);
-
-    private static ProductEntity GenerateProduct(PriceRange priceRange) =>
-        new ProductEntity
+        var product = new ProductEntity
         {
             Id = GenerateProductId(),
             Title = GenerateProductTitle(),
-            Price = GenerateProductPrice(priceRange)
+            Price = GenerateProductPrice()
         };
 
-    public static IReadOnlyCollection<ProductEntity> GenerateProducts(int count) =>
-        GenerateProducts(count, defaultPriceRange);
+        configureProduct?.Invoke(product);
 
-    public static IReadOnlyCollection<ProductEntity> GenerateProducts(int count, PriceRange priceRange) =>
+        return product;
+    }
+
+    public static List<ProductEntity> GenerateProducts(int count, Action<ProductEntity>? configureProduct = null) =>
         Enumerable
             .Range(0, count)
-            .Select(_ => GenerateProduct(priceRange))
+            .Select(_ => GenerateProduct(configureProduct))
             .ToList();
 
     public static CreateProductDto GenerateCreateProductDto() =>
         new CreateProductDto
         {
             Title = GenerateProductTitle(),
-            Price = GenerateProductPrice(defaultPriceRange)
+            Price = GenerateProductPrice()
         };
 
     public static UpdateProductDto GenerateUpdateProductDto() =>
         new UpdateProductDto
         {
             Title = GenerateProductTitle(),
-            Price = GenerateProductPrice(defaultPriceRange)
+            Price = GenerateProductPrice()
         };
 
     private static Guid GenerateProductId() =>
@@ -52,17 +47,6 @@ public static class ProductTestData
     private static string GenerateProductTitle() =>
         faker.Commerce.ProductName();
 
-    private static double GenerateProductPrice(PriceRange priceRange)
-    {
-        var minPriceInCents = (int)(priceRange.Min * 100);
-        var maxPriceInCents = (int)(priceRange.Max * 100);
-        var priceInCents = Random.Shared.Next(minPriceInCents, maxPriceInCents);
-        return priceInCents / 100d;
-    }
-}
-
-public class PriceRange
-{
-    public double Min { get; init; }
-    public double Max { get; init; }
+    private static double GenerateProductPrice() =>
+        Random.Shared.NextDouble(0.00, 10_000.00, 2);
 }

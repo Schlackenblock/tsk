@@ -9,9 +9,18 @@ public class GetProductsTestSuite : TestSuiteBase
     {
         var existingProducts = new
         {
-            ThatWillBeFilteredOutByMinPrice = ProductTestData.GenerateProducts(5, new() { Min = 0.01, Max = 9.99 }),
-            ThatWillPassFilter = ProductTestData.GenerateProducts(5, new() { Min = 10.00, Max = 100.00 }),
-            ThatWillBeFilteredOutByMaxPrice = ProductTestData.GenerateProducts(5, new() { Min = 100.01, Max = 1000.00 })
+            ThatWillBeFilteredOutByMinPrice = ProductTestData.GenerateProducts(
+                count: 5,
+                product => product.Price = Random.Shared.NextDouble(0.01, 9.99, 2)
+            ),
+            ThatWillPassFilter = ProductTestData.GenerateProducts(
+                count: 5,
+                product => product.Price = Random.Shared.NextDouble(10.00, 100.00, 2)
+            ),
+            ThatWillBeFilteredOutByMaxPrice = ProductTestData.GenerateProducts(
+                count: 5,
+                product => product.Price = Random.Shared.NextDouble(100.01, 1000.00, 2)
+            )
         };
         Context.Products.AddRange(existingProducts.ThatWillBeFilteredOutByMinPrice);
         Context.Products.AddRange(existingProducts.ThatWillPassFilter);
@@ -31,7 +40,10 @@ public class GetProductsTestSuite : TestSuiteBase
     [Fact]
     public async Task GetProducts_WhenFilteredOutByMinPriceFilter_ShouldReturnEmptyPage()
     {
-        var existingProducts = ProductTestData.GenerateProducts(5, new() { Min = 0.00, Max = 100.00 });
+        var existingProducts = ProductTestData.GenerateProducts(
+            count: 5,
+            product => product.Price = Random.Shared.NextDouble(0.00, 100.00, 2)
+        );
         Context.Products.AddRange(existingProducts);
         await Context.SaveChangesAsync();
 
@@ -48,7 +60,10 @@ public class GetProductsTestSuite : TestSuiteBase
     [Fact]
     public async Task GetProducts_WhenFilteredOutByMaxPriceFilter_ShouldReturnEmptyPage()
     {
-        var existingProducts = ProductTestData.GenerateProducts(5, new() { Min = 10.00, Max = 100.00 });
+        var existingProducts = ProductTestData.GenerateProducts(
+            count: 5,
+            product => product.Price = Random.Shared.NextDouble(10.00, 100.00, 2)
+        );
         Context.Products.AddRange(existingProducts);
         await Context.SaveChangesAsync();
 
