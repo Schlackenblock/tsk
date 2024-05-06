@@ -40,7 +40,8 @@ public class ProductController(TskContext context) : ControllerBase
         [FromQuery][Required][Range(1, 100)] int pageSize,
         [FromQuery][Required][GreaterThan(0, IsExclusive = false)] int pageNumber,
         [FromQuery][GreaterThan(0)] double? minPrice,
-        [FromQuery][GreaterThan(0)] double? maxPrice)
+        [FromQuery][GreaterThan(0)] double? maxPrice,
+        [FromQuery] string? prompt)
     {
         if (minPrice > maxPrice)
         {
@@ -51,7 +52,8 @@ public class ProductController(TskContext context) : ControllerBase
         var filteredProductsQuery = context
             .Products
             .Where(product => minPrice == null || product.Price >= minPrice)
-            .Where(product => maxPrice == null || product.Price <= maxPrice);
+            .Where(product => maxPrice == null || product.Price <= maxPrice)
+            .Where(product => prompt == null || EF.Functions.ILike(product.Title, $"%{prompt}%"));
         var productsCount = await filteredProductsQuery.CountAsync();
 
         var orderedProductsQuery = orderBy switch

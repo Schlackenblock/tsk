@@ -5,6 +5,62 @@ namespace Tsk.Tests.Products;
 public class GetProductsTestSuite : TestSuiteBase
 {
     [Fact]
+    public async Task GetProducts_WhenSearchPromptProvided_ShouldReturnMatchingProducts()
+    {
+        var existingProducts = new
+        {
+            Bricks = new[]
+            {
+                ProductTestData.GenerateProduct(product => product.Title = "Burnt Clay Brick"),
+                ProductTestData.GenerateProduct(product => product.Title = "Sand Lime Brick"),
+                ProductTestData.GenerateProduct(product => product.Title = "Concrete Brick"),
+                ProductTestData.GenerateProduct(product => product.Title = "Fly Ash Brick"),
+                ProductTestData.GenerateProduct(product => product.Title = "Engineering Brick")
+            },
+            Fasteners = new[]
+            {
+                ProductTestData.GenerateProduct(product => product.Title = "Bolt"),
+                ProductTestData.GenerateProduct(product => product.Title = "Anchor"),
+                ProductTestData.GenerateProduct(product => product.Title = "Nail")
+            }
+        };
+        Context.Products.AddRange(existingProducts.Bricks);
+        Context.Products.AddRange(existingProducts.Fasteners);
+        await Context.SaveChangesAsync();
+
+        var requestUrl = "/products?orderBy=priceAscending&pageSize=5&pageNumber=0&prompt=brick";
+        var response = await HttpClient.GetAsync(requestUrl);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.Products.Should().BeEquivalentTo(existingProducts.Bricks);
+        productsPageDto.ProductsCount.Should().Be(existingProducts.Bricks.Length);
+        productsPageDto.PagesCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task GetProducts_WhenSearchPromptProvidedAndNoMatchingProductExists_ShouldReturnEmptyPage()
+    {
+        var existingProducts = new[]
+        {
+            ProductTestData.GenerateProduct(product => product.Title = "Bolt"),
+            ProductTestData.GenerateProduct(product => product.Title = "Anchor"),
+            ProductTestData.GenerateProduct(product => product.Title = "Nail")
+        };
+        Context.Products.AddRange(existingProducts);
+        await Context.SaveChangesAsync();
+
+        var requestUrl = "/products?orderBy=priceAscending&pageSize=5&pageNumber=0&prompt=brick";
+        var response = await HttpClient.GetAsync(requestUrl);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.Products.Should().BeEmpty();
+        productsPageDto.ProductsCount.Should().Be(0);
+        productsPageDto.PagesCount.Should().Be(0);
+    }
+
+    [Fact]
     public async Task GetProducts_WhenPriceFiltersApplied_ShouldReturnFiltered()
     {
         var existingProducts = new
