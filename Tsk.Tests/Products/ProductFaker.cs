@@ -41,10 +41,10 @@ public static class ProductFaker
     public static Guid MakeProductId() =>
         Guid.NewGuid();
 
-    public static string MakeProductName() =>
+    private static string MakeProductName() =>
         faker.Commerce.ProductName();
 
-    public static double MakeProductPrice(double min = defaultMinPrice, double max = defaultMaxPrice)
+    private static double MakeProductPrice(double min = defaultMinPrice, double max = defaultMaxPrice)
     {
         var randomDouble = faker.Random.Double(min, max);
         return Math.Round(randomDouble, 2);
