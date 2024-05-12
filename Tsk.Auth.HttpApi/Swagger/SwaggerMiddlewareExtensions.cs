@@ -1,3 +1,5 @@
+using Swashbuckle.AspNetCore.SwaggerUI;
+
 namespace Tsk.Auth.HttpApi.Swagger;
 
 public static class SwaggerMiddlewareExtensions
@@ -7,7 +9,12 @@ public static class SwaggerMiddlewareExtensions
         if (webApplication.Environment.IsEnvironment(environmentName))
         {
             webApplication.UseSwagger();
-            webApplication.UseSwaggerUI();
+            webApplication.UseSwaggerUI(options => options.CollapseSchemasSection());
         }
+    }
+
+    private static void CollapseSchemasSection(this SwaggerUIOptions swaggerUiOptions)
+    {
+        swaggerUiOptions.DefaultModelsExpandDepth(0);
     }
 }
