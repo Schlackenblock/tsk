@@ -1,9 +1,9 @@
 version: '3.8'
 name: tsk_dependencies
 services:
-  postgres:
+  store-postgres:
     image: postgres
-    container_name: tsk_dependencies_postgres
+    container_name: tsk_dependencies_store_postgres
     restart: always
     ports:
       - 5072:5432
@@ -11,10 +11,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - postgres_volume:/var/lib/postgresql/data
-  pgadmin:
+      - store_postgres_volume:/var/lib/postgresql/data
+  store_pgadmin:
     image: dpage/pgadmin4
-    container_name: tsk_dependencies_pgadmin
+    container_name: tsk_dependencies_store_pgadmin
     restart: always
     ports:
       - 5073:80
@@ -24,8 +24,34 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     volumes:
-      - pgadmin_volume:/var/lib/pgadmin
+      - store_pgadmin_volume:/var/lib/pgadmin
+  auth-postgres:
+    image: postgres
+    container_name: tsk_dependencies_auth_postgres
+    restart: always
+    ports:
+      - 5082:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - auth_postgres_volume:/var/lib/postgresql/data
+  auth_pgadmin:
+    image: dpage/pgadmin4
+    container_name: tsk_dependencies_auth_pgadmin
+    restart: always
+    ports:
+      - 5083:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    volumes:
+      - auth_pgadmin_volume:/var/lib/pgadmin
 
 volumes:
-  postgres_volume:
-  pgadmin_volume:
+  store_postgres_volume:
+  store_pgadmin_volume:
+  auth_postgres_volume:
+  auth_pgadmin_volume:

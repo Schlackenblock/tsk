@@ -19,7 +19,8 @@ Run all dependencies:
 docker-compose --file ./dependencies.yml up --detach
 ```
 
-Migrate the database:
+Migrate both databases:
 ```bash
+dotnet ef database update --project ./Tsk.Auth.HttpApi
 dotnet ef database update --project ./Tsk.Store.HttpApi
 ```

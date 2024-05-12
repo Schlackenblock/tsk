@@ -10,7 +10,14 @@ builder.Services
     .AddControllers()
     .ConfigureControllerDiscoverer();
 
-builder.Services.AddDbContext<TskAuthContext>(options => options.UseInMemoryDatabase("Tsk.Auth"));
+builder.Services.AddDbContext<TskAuthContext>(
+    options =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+        options.UseNpgsql(connectionString);
+        options.UseSnakeCaseNamingConvention();
+    }
+);
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.Context;
 using Tsk.Auth.HttpApi.Entities;
 
@@ -23,6 +24,16 @@ public static class RegisterNewUserFeature
         [HttpPost("/register")]
         public async Task<IActionResult> RegisterNewUser([FromBody] RegisterNewUserDto registerNewUserDto)
         {
+            var isEmailAlreadyRegistered = await dbContext
+                .Users
+                .Where(user => user.Email == registerNewUserDto.Email)
+                .AnyAsync();
+            if (isEmailAlreadyRegistered)
+            {
+                ModelState.AddModelError(nameof(registerNewUserDto.Email), "Provided email already registered.");
+                return ValidationProblem();
+            }
+
             var newUser = new User
             {
                 Id = Guid.NewGuid(),
