@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Tsk.HttpApi.Migrations
+namespace Tsk.Store.HttpApi.Migrations
 {
     /// <inheritdoc />
     public partial class RemoveProductDescription : Migration

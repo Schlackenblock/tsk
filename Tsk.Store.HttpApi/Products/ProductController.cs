@@ -2,7 +2,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tsk.HttpApi.Products;
+namespace Tsk.Store.HttpApi.Products;
 
 [ApiController]
 [Route("/products")]

@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tsk.HttpApi\Tsk.HttpApi.csproj" />
+    <ProjectReference Include="..\Tsk.Store.HttpApi\Tsk.Store.HttpApi.csproj" />
   </ItemGroup>
 
 </Project>

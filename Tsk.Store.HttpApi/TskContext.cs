@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Tsk.HttpApi.Products;
+using Tsk.Store.HttpApi.Products;
 
-namespace Tsk.HttpApi;
+namespace Tsk.Store.HttpApi;
 
 public class TskContext(DbContextOptions<TskContext> options) : DbContext(options)
 {

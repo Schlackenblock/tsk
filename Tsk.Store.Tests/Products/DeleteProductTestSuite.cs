@@ -1,6 +1,6 @@
-using Tsk.HttpApi.Products;
+using Tsk.Store.HttpApi.Products;
 
-namespace Tsk.Tests.Products;
+namespace Tsk.Store.Tests.Products;
 
 public class DeleteProductTestSuite : TestSuiteBase
 {

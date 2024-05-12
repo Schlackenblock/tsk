@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Tsk.HttpApi.Validation;
+namespace Tsk.Store.HttpApi.Validation;
 
 public class GreaterThanAttribute : RangeAttribute
 {

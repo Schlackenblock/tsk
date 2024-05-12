@@ -1,6 +1,6 @@
-using Tsk.HttpApi;
+using Tsk.Store.HttpApi;
 
-namespace Tsk.Tests;
+namespace Tsk.Store.Tests;
 
 public abstract class TestSuiteBase : IAsyncLifetime
 {

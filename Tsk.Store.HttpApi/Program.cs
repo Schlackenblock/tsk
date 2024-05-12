@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
-using Tsk.HttpApi;
+using Tsk.Store.HttpApi;
 
 var builder = WebApplication.CreateBuilder(args);
 

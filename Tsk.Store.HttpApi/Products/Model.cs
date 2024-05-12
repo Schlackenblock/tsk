@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Tsk.HttpApi.Products;
+namespace Tsk.Store.HttpApi.Products;
 
 [Table("products")]
 public class ProductEntity

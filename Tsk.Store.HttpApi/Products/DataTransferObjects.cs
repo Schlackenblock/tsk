@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
-using Tsk.HttpApi.Validation;
+using Tsk.Store.HttpApi.Validation;
 
-namespace Tsk.HttpApi.Products;
+namespace Tsk.Store.HttpApi.Products;
 
 [PublicAPI]
 public class ProductDto

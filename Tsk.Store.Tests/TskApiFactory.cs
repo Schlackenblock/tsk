@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
-using Tsk.HttpApi;
+using Tsk.Store.HttpApi;
 
-namespace Tsk.Tests;
+namespace Tsk.Store.Tests;
 
 public class TskApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {

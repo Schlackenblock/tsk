@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.HttpApi", "Tsk.HttpApi\Tsk.HttpApi.csproj", "{6D453D46-A3B4-4251-8438-259DAFF12F47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.Store.HttpApi", "Tsk.Store.HttpApi\Tsk.Store.HttpApi.csproj", "{6D453D46-A3B4-4251-8438-259DAFF12F47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.Tests", "Tsk.Tests\Tsk.Tests.csproj", "{46677E80-4BA1-4760-A8AB-8BC316C8ED44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.Store.Tests", "Tsk.Store.Tests\Tsk.Store.Tests.csproj", "{46677E80-4BA1-4760-A8AB-8BC316C8ED44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

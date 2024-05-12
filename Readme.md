@@ -21,5 +21,5 @@ docker-compose --file ./dependencies.yml up --detach
 
 Migrate the database:
 ```bash
-dotnet ef database update --project ./Tsk.HttpApi
+dotnet ef database update --project ./Tsk.Store.HttpApi
 ```
