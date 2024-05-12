@@ -1,33 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.AspInfrastructure;
 using Tsk.Auth.HttpApi.Context;
+using Tsk.Auth.HttpApi.Swagger;
 
-var builder = WebApplication.CreateBuilder(args);
+var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSwaggerGen();
-
-builder.Services
+webApplicationBuilder
+    .Services
+    .AddDbContext<TskAuthContext>(
+        options =>
+        {
+            var connectionString = webApplicationBuilder.Configuration.GetConnectionString("PostgreSQL");
+            options.UseNpgsql(connectionString);
+            options.UseSnakeCaseNamingConvention();
+        }
+    )
+    .AddSwaggerGen(options => options.UseUniqueSchemaIds())
     .AddControllers()
     .ConfigureControllerDiscoverer();
 
-builder.Services.AddDbContext<TskAuthContext>(
-    options =>
-    {
-        var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-        options.UseNpgsql(connectionString);
-        options.UseSnakeCaseNamingConvention();
-    }
-);
+var webApplication = webApplicationBuilder.Build();
 
-var app = builder.Build();
+webApplication.UseSwagger(Environments.Development);
+webApplication.UseRouting();
+webApplication.MapControllers();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseRouting();
-app.MapControllers();
-
-app.Run();
+webApplication.Run();
