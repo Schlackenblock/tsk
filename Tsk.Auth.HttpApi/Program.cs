@@ -16,9 +16,14 @@ webApplicationBuilder.Services.AddDbContext<TskAuthContext>(
     }
 );
 
+webApplicationBuilder.Services
+    .AddOptions<JwtAuthOptions>()
+    .BindConfiguration(nameof(JwtAuthOptions))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
 webApplicationBuilder
     .Services
-    .Configure<JwtAuthOptions>(webApplicationBuilder.Configuration.GetSection(nameof(JwtAuthOptions)))
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
 
