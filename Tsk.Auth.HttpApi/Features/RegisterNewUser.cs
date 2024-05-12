@@ -22,6 +22,8 @@ public static class RegisterNewUserFeature
     public sealed class Controller(TskAuthContext dbContext) : ApiControllerBase
     {
         [HttpPost("/register")]
+        [ProducesResponseType<RegisteredUserDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterNewUser([FromBody] RegisterNewUserDto registerNewUserDto)
         {
             var isEmailAlreadyRegistered = await dbContext

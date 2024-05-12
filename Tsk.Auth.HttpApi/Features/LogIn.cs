@@ -21,7 +21,10 @@ public static class LogInFeature
     public sealed class Controller(TskAuthContext dbContext) : ApiControllerBase
     {
         [HttpPost("/log-in")]
-        public async Task<IActionResult> RegisterNewUser([FromBody] LogInDto logInDto)
+        [ProducesResponseType<CurrentUserDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> LogIn([FromBody] LogInDto logInDto)
         {
             var user = await dbContext
                 .Users
