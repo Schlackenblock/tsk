@@ -5,11 +5,11 @@ namespace Tsk.Auth.HttpApi.Entities;
 
 public sealed class User
 {
-    public Guid Id { get; init; }
+    public required Guid Id { get; init; }
 
-    public string Email { get; init; }
+    public required string Email { get; init; }
 
-    public string Password { get; init; }
+    public required string Password { get; init; }
 }
 
 public sealed class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
