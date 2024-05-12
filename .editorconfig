@@ -9,3 +9,4 @@ trim_trailing_whitespace = true
 
 [*.cs]
 indent_size = 4
+resharper_entity_framework_model_validation_unlimited_string_length_highlighting = none
