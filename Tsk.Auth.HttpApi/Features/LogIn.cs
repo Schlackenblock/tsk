@@ -1,5 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Tsk.Auth.HttpApi.Context;
 
 namespace Tsk.Auth.HttpApi.Features;
@@ -16,6 +19,7 @@ public static class LogInFeature
     {
         public required Guid Id { get; init; }
         public required string Email { get; set; }
+        public required string AccessToken { get; set; }
     }
 
     public sealed class Controller(TskAuthContext dbContext) : ApiControllerBase
@@ -42,12 +46,43 @@ public static class LogInFeature
                 return ValidationProblem();
             }
 
+            var accessToken = IssueAccessToken(user.Id);
+
             var currentUserDto = new CurrentUserDto
             {
                 Id = user.Id,
-                Email = user.Email
+                Email = user.Email,
+                AccessToken = accessToken
             };
             return Ok(currentUserDto);
+        }
+
+        private static string IssueAccessToken(Guid bearerId)
+        {
+            var claims = new Dictionary<string, object>
+            {
+                { JwtRegisteredClaimNames.Sub, bearerId.ToString() }
+            };
+
+            var accessTokenLifetime = TimeSpan.FromMinutes(15);
+            var expirationDateTime = DateTime.UtcNow.Add(accessTokenLifetime);
+
+            var rawSigningKey = "some_secure_and_long_enough_signing_key";
+            var signingCredentials = new SigningCredentials(
+                key: new SymmetricSecurityKey(Encoding.UTF8.GetBytes(rawSigningKey)),
+                algorithm: SecurityAlgorithms.HmacSha256Signature
+            );
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Claims = claims,
+                Expires = expirationDateTime,
+                SigningCredentials = signingCredentials
+            };
+
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = jwtSecurityTokenHandler.CreateToken(tokenDescriptor);
+            return jwtSecurityTokenHandler.WriteToken(securityToken);
         }
     }
 }
