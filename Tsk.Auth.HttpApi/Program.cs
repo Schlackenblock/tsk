@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.AspInfrastructure;
 using Tsk.Auth.HttpApi.Context;
+using Tsk.Auth.HttpApi.JwtAuth;
 using Tsk.Auth.HttpApi.Swagger;
 
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ webApplicationBuilder.Services.AddDbContext<TskAuthContext>(
 
 webApplicationBuilder
     .Services
+    .Configure<JwtAuthOptions>(webApplicationBuilder.Configuration.GetSection(nameof(JwtAuthOptions)))
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
 

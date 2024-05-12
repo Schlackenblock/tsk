@@ -2,8 +2,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Tsk.Auth.HttpApi.Context;
+using Tsk.Auth.HttpApi.JwtAuth;
 
 namespace Tsk.Auth.HttpApi.Features;
 
@@ -22,7 +24,7 @@ public static class LogInFeature
         public required string AccessToken { get; set; }
     }
 
-    public sealed class Controller(TskAuthContext dbContext) : ApiControllerBase
+    public sealed class Controller(TskAuthContext dbContext, IOptionsSnapshot<JwtAuthOptions> jwtAuthOptions) : ApiControllerBase
     {
         [HttpPost("/log-in")]
         [ProducesResponseType<CurrentUserDto>(StatusCodes.Status200OK)]
@@ -57,19 +59,18 @@ public static class LogInFeature
             return Ok(currentUserDto);
         }
 
-        private static string IssueAccessToken(Guid bearerId)
+        private string IssueAccessToken(Guid bearerId)
         {
             var claims = new Dictionary<string, object>
             {
                 { JwtRegisteredClaimNames.Sub, bearerId.ToString() }
             };
 
-            var accessTokenLifetime = TimeSpan.FromMinutes(15);
+            var accessTokenLifetime = TimeSpan.FromMinutes(jwtAuthOptions.Value.AccessTokenLifetimeInMinutes);
             var expirationDateTime = DateTime.UtcNow.Add(accessTokenLifetime);
 
-            var rawSigningKey = "some_secure_and_long_enough_signing_key";
             var signingCredentials = new SigningCredentials(
-                key: new SymmetricSecurityKey(Encoding.UTF8.GetBytes(rawSigningKey)),
+                key: new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Value.SigningKey)),
                 algorithm: SecurityAlgorithms.HmacSha256Signature
             );
 
