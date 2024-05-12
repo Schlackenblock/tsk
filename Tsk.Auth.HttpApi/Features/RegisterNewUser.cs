@@ -27,7 +27,7 @@ public static class RegisterNewUserFeature
             {
                 Id = Guid.NewGuid(),
                 Email = registerNewUserDto.Email,
-                Password = registerNewUserDto.Password
+                Password = BCrypt.Net.BCrypt.EnhancedHashPassword(registerNewUserDto.Password)
             };
 
             dbContext.Users.Add(newUser);

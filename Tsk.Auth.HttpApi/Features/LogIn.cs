@@ -26,7 +26,7 @@ public static class LogInFeature
                 return NotFound();
             }
 
-            var correctPassword = logInDto.Password == user.Password;
+            var correctPassword = BCrypt.Net.BCrypt.EnhancedVerify(logInDto.Password, user.Password);
             if (!correctPassword)
             {
                 ModelState.AddModelError(nameof(logInDto.Password), "Incorrect password provided.");
