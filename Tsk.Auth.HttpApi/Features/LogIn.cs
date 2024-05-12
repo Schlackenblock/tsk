@@ -12,6 +12,12 @@ public static class LogInFeature
         public required string Password { get; init; }
     }
 
+    public sealed class CurrentUserDto
+    {
+        public required Guid Id { get; init; }
+        public required string Email { get; set; }
+    }
+
     public sealed class Controller(TskAuthContext dbContext) : ApiControllerBase
     {
         [HttpPost("/log-in")]
@@ -33,7 +39,12 @@ public static class LogInFeature
                 return ValidationProblem();
             }
 
-            return Ok();
+            var currentUserDto = new CurrentUserDto
+            {
+                Id = user.Id,
+                Email = user.Email
+            };
+            return Ok(currentUserDto);
         }
     }
 }
