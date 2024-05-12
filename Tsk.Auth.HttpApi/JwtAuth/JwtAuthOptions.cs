@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
 
 namespace Tsk.Auth.HttpApi.JwtAuth;
 
@@ -6,9 +7,11 @@ public sealed class JwtAuthOptions
 {
     [Required]
     [MinLength(32)]
-    public required string SigningKey { get; set; }
+    [UsedImplicitly]
+    public required string SigningKey { get; init; }
 
     [Required]
     [Range(1, 15)]
-    public int AccessTokenLifetimeInMinutes { get; set; }
+    [UsedImplicitly]
+    public int AccessTokenLifetimeInMinutes { get; init; }
 }
