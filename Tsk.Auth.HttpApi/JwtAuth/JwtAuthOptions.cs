@@ -10,6 +10,10 @@ public sealed class JwtAuthOptions
     public required string SigningKeyPath { get; init; }
 
     [Required]
+    [UsedImplicitly]
+    public required string VerificationKeyPath { get; init; }
+
+    [Required]
     [Range(1, 15)]
     [UsedImplicitly]
     public int AccessTokenLifetimeInMinutes { get; init; }
