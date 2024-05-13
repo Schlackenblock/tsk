@@ -1,9 +1,5 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Tsk.Auth.HttpApi.Context;
 using Tsk.Auth.HttpApi.JwtAuth;
 
@@ -24,8 +20,17 @@ public static class LogInFeature
         public required string AccessToken { get; set; }
     }
 
-    public sealed class Controller(TskAuthContext dbContext, IOptionsSnapshot<JwtAuthOptions> jwtAuthOptions) : ApiControllerBase
+    public sealed class Controller : ApiControllerBase
     {
+        private readonly TskAuthContext dbContext;
+        private readonly JwtTokenIssuer jwtTokenIssuer;
+
+        public Controller(TskAuthContext dbContext, JwtTokenIssuer jwtTokenIssuer)
+        {
+            this.dbContext = dbContext;
+            this.jwtTokenIssuer = jwtTokenIssuer;
+        }
+
         [HttpPost("/log-in")]
         [ProducesResponseType<CurrentUserDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -48,7 +53,7 @@ public static class LogInFeature
                 return ValidationProblem();
             }
 
-            var accessToken = IssueAccessToken(user.Id);
+            var accessToken = jwtTokenIssuer.IssueAccessToken(user.Id);
 
             var currentUserDto = new CurrentUserDto
             {
@@ -57,33 +62,6 @@ public static class LogInFeature
                 AccessToken = accessToken
             };
             return Ok(currentUserDto);
-        }
-
-        private string IssueAccessToken(Guid bearerId)
-        {
-            var claims = new Dictionary<string, object>
-            {
-                { JwtRegisteredClaimNames.Sub, bearerId.ToString() }
-            };
-
-            var accessTokenLifetime = TimeSpan.FromMinutes(jwtAuthOptions.Value.AccessTokenLifetimeInMinutes);
-            var expirationDateTime = DateTime.UtcNow.Add(accessTokenLifetime);
-
-            var signingCredentials = new SigningCredentials(
-                key: new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Value.SigningKey)),
-                algorithm: SecurityAlgorithms.HmacSha256Signature
-            );
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Claims = claims,
-                Expires = expirationDateTime,
-                SigningCredentials = signingCredentials
-            };
-
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = jwtSecurityTokenHandler.CreateToken(tokenDescriptor);
-            return jwtSecurityTokenHandler.WriteToken(securityToken);
         }
     }
 }
