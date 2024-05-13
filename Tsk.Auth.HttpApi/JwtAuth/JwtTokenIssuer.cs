@@ -1,5 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
+using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -12,7 +12,7 @@ public sealed class JwtTokenIssuer
     public JwtTokenIssuer(IOptionsSnapshot<JwtAuthOptions> jwtAuthOptionsSnapshot) =>
         this.jwtAuthOptionsSnapshot = jwtAuthOptionsSnapshot;
 
-    public string IssueAccessToken(Guid bearerId)
+    public async Task<string> IssueAccessTokenAsync(Guid bearerId)
     {
         var claims = new Dictionary<string, object>
         {
@@ -23,11 +23,7 @@ public sealed class JwtTokenIssuer
         var accessTokenLifetime = TimeSpan.FromMinutes(jwtAuthOptionsSnapshot.Value.AccessTokenLifetimeInMinutes);
         var expirationDateTime = DateTime.UtcNow.Add(accessTokenLifetime);
 
-        var signingCredentials = new SigningCredentials(
-            key: new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptionsSnapshot.Value.SigningKey)),
-            // TODO: use asymmetric keys.
-            algorithm: SecurityAlgorithms.HmacSha256Signature
-        );
+        var signingCredentials = await GetSigningCredentialsAsync();
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -39,5 +35,17 @@ public sealed class JwtTokenIssuer
         var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         var securityToken = jwtSecurityTokenHandler.CreateToken(tokenDescriptor);
         return jwtSecurityTokenHandler.WriteToken(securityToken);
+    }
+
+    private async Task<SigningCredentials> GetSigningCredentialsAsync()
+    {
+        var jwtSigningKeyPath = jwtAuthOptionsSnapshot.Value.SigningKeyPath;
+        var jwtSigningKeyXml = await File.ReadAllTextAsync(jwtSigningKeyPath);
+
+        var jwtSigningKey = RSA.Create();
+        jwtSigningKey.FromXmlString(jwtSigningKeyXml);
+
+        var rsaSecurityKey = new RsaSecurityKey(jwtSigningKey);
+        return new SigningCredentials(rsaSecurityKey, SecurityAlgorithms.RsaSha256);
     }
 }

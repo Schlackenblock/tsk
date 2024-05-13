@@ -6,9 +6,8 @@ namespace Tsk.Auth.HttpApi.JwtAuth;
 public sealed class JwtAuthOptions
 {
     [Required]
-    [MinLength(32)]
     [UsedImplicitly]
-    public required string SigningKey { get; init; }
+    public required string SigningKeyPath { get; init; }
 
     [Required]
     [Range(1, 15)]

@@ -53,7 +53,7 @@ public static class LogInFeature
                 return ValidationProblem();
             }
 
-            var accessToken = jwtTokenIssuer.IssueAccessToken(user.Id);
+            var accessToken = await jwtTokenIssuer.IssueAccessTokenAsync(user.Id);
 
             var currentUserDto = new CurrentUserDto
             {
