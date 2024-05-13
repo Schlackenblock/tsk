@@ -7,10 +7,10 @@ namespace Tsk.Auth.HttpApi.JwtAuth;
 
 public class JwtBearerOptionsConfigurer : IPostConfigureOptions<JwtBearerOptions>
 {
-    private readonly IOptions<JwtAuthOptions> jwtAuthOptions;
+    private readonly IOptionsMonitor<JwtAuthOptions> jwtAuthOptionsMonitor;
 
-    public JwtBearerOptionsConfigurer(IOptions<JwtAuthOptions> jwtAuthOptions) =>
-        this.jwtAuthOptions = jwtAuthOptions;
+    public JwtBearerOptionsConfigurer(IOptionsMonitor<JwtAuthOptions> jwtAuthOptionsMonitor) =>
+        this.jwtAuthOptionsMonitor = jwtAuthOptionsMonitor;
 
     public void PostConfigure(string? name, JwtBearerOptions options)
     {
@@ -20,21 +20,26 @@ public class JwtBearerOptionsConfigurer : IPostConfigureOptions<JwtBearerOptions
             ValidateAudience = false,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = GetVerificationKey(),
+            IssuerSigningKeyResolver = ResolveVerificationKey,
             ValidateIssuerSigningKey = true
         };
 
         options.MapInboundClaims = false;
     }
 
-    private RsaSecurityKey GetVerificationKey()
+    private IEnumerable<SecurityKey> ResolveVerificationKey(
+        string _,
+        SecurityToken __,
+        string ___,
+        TokenValidationParameters ____)
     {
-        var jwtVerificationKeyPath = jwtAuthOptions.Value.VerificationKeyPath;
+        var jwtVerificationKeyPath = jwtAuthOptionsMonitor.CurrentValue.VerificationKeyPath;
         var jwtVerificationKeyXml = File.ReadAllText(jwtVerificationKeyPath);
 
         var jwtVerificationKey = RSA.Create();
         jwtVerificationKey.FromXmlString(jwtVerificationKeyXml);
 
-        return new RsaSecurityKey(jwtVerificationKey);
+        var verificationKey = new RsaSecurityKey(jwtVerificationKey);
+        return [verificationKey];
     }
 }
