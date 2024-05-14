@@ -8,6 +8,8 @@ public sealed class TskAuthContext(DbContextOptions<TskAuthContext> dbContextOpt
 {
     public DbSet<User> Users => Set<User>();
 
+    public DbSet<Session> Sessions => Set<Session>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var currentAssembly = Assembly.GetExecutingAssembly();

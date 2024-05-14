@@ -17,4 +17,9 @@ public sealed class JwtAuthOptions
     [Range(1, 15)]
     [UsedImplicitly]
     public int AccessTokenLifetimeInMinutes { get; init; }
+
+    [Required]
+    [Range(1, 90 * 24 * 60 /* up to 90 days */ )]
+    [UsedImplicitly]
+    public int RefreshTokenLifetimeInMinutes { get; init; }
 }

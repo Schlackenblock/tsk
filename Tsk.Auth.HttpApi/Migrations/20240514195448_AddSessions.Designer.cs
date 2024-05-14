@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tsk.Auth.HttpApi.Context;
@@ -11,9 +12,11 @@ using Tsk.Auth.HttpApi.Context;
 namespace Tsk.Auth.HttpApi.Migrations
 {
     [DbContext(typeof(TskAuthContext))]
-    partial class TskAuthContextModelSnapshot : ModelSnapshot
+    [Migration("20240514195448_AddSessions")]
+    partial class AddSessions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

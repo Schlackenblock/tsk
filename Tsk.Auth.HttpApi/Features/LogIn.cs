@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.Context;
+using Tsk.Auth.HttpApi.Entities;
 using Tsk.Auth.HttpApi.JwtAuth;
 
 namespace Tsk.Auth.HttpApi.Features;
@@ -18,6 +19,7 @@ public static class LogInFeature
         public required Guid Id { get; init; }
         public required string Email { get; set; }
         public required string AccessToken { get; set; }
+        public required string RefreshToken { get; set; }
     }
 
     public sealed class Controller : ApiControllerBase
@@ -37,8 +39,7 @@ public static class LogInFeature
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> LogIn([FromBody] LogInDto logInDto)
         {
-            var user = await dbContext
-                .Users
+            var user = await dbContext.Users
                 .Where(user => user.Email == logInDto.Email)
                 .SingleOrDefaultAsync();
             if (user is null)
@@ -53,13 +54,24 @@ public static class LogInFeature
                 return ValidationProblem();
             }
 
+            var newSession = new Session
+            {
+                Id = Guid.NewGuid(),
+                RefreshTokenId = Guid.NewGuid(),
+                UserId = user.Id
+            };
+            dbContext.Sessions.Add(newSession);
+            await dbContext.SaveChangesAsync();
+
             var accessToken = await jwtTokenIssuer.IssueAccessTokenAsync(user.Id);
+            var refreshToken = await jwtTokenIssuer.IssueRefreshTokenAsync(newSession.RefreshTokenId);
 
             var currentUserDto = new CurrentUserDto
             {
                 Id = user.Id,
                 Email = user.Email,
-                AccessToken = accessToken
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
             };
             return Ok(currentUserDto);
         }

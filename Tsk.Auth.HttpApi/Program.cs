@@ -21,7 +21,9 @@ webApplicationBuilder.Services
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-webApplicationBuilder.Services.AddScoped<JwtTokenIssuer>();
+webApplicationBuilder.Services
+    .AddScoped<JwtTokenIssuer>()
+    .AddScoped<JwtRefreshTokenValidator>();
 
 webApplicationBuilder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

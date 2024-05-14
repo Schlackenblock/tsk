@@ -9,27 +9,42 @@ public sealed class JwtTokenIssuer
 {
     private readonly IOptionsSnapshot<JwtAuthOptions> jwtAuthOptionsSnapshot;
 
-    public JwtTokenIssuer(IOptionsSnapshot<JwtAuthOptions> jwtAuthOptionsSnapshot) =>
+    public JwtTokenIssuer(IOptionsSnapshot<JwtAuthOptions> jwtAuthOptionsSnapshot)
+    {
         this.jwtAuthOptionsSnapshot = jwtAuthOptionsSnapshot;
+    }
 
     public async Task<string> IssueAccessTokenAsync(Guid bearerId)
     {
-        var claims = new Dictionary<string, object>
-        {
-            // JwtBearer doesn't work properly with Guid, but we can manually convert it to string.
-            { JwtRegisteredClaimNames.Sub, bearerId.ToString() }
-        };
+        return await IssueTokenAsync(
+            claims: new Dictionary<string, object>
+            {
+                // JwtBearer doesn't work properly with Guid, but we can manually convert it to string.
+                { JwtRegisteredClaimNames.Sub, bearerId.ToString() }
+            },
+            lifetime: TimeSpan.FromMinutes(jwtAuthOptionsSnapshot.Value.AccessTokenLifetimeInMinutes)
+        );
+    }
 
-        var accessTokenLifetime = TimeSpan.FromMinutes(jwtAuthOptionsSnapshot.Value.AccessTokenLifetimeInMinutes);
-        var expirationDateTime = DateTime.UtcNow.Add(accessTokenLifetime);
+    public async Task<string> IssueRefreshTokenAsync(Guid refreshTokenId)
+    {
+        return await IssueTokenAsync(
+            claims: new Dictionary<string, object>
+            {
+                // JwtBearer doesn't work properly with Guid, but we can manually convert it to string.
+                { JwtRegisteredClaimNames.Jti, refreshTokenId.ToString() }
+            },
+            lifetime: TimeSpan.FromMinutes(jwtAuthOptionsSnapshot.Value.RefreshTokenLifetimeInMinutes)
+        );
+    }
 
-        var signingCredentials = await GetSigningCredentialsAsync();
-
+    private async Task<string> IssueTokenAsync(IDictionary<string, object> claims, TimeSpan lifetime)
+    {
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Claims = claims,
-            Expires = expirationDateTime,
-            SigningCredentials = signingCredentials
+            Expires = DateTime.UtcNow.Add(lifetime),
+            SigningCredentials = await GetSigningCredentialsAsync()
         };
 
         var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
