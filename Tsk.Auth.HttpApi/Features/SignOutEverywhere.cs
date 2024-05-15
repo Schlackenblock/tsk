@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +10,12 @@ public static class SignOutEverywhereFeature
 {
     public sealed class Controller : ApiControllerBase
     {
+        private readonly CurrentUserAccessor currentUserAccessor;
         private readonly TskAuthContext dbContext;
 
-        public Controller(TskAuthContext dbContext)
+        public Controller(CurrentUserAccessor currentUserAccessor, TskAuthContext dbContext)
         {
+            this.currentUserAccessor = currentUserAccessor;
             this.dbContext = dbContext;
         }
 
@@ -24,11 +25,10 @@ public static class SignOutEverywhereFeature
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SignOutEverywhere()
         {
-            var userIdClaim = User.Claims.Single(claim => claim.Type == JwtRegisteredClaimNames.Sub);
-            var userId = Guid.Parse(userIdClaim.Value);
+            var currentUserId = currentUserAccessor.CurrentUser.Id;
 
             await dbContext.Sessions
-                .Where(session => session.UserId == userId)
+                .Where(session => session.UserId == currentUserId)
                 .ExecuteDeleteAsync();
 
             return Ok();

@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +16,12 @@ public static class WhoAmIFeature
 
     public sealed class Controller : ApiControllerBase
     {
+        private readonly CurrentUserAccessor currentUserAccessor;
         private readonly TskAuthContext dbContext;
 
-        public Controller(TskAuthContext dbContext)
+        public Controller(CurrentUserAccessor currentUserAccessor, TskAuthContext dbContext)
         {
+            this.currentUserAccessor = currentUserAccessor;
             this.dbContext = dbContext;
         }
 
@@ -30,12 +31,11 @@ public static class WhoAmIFeature
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> WhoAmI()
         {
-            var userIdClaim = User.Claims.Single(claim => claim.Type == JwtRegisteredClaimNames.Sub);
-            var userId = Guid.Parse(userIdClaim.Value);
+            var currentUserId = currentUserAccessor.CurrentUser.Id;
 
             var user = await dbContext.Users
                 .AsNoTracking()
-                .SingleOrDefaultAsync(user => user.Id == userId);
+                .SingleOrDefaultAsync(user => user.Id == currentUserId);
             if (user is null)
             {
                 return Unauthorized();

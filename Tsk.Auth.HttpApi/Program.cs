@@ -33,8 +33,9 @@ webApplicationBuilder.Services.AddSingleton<IPostConfigureOptions<JwtBearerOptio
 
 webApplicationBuilder.Services.AddAuthorization();
 
-webApplicationBuilder
-    .Services
+webApplicationBuilder.Services.AddCurrentUserAccessor();
+
+webApplicationBuilder.Services
     .AddControllers()
     .ConfigureControllerDiscoverer();
 
