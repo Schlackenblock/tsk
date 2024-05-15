@@ -12,12 +12,14 @@ public static class RefreshSessionFeature
 {
     public sealed class RefreshTokenDto
     {
+        [Required]
         public required string RefreshToken { get; init; }
     }
 
     public sealed class TokenPairDto
     {
         public required string AccessToken { get; init; }
+
         public required string RefreshToken { get; init; }
     }
 
@@ -40,22 +42,12 @@ public static class RefreshSessionFeature
         [HttpPost("/refresh-session")]
         [ProducesResponseType<TokenPairDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RefreshSession([FromBody] [Required] RefreshTokenDto refreshTokenDto)
+        public async Task<IActionResult> RefreshSession([FromBody] RefreshTokenDto refreshTokenDto)
         {
             var validationResult = await refreshTokenValidator.ValidateRefreshTokenAsync(refreshTokenDto.RefreshToken);
-            if (validationResult is RefreshTokenInvalid)
-            {
-                ModelState.AddModelError(nameof(refreshTokenDto.RefreshToken), "Invalid refresh token provided.");
-                return ValidationProblem();
-            }
-            if (validationResult is RefreshTokenExpired)
-            {
-                ModelState.AddModelError(nameof(refreshTokenDto.RefreshToken), "Expired refresh token provided.");
-                return ValidationProblem();
-            }
             if (validationResult is not RefreshTokenIsValid successfulValidationResult)
             {
-                throw new UnreachableException();
+                return RefreshTokenValidationProblem(validationResult);
             }
 
             var oldRefreshToken = successfulValidationResult.RefreshTokenId;
@@ -87,6 +79,23 @@ public static class RefreshSessionFeature
                 RefreshToken = newRefreshToken
             };
             return Ok(tokenPairDto);
+        }
+
+        private IActionResult RefreshTokenValidationProblem(IRefreshTokenValidationResult validationResult)
+        {
+            if (validationResult is RefreshTokenInvalid)
+            {
+                ModelState.AddModelError(nameof(RefreshTokenDto.RefreshToken), "Invalid refresh token provided.");
+                return ValidationProblem();
+            }
+
+            if (validationResult is RefreshTokenExpired)
+            {
+                ModelState.AddModelError(nameof(RefreshTokenDto.RefreshToken), "Expired refresh token provided.");
+                return ValidationProblem();
+            }
+
+            throw new UnreachableException();
         }
     }
 }
