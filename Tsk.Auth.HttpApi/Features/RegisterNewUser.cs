@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.AspInfrastructure;
@@ -10,13 +11,17 @@ public static class RegisterNewUserFeature
 {
     public sealed class RegisterNewUserDto
     {
+        [Required]
         public required string Email { get; init; }
+
+        [Required]
         public required string Password { get; init; }
     }
 
     public sealed class RegisteredUserDto
     {
         public required Guid Id { get; init; }
+
         public required string Email { get; init; }
     }
 
@@ -27,13 +32,13 @@ public static class RegisterNewUserFeature
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterNewUser([FromBody] RegisterNewUserDto registerNewUserDto)
         {
-            var isEmailAlreadyRegistered = await dbContext
-                .Users
+            var otherAccountsUseThisEmail = await dbContext.Users
                 .Where(user => user.Email == registerNewUserDto.Email)
                 .AnyAsync();
-            if (isEmailAlreadyRegistered)
+            if (otherAccountsUseThisEmail)
             {
-                ModelState.AddModelError(nameof(registerNewUserDto.Email), "Provided email already registered.");
+                var errorMessage = "Another account with provided email already exists.";
+                ModelState.AddModelError(nameof(registerNewUserDto.Email), errorMessage);
                 return ValidationProblem();
             }
 
@@ -43,7 +48,6 @@ public static class RegisterNewUserFeature
                 Email = registerNewUserDto.Email,
                 Password = BCrypt.Net.BCrypt.EnhancedHashPassword(registerNewUserDto.Password)
             };
-
             dbContext.Users.Add(newUser);
             await dbContext.SaveChangesAsync();
 
