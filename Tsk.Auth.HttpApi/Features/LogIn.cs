@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.AspInfrastructure;
@@ -11,15 +12,17 @@ public static class LogInFeature
 {
     public sealed class LogInDto
     {
+        [Required]
         public required string Email { get; init; }
+
+        [Required]
         public required string Password { get; init; }
     }
 
-    public sealed class CurrentUserDto
+    public sealed class TokenPairDto
     {
-        public required Guid Id { get; init; }
-        public required string Email { get; set; }
         public required string AccessToken { get; set; }
+
         public required string RefreshToken { get; set; }
     }
 
@@ -35,17 +38,18 @@ public static class LogInFeature
         }
 
         [HttpPost("/log-in")]
-        [ProducesResponseType<CurrentUserDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType<TokenPairDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> LogIn([FromBody] LogInDto logInDto)
         {
             var user = await dbContext.Users
+                .AsNoTracking()
                 .Where(user => user.Email == logInDto.Email)
                 .SingleOrDefaultAsync();
             if (user is null)
             {
-                return NotFound();
+                ModelState.AddModelError(nameof(logInDto.Email), "User with this email doesn't exist.");
+                return ValidationProblem();
             }
 
             var correctPassword = BCrypt.Net.BCrypt.EnhancedVerify(logInDto.Password, user.Password);
@@ -67,10 +71,8 @@ public static class LogInFeature
             var accessToken = await jwtTokenIssuer.IssueAccessTokenAsync(user.Id);
             var refreshToken = await jwtTokenIssuer.IssueRefreshTokenAsync(newSession.RefreshTokenId);
 
-            var currentUserDto = new CurrentUserDto
+            var currentUserDto = new TokenPairDto
             {
-                Id = user.Id,
-                Email = user.Email,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
