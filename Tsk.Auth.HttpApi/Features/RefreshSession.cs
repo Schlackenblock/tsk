@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.AspInfrastructure;
@@ -47,7 +48,10 @@ public static class RefreshSessionFeature
             var validationResult = await refreshTokenValidator.ValidateRefreshTokenAsync(refreshTokenDto.RefreshToken);
             if (validationResult is not RefreshTokenIsValid successfulValidationResult)
             {
-                return RefreshTokenValidationProblem(validationResult);
+                return RefreshTokenValidationProblem(
+                    property: () => refreshTokenDto.RefreshToken,
+                    validationResult: validationResult
+                );
             }
 
             var oldRefreshToken = successfulValidationResult.RefreshTokenId;
@@ -62,8 +66,10 @@ public static class RefreshSessionFeature
                 // 2. Attacker obtained our signing key and issued this refresh token.
                 // In both cases it would be better to notify someone about this, but, since I'm lazy, I won't.
 
-                ModelState.AddModelError(nameof(refreshTokenDto.RefreshToken), "Invalid refresh token provided.");
-                return ValidationProblem();
+                return ValidationProblem(
+                    property: () => refreshTokenDto.RefreshToken,
+                    message: "Invalid refresh token provided."
+                );
             }
 
             var newRefreshTokenId = Guid.NewGuid();
@@ -81,21 +87,22 @@ public static class RefreshSessionFeature
             return Ok(tokenPairDto);
         }
 
-        private IActionResult RefreshTokenValidationProblem(IRefreshTokenValidationResult validationResult)
+        private IActionResult RefreshTokenValidationProblem(
+            Expression<Func<object>> property,
+            IRefreshTokenValidationResult validationResult)
         {
-            if (validationResult is RefreshTokenInvalid)
+            return validationResult switch
             {
-                ModelState.AddModelError(nameof(RefreshTokenDto.RefreshToken), "Invalid refresh token provided.");
-                return ValidationProblem();
-            }
-
-            if (validationResult is RefreshTokenExpired)
-            {
-                ModelState.AddModelError(nameof(RefreshTokenDto.RefreshToken), "Expired refresh token provided.");
-                return ValidationProblem();
-            }
-
-            throw new UnreachableException();
+                RefreshTokenInvalid => ValidationProblem(
+                    property: property,
+                    message: "Invalid refresh token provided."
+                ),
+                RefreshTokenExpired => ValidationProblem(
+                    property: property,
+                    message: "Expired refresh token provided."
+                ),
+                _ => throw new UnreachableException()
+            };
         }
     }
 }

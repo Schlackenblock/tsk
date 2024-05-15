@@ -37,9 +37,10 @@ public static class RegisterNewUserFeature
                 .AnyAsync();
             if (otherAccountsUseThisEmail)
             {
-                var errorMessage = "Another account with provided email already exists.";
-                ModelState.AddModelError(nameof(registerNewUserDto.Email), errorMessage);
-                return ValidationProblem();
+                return ValidationProblem(
+                    property: () => registerNewUserDto.Email,
+                    message: "Another account with provided email already exists."
+                );
             }
 
             var newUser = new User

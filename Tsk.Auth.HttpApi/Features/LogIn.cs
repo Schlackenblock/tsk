@@ -48,15 +48,19 @@ public static class LogInFeature
                 .SingleOrDefaultAsync();
             if (user is null)
             {
-                ModelState.AddModelError(nameof(logInDto.Email), "User with this email doesn't exist.");
-                return ValidationProblem();
+                return ValidationProblem(
+                    property: () => logInDto.Email,
+                    message: "User with this email doesn't exist."
+                );
             }
 
             var correctPassword = BCrypt.Net.BCrypt.EnhancedVerify(logInDto.Password, user.Password);
             if (!correctPassword)
             {
-                ModelState.AddModelError(nameof(logInDto.Password), "Incorrect password provided.");
-                return ValidationProblem();
+                return ValidationProblem(
+                    property: () => logInDto.Password,
+                    message: "Incorrect password provided."
+                );
             }
 
             var newSession = new Session
