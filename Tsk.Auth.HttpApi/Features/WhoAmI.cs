@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tsk.Auth.HttpApi.AspInfrastructure;
 
 namespace Tsk.Auth.HttpApi.Features;
 

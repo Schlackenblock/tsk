@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tsk.Auth.HttpApi.AspInfrastructure;
 using Tsk.Auth.HttpApi.Context;
 using Tsk.Auth.HttpApi.Entities;
 using Tsk.Auth.HttpApi.JwtAuth;

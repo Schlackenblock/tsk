@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tsk.Auth.HttpApi.AspInfrastructure;
 using Tsk.Auth.HttpApi.Context;
 using Tsk.Auth.HttpApi.JwtAuth;
 

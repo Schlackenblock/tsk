@@ -1,7 +1,7 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tsk.Auth.HttpApi.Features;
+namespace Tsk.Auth.HttpApi.AspInfrastructure;
 
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]
