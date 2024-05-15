@@ -13,9 +13,12 @@ public static class LogInFeature
     public sealed class LogInDto
     {
         [Required]
+        [EmailAddress]
+        [MaxLength(254)]
         public required string Email { get; init; }
 
         [Required]
+        [MaxLength(20)]
         public required string Password { get; init; }
     }
 

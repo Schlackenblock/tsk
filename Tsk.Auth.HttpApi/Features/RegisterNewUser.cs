@@ -12,9 +12,12 @@ public static class RegisterNewUserFeature
     public sealed class RegisterNewUserDto
     {
         [Required]
+        [EmailAddress]
+        [MaxLength(254)]
         public required string Email { get; init; }
 
         [Required]
+        [MaxLength(20)]
         public required string Password { get; init; }
     }
 
