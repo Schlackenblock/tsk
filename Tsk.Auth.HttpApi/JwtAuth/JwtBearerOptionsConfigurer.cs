@@ -9,8 +9,10 @@ public class JwtBearerOptionsConfigurer : IPostConfigureOptions<JwtBearerOptions
 {
     private readonly IOptionsMonitor<JwtAuthOptions> jwtAuthOptionsMonitor;
 
-    public JwtBearerOptionsConfigurer(IOptionsMonitor<JwtAuthOptions> jwtAuthOptionsMonitor) =>
+    public JwtBearerOptionsConfigurer(IOptionsMonitor<JwtAuthOptions> jwtAuthOptionsMonitor)
+    {
         this.jwtAuthOptionsMonitor = jwtAuthOptionsMonitor;
+    }
 
     public void PostConfigure(string? name, JwtBearerOptions options)
     {

@@ -1,6 +1,5 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Tsk.Auth.HttpApi.Features;
 
 namespace Tsk.Auth.HttpApi.AspInfrastructure;
 
@@ -16,7 +15,8 @@ public sealed class ControllerDiscoverer : ControllerFeatureProvider
 
 public static class ControllerDiscovererRegistration
 {
-    public static void ConfigureControllerDiscoverer(this IMvcBuilder mvcBuilder) =>
+    public static void ConfigureControllerDiscoverer(this IMvcBuilder mvcBuilder)
+    {
         mvcBuilder.ConfigureApplicationPartManager(
             applicationPartManager =>
             {
@@ -24,4 +24,5 @@ public static class ControllerDiscovererRegistration
                 applicationPartManager.FeatureProviders.Add(controllerDiscoverer);
             }
         );
+    }
 }

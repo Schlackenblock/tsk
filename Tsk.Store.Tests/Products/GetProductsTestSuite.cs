@@ -9,13 +9,13 @@ public class GetProductsTestSuite : TestSuiteBase
     {
         var existingProducts = new List<ProductEntity>
         {
-            new ProductEntity
+            new()
             {
                 Id = Guid.NewGuid(),
                 Title = "High Performance Concrete Admixture 20 lbs",
                 Price = 47
             },
-            new ProductEntity
+            new()
             {
                 Id = Guid.NewGuid(),
                 Title = "High Performance Concrete Admixture 10 lbs",

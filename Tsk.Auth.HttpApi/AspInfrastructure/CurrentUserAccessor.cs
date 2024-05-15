@@ -12,7 +12,7 @@ public sealed class CurrentUserAccessor
     public CurrentUserAccessor(IHttpContextAccessor httpContextAccessor)
     {
         this.httpContextAccessor = httpContextAccessor;
-        this.lazyCurrentUser = new Lazy<CurrentUser>(GetCurrentUser);
+        lazyCurrentUser = new Lazy<CurrentUser>(GetCurrentUser);
     }
 
     private CurrentUser GetCurrentUser()

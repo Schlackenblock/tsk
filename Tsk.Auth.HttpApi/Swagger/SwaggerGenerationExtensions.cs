@@ -26,7 +26,7 @@ public static class SwaggerGenerationExtensions
             Scheme = "bearer",
             Description = "Provide JWT Access Token.",
             In = ParameterLocation.Header,
-            Type = SecuritySchemeType.Http,
+            Type = SecuritySchemeType.Http
         });
 
         var securityScheme = new OpenApiSecurityScheme
@@ -39,7 +39,7 @@ public static class SwaggerGenerationExtensions
         };
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
-            { securityScheme, Array.Empty<string>() },
+            { securityScheme, Array.Empty<string>() }
         });
     }
 }
