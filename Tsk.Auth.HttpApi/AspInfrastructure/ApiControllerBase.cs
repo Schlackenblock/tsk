@@ -1,11 +1,13 @@
 using System.Linq.Expressions;
 using System.Net.Mime;
 using System.Reflection;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Tsk.Auth.HttpApi.AspInfrastructure;
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithInheritors)]
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
