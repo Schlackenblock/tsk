@@ -7,7 +7,7 @@ public abstract class TestSuiteBase : IAsyncLifetime
     protected HttpClient HttpClient { get; private set; } = null!;
     protected TskContext Context { get; private set; } = null!;
 
-    private readonly TskApiFactory apiFactory = new TskApiFactory();
+    private readonly TskApiFactory apiFactory = new();
 
     public async Task InitializeAsync()
     {
@@ -17,6 +17,8 @@ public abstract class TestSuiteBase : IAsyncLifetime
         Context = apiFactory.CreateContext();
     }
 
-    public async Task DisposeAsync() =>
+    public async Task DisposeAsync()
+    {
         await apiFactory.DisposeAsync();
+    }
 }
