@@ -11,8 +11,10 @@ public static class SwaggerGenerationExtensions
             type =>
             {
                 // The "+" sign usually placed between the outer and nested type names (e.g. OuterClass+InnerClass).
+                var typeName = type.FullName;
+
                 // We replace it with the ":" since it's not unsupported by the SwaggerUI.
-                return type.ToString().Replace("+", ":");
+                return typeName!.Replace("+", ":");
             }
         );
     }
