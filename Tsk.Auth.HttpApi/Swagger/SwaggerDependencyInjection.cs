@@ -3,9 +3,18 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Tsk.Auth.HttpApi.Swagger;
 
-public static class SwaggerGenerationExtensions
+public static class SwaggerDependencyInjection
 {
-    public static void UseUniqueSchemaIds(this SwaggerGenOptions options)
+    public static void AddSwaggerGeneration(this WebApplicationBuilder webApplicationBuilder)
+    {
+        webApplicationBuilder.Services.AddSwaggerGen(options =>
+        {
+            options.UseUniqueSchemaIds();
+            options.AddJwtAuthentication();
+        });
+    }
+
+    private static void UseUniqueSchemaIds(this SwaggerGenOptions options)
     {
         options.CustomSchemaIds(
             type =>
@@ -19,7 +28,7 @@ public static class SwaggerGenerationExtensions
         );
     }
 
-    public static void AddJwtAuthentication(this SwaggerGenOptions options)
+    private static void AddJwtAuthentication(this SwaggerGenOptions options)
     {
         options.AddSecurityDefinition("jwt_auth", new OpenApiSecurityScheme
         {

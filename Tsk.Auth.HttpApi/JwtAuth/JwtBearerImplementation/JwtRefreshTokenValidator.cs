@@ -2,10 +2,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Tsk.Auth.HttpApi.JwtAuth.Abstractions;
 
-namespace Tsk.Auth.HttpApi.JwtAuth;
+namespace Tsk.Auth.HttpApi.JwtAuth.JwtBearerImplementation;
 
-public sealed class JwtRefreshTokenValidator
+public sealed class JwtRefreshTokenValidator : IJwtRefreshTokenValidator
 {
     private readonly IOptionsSnapshot<JwtAuthOptions> jwtAuthOptionsSnapshot;
 
@@ -62,14 +63,3 @@ public sealed class JwtRefreshTokenValidator
         return new RsaSecurityKey(jwtVerificationKey);
     }
 }
-
-public interface IRefreshTokenValidationResult;
-
-public sealed class RefreshTokenIsValid : IRefreshTokenValidationResult
-{
-    public required Guid RefreshTokenId { get; init; }
-}
-
-public sealed class RefreshTokenInvalid : IRefreshTokenValidationResult;
-
-public sealed class RefreshTokenExpired : IRefreshTokenValidationResult;

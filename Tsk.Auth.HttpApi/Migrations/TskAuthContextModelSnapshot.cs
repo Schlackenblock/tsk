@@ -10,7 +10,7 @@ using Tsk.Auth.HttpApi.Context;
 
 namespace Tsk.Auth.HttpApi.Migrations
 {
-    [DbContext(typeof(TskAuthContext))]
+    [DbContext(typeof(TskAuthDbContext))]
     partial class TskAuthContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

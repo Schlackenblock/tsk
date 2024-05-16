@@ -4,9 +4,9 @@ using System.Linq.Expressions;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tsk.Auth.HttpApi.AspInfrastructure;
+using Tsk.Auth.HttpApi.AspInfrastructure.FeaturesDiscovery;
 using Tsk.Auth.HttpApi.Context;
-using Tsk.Auth.HttpApi.JwtAuth;
+using Tsk.Auth.HttpApi.JwtAuth.Abstractions;
 
 namespace Tsk.Auth.HttpApi.Features;
 
@@ -20,7 +20,7 @@ public static class RefreshSessionFeature
     }
 
     [PublicAPI]
-    public sealed class TokenPairDto
+    public sealed class JwtTokenPairDto
     {
         public required string AccessToken { get; init; }
 
@@ -29,14 +29,14 @@ public static class RefreshSessionFeature
 
     public sealed class Controller : ApiControllerBase
     {
-        private readonly JwtRefreshTokenValidator refreshTokenValidator;
-        private readonly TskAuthContext dbContext;
-        private readonly JwtTokenIssuer jwtTokenIssuer;
+        private readonly IJwtRefreshTokenValidator refreshTokenValidator;
+        private readonly TskAuthDbContext dbContext;
+        private readonly IJwtTokenIssuer jwtTokenIssuer;
 
         public Controller(
-            JwtRefreshTokenValidator refreshTokenValidator,
-            TskAuthContext dbContext,
-            JwtTokenIssuer jwtTokenIssuer)
+            IJwtRefreshTokenValidator refreshTokenValidator,
+            TskAuthDbContext dbContext,
+            IJwtTokenIssuer jwtTokenIssuer)
         {
             this.refreshTokenValidator = refreshTokenValidator;
             this.dbContext = dbContext;
@@ -44,7 +44,7 @@ public static class RefreshSessionFeature
         }
 
         [HttpPost("/refresh-session")]
-        [ProducesResponseType<TokenPairDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType<JwtTokenPairDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RefreshSession([FromBody] RefreshTokenDto refreshTokenDto)
         {
@@ -79,15 +79,13 @@ public static class RefreshSessionFeature
             session.RefreshTokenId = newRefreshTokenId;
             await dbContext.SaveChangesAsync();
 
-            var newAccessToken = await jwtTokenIssuer.IssueAccessTokenAsync(session.UserId);
-            var newRefreshToken = await jwtTokenIssuer.IssueRefreshTokenAsync(newRefreshTokenId);
-
-            var tokenPairDto = new TokenPairDto
+            var newJwtTokenPair = await jwtTokenIssuer.IssueJwtTokenPair(session.UserId, newRefreshTokenId);
+            var newJwtTokenPairDto = new JwtTokenPairDto
             {
-                AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
+                AccessToken = newJwtTokenPair.AccessToken,
+                RefreshToken = newJwtTokenPair.RefreshToken
             };
-            return Ok(tokenPairDto);
+            return Ok(newJwtTokenPairDto);
         }
 
         private IActionResult RefreshTokenValidationProblem(

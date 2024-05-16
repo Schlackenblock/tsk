@@ -11,7 +11,7 @@ using Tsk.Auth.HttpApi.Context;
 
 namespace Tsk.Auth.HttpApi.Migrations
 {
-    [DbContext(typeof(TskAuthContext))]
+    [DbContext(typeof(TskAuthDbContext))]
     [Migration("20240512175702_AddUsers")]
     partial class AddUsers
     {

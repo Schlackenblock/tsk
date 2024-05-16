@@ -2,10 +2,11 @@ using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tsk.Auth.HttpApi.AspInfrastructure;
+using Tsk.Auth.HttpApi.AspInfrastructure.FeaturesDiscovery;
 using Tsk.Auth.HttpApi.Context;
 using Tsk.Auth.HttpApi.Entities;
-using Tsk.Auth.HttpApi.JwtAuth;
+using Tsk.Auth.HttpApi.JwtAuth.Abstractions;
+using Tsk.Auth.HttpApi.Passwords;
 
 namespace Tsk.Auth.HttpApi.Features;
 
@@ -25,7 +26,7 @@ public static class LogInFeature
     }
 
     [PublicAPI]
-    public sealed class TokenPairDto
+    public sealed class JwtTokenPairDto
     {
         public required string AccessToken { get; set; }
 
@@ -34,17 +35,19 @@ public static class LogInFeature
 
     public sealed class Controller : ApiControllerBase
     {
-        private readonly TskAuthContext dbContext;
-        private readonly JwtTokenIssuer jwtTokenIssuer;
+        private readonly TskAuthDbContext dbContext;
+        private readonly IJwtTokenIssuer jwtTokenIssuer;
+        private readonly IPasswordHandler passwordHandler;
 
-        public Controller(TskAuthContext dbContext, JwtTokenIssuer jwtTokenIssuer)
+        public Controller(TskAuthDbContext dbContext, IJwtTokenIssuer jwtTokenIssuer, IPasswordHandler passwordHandler)
         {
             this.dbContext = dbContext;
             this.jwtTokenIssuer = jwtTokenIssuer;
+            this.passwordHandler = passwordHandler;
         }
 
         [HttpPost("/log-in")]
-        [ProducesResponseType<TokenPairDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType<JwtTokenPairDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> LogIn([FromBody] LogInDto logInDto)
         {
@@ -60,7 +63,10 @@ public static class LogInFeature
                 );
             }
 
-            var correctPassword = BCrypt.Net.BCrypt.EnhancedVerify(logInDto.Password, user.Password);
+            var correctPassword = passwordHandler.VerifyPassword(
+                plainTextPassword: logInDto.Password,
+                hashedPassword: user.Password
+            );
             if (!correctPassword)
             {
                 return ValidationProblem(
@@ -78,15 +84,13 @@ public static class LogInFeature
             dbContext.Sessions.Add(newSession);
             await dbContext.SaveChangesAsync();
 
-            var accessToken = await jwtTokenIssuer.IssueAccessTokenAsync(user.Id);
-            var refreshToken = await jwtTokenIssuer.IssueRefreshTokenAsync(newSession.RefreshTokenId);
-
-            var currentUserDto = new TokenPairDto
+            var jwtTokenPair = await jwtTokenIssuer.IssueJwtTokenPair(user.Id, newSession.RefreshTokenId);
+            var jwtTokenPairDto = new JwtTokenPairDto
             {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
+                AccessToken = jwtTokenPair.AccessToken,
+                RefreshToken = jwtTokenPair.RefreshToken
             };
-            return Ok(currentUserDto);
+            return Ok(jwtTokenPairDto);
         }
     }
 }

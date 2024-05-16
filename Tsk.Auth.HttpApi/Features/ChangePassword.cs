@@ -3,8 +3,10 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tsk.Auth.HttpApi.AspInfrastructure;
+using Tsk.Auth.HttpApi.AspInfrastructure.FeaturesDiscovery;
+using Tsk.Auth.HttpApi.AspInfrastructure.Sessions;
 using Tsk.Auth.HttpApi.Context;
+using Tsk.Auth.HttpApi.Passwords;
 
 namespace Tsk.Auth.HttpApi.Features;
 
@@ -24,13 +26,18 @@ public static class ChangePasswordFeature
 
     public sealed class Controller : ApiControllerBase
     {
-        private readonly CurrentUserAccessor currentUserAccessor;
-        private readonly TskAuthContext dbContext;
+        private readonly ICurrentUserAccessor currentUserAccessor;
+        private readonly TskAuthDbContext dbContext;
+        private readonly IPasswordHandler passwordHandler;
 
-        public Controller(CurrentUserAccessor currentUserAccessor, TskAuthContext dbContext)
+        public Controller(
+            ICurrentUserAccessor currentUserAccessor,
+            TskAuthDbContext dbContext,
+            IPasswordHandler passwordHandler)
         {
             this.currentUserAccessor = currentUserAccessor;
             this.dbContext = dbContext;
+            this.passwordHandler = passwordHandler;
         }
 
         [HttpPost("/change-password")]
@@ -47,9 +54,9 @@ public static class ChangePasswordFeature
                 return Unauthorized();
             }
 
-            var providedOldPasswordIsCorrect = BCrypt.Net.BCrypt.EnhancedVerify(
-                text: changePasswordDto.OldPassword,
-                hash: currentUser.Password
+            var providedOldPasswordIsCorrect = passwordHandler.VerifyPassword(
+                plainTextPassword: changePasswordDto.OldPassword,
+                hashedPassword: currentUser.Password
             );
             if (!providedOldPasswordIsCorrect)
             {
@@ -63,7 +70,7 @@ public static class ChangePasswordFeature
                 .Where(session => session.UserId == currentUserId)
                 .ExecuteDeleteAsync();
 
-            var hashedNewPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(changePasswordDto.NewPassword);
+            var hashedNewPassword = passwordHandler.HashPassword(changePasswordDto.NewPassword);
             currentUser.Password = hashedNewPassword;
             await dbContext.SaveChangesAsync();
 

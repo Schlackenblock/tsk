@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 
-namespace Tsk.Auth.HttpApi.JwtAuth;
+namespace Tsk.Auth.HttpApi.JwtAuth.JwtBearerImplementation;
 
 public sealed class JwtAuthOptions
 {

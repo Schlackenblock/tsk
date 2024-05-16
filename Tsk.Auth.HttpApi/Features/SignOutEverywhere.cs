@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tsk.Auth.HttpApi.AspInfrastructure;
+using Tsk.Auth.HttpApi.AspInfrastructure.FeaturesDiscovery;
+using Tsk.Auth.HttpApi.AspInfrastructure.Sessions;
 using Tsk.Auth.HttpApi.Context;
 
 namespace Tsk.Auth.HttpApi.Features;
@@ -10,10 +11,10 @@ public static class SignOutEverywhereFeature
 {
     public sealed class Controller : ApiControllerBase
     {
-        private readonly CurrentUserAccessor currentUserAccessor;
-        private readonly TskAuthContext dbContext;
+        private readonly ICurrentUserAccessor currentUserAccessor;
+        private readonly TskAuthDbContext dbContext;
 
-        public Controller(CurrentUserAccessor currentUserAccessor, TskAuthContext dbContext)
+        public Controller(ICurrentUserAccessor currentUserAccessor, TskAuthDbContext dbContext)
         {
             this.currentUserAccessor = currentUserAccessor;
             this.dbContext = dbContext;

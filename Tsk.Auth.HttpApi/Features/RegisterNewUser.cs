@@ -2,9 +2,10 @@ using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tsk.Auth.HttpApi.AspInfrastructure;
+using Tsk.Auth.HttpApi.AspInfrastructure.FeaturesDiscovery;
 using Tsk.Auth.HttpApi.Context;
 using Tsk.Auth.HttpApi.Entities;
+using Tsk.Auth.HttpApi.Passwords;
 
 namespace Tsk.Auth.HttpApi.Features;
 
@@ -31,8 +32,17 @@ public static class RegisterNewUserFeature
         public required string Email { get; init; }
     }
 
-    public sealed class Controller(TskAuthContext dbContext) : ApiControllerBase
+    public sealed class Controller : ApiControllerBase
     {
+        private readonly TskAuthDbContext dbContext;
+        private readonly IPasswordHandler passwordHandler;
+
+        public Controller(TskAuthDbContext dbContext, IPasswordHandler passwordHandler)
+        {
+            this.dbContext = dbContext;
+            this.passwordHandler = passwordHandler;
+        }
+
         [HttpPost("/register")]
         [ProducesResponseType<RegisteredUserDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -53,7 +63,7 @@ public static class RegisterNewUserFeature
             {
                 Id = Guid.NewGuid(),
                 Email = registerNewUserDto.Email,
-                Password = BCrypt.Net.BCrypt.EnhancedHashPassword(registerNewUserDto.Password)
+                Password = passwordHandler.HashPassword(registerNewUserDto.Password)
             };
             dbContext.Users.Add(newUser);
             await dbContext.SaveChangesAsync();
