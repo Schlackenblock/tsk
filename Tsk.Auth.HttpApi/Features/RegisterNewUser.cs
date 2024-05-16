@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.AspInfrastructure;
@@ -9,6 +10,7 @@ namespace Tsk.Auth.HttpApi.Features;
 
 public static class RegisterNewUserFeature
 {
+    [PublicAPI]
     public sealed class RegisterNewUserDto
     {
         [Required]
@@ -21,6 +23,7 @@ public static class RegisterNewUserFeature
         public required string Password { get; init; }
     }
 
+    [PublicAPI]
     public sealed class RegisteredUserDto
     {
         public required Guid Id { get; init; }

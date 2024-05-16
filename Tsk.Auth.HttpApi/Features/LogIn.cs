@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.AspInfrastructure;
@@ -10,6 +11,7 @@ namespace Tsk.Auth.HttpApi.Features;
 
 public static class LogInFeature
 {
+    [PublicAPI]
     public sealed class LogInDto
     {
         [Required]
@@ -22,6 +24,7 @@ public static class LogInFeature
         public required string Password { get; init; }
     }
 
+    [PublicAPI]
     public sealed class TokenPairDto
     {
         public required string AccessToken { get; set; }

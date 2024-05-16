@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tsk.Auth.HttpApi.AspInfrastructure;
@@ -11,12 +12,14 @@ namespace Tsk.Auth.HttpApi.Features;
 
 public static class RefreshSessionFeature
 {
+    [PublicAPI]
     public sealed class RefreshTokenDto
     {
         [Required]
         public required string RefreshToken { get; init; }
     }
 
+    [PublicAPI]
     public sealed class TokenPairDto
     {
         public required string AccessToken { get; init; }

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ namespace Tsk.Auth.HttpApi.Features;
 
 public static class WhoAmIFeature
 {
+    [PublicAPI]
     public sealed class CurrentUserDto
     {
         public required Guid Id { get; init; }
