@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tsk.Auth.HttpApi.AspInfrastructure.FeaturesDiscovery;
 using Tsk.Auth.HttpApi.Context;
 using Tsk.Auth.HttpApi.Entities;
+using Tsk.Auth.HttpApi.FeaturesDiscovery;
 using Tsk.Auth.HttpApi.JwtAuth.Abstractions;
 using Tsk.Auth.HttpApi.Passwords;
 

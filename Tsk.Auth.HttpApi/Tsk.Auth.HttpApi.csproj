@@ -25,4 +25,8 @@
     <Folder Include="Keys\"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tsk.Auth.Client\Tsk.Auth.Client.csproj" />
+  </ItemGroup>
+
 </Project>

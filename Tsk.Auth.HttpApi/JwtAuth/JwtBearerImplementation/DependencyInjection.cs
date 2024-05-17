@@ -1,25 +1,23 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
+using Tsk.Auth.Client;
+using Tsk.Auth.HttpApi.JwtAuth.Abstractions;
 
 namespace Tsk.Auth.HttpApi.JwtAuth.JwtBearerImplementation;
 
 public static class DependencyInjection
 {
-    public static void AddJwtBearerAuth(this WebApplicationBuilder webApplicationBuilder)
+    public static void AddJwtTokenAuth(this WebApplicationBuilder webApplicationBuilder)
     {
+        webApplicationBuilder.Services.AddTskAuthentication();
+
         webApplicationBuilder.Services
-            .AddSingleton<IPostConfigureOptions<JwtBearerOptions>, JwtBearerOptionsConfigurer>()
             .AddOptions<JwtAuthOptions>()
             .BindConfiguration(nameof(JwtAuthOptions))
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-
         webApplicationBuilder.Services
-            .AddScoped<JwtTokenIssuer>()
-            .AddScoped<JwtRefreshTokenValidator>()
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
+            .AddScoped<IJwtTokenIssuer, JwtTokenIssuer>()
+            .AddScoped<IJwtRefreshTokenValidator, JwtRefreshTokenValidator>();
 
         webApplicationBuilder.Services.AddAuthorization();
     }

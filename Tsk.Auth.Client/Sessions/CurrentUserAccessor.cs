@@ -1,8 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Tsk.Auth.HttpApi.AspInfrastructure.Sessions;
+namespace Tsk.Auth.Client.Sessions;
 
-public sealed class CurrentUserAccessor : ICurrentUserAccessor
+internal sealed class CurrentUserAccessor : ICurrentUserAccessor
 {
     public CurrentUser CurrentUser => lazyCurrentUser.Value;
     private readonly Lazy<CurrentUser> lazyCurrentUser;
@@ -30,11 +32,11 @@ public sealed class CurrentUserAccessor : ICurrentUserAccessor
     }
 }
 
-public static class CurrentUserAccessorDependencyInjection
+internal static class CurrentUserAccessorDependencyInjection
 {
-    public static void AddCurrentUserAccessor(this WebApplicationBuilder webApplicationBuilder)
+    public static void AddCurrentUserAccessor(this IServiceCollection services)
     {
-        webApplicationBuilder.Services.AddHttpContextAccessor();
-        webApplicationBuilder.Services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
     }
 }

@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Tsk.Auth.HttpApi.AspInfrastructure.FeaturesDiscovery;
+namespace Tsk.Auth.HttpApi.FeaturesDiscovery;
 
 [UsedImplicitly(ImplicitUseTargetFlags.WithInheritors)]
 [ApiController]

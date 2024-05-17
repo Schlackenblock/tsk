@@ -2,17 +2,18 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Tsk.Auth.Client.Options;
 using Tsk.Auth.HttpApi.JwtAuth.Abstractions;
 
 namespace Tsk.Auth.HttpApi.JwtAuth.JwtBearerImplementation;
 
 public sealed class JwtRefreshTokenValidator : IJwtRefreshTokenValidator
 {
-    private readonly IOptionsSnapshot<JwtAuthOptions> jwtAuthOptionsSnapshot;
+    private readonly IOptionsSnapshot<TskAuthOptions> tskAuthOptionsSnapshot;
 
-    public JwtRefreshTokenValidator(IOptionsSnapshot<JwtAuthOptions> jwtAuthOptionsSnapshot)
+    public JwtRefreshTokenValidator(IOptionsSnapshot<TskAuthOptions> tskAuthOptionsSnapshot)
     {
-        this.jwtAuthOptionsSnapshot = jwtAuthOptionsSnapshot;
+        this.tskAuthOptionsSnapshot = tskAuthOptionsSnapshot;
     }
 
     public async Task<IRefreshTokenValidationResult> ValidateRefreshTokenAsync(string refreshToken)
@@ -54,7 +55,7 @@ public sealed class JwtRefreshTokenValidator : IJwtRefreshTokenValidator
 
     private async Task<SecurityKey> GetVerificationCredentialsAsync()
     {
-        var jwtVerificationKeyPath = jwtAuthOptionsSnapshot.Value.VerificationKeyPath;
+        var jwtVerificationKeyPath = tskAuthOptionsSnapshot.Value.JwtTokenVerificationKeyPath;
         var jwtVerificationKeyXml = await File.ReadAllTextAsync(jwtVerificationKeyPath);
 
         var jwtVerificationKey = RSA.Create();

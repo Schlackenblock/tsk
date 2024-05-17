@@ -2,7 +2,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace Tsk.Auth.HttpApi.AspInfrastructure.FeaturesDiscovery;
+namespace Tsk.Auth.HttpApi.FeaturesDiscovery;
 
 public sealed class FeatureControllersDiscoverer : ControllerFeatureProvider
 {

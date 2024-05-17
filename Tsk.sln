@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.Store.Tests", "Tsk.Stor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.Auth.HttpApi", "Tsk.Auth.HttpApi\Tsk.Auth.HttpApi.csproj", "{EAE04DB5-0D4B-4EB5-A3E0-80D685C51717}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsk.Auth.Client", "Tsk.Auth.Client\Tsk.Auth.Client.csproj", "{16A70B34-FF4D-44DE-AC17-178AA7180AF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{EAE04DB5-0D4B-4EB5-A3E0-80D685C51717}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAE04DB5-0D4B-4EB5-A3E0-80D685C51717}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAE04DB5-0D4B-4EB5-A3E0-80D685C51717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16A70B34-FF4D-44DE-AC17-178AA7180AF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16A70B34-FF4D-44DE-AC17-178AA7180AF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16A70B34-FF4D-44DE-AC17-178AA7180AF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16A70B34-FF4D-44DE-AC17-178AA7180AF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

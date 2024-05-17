@@ -421,4 +421,5 @@
   <s:Boolean x:Key="/Default/UserDictionary/Words/=Dtos/@EntryIndexedValue">True</s:Boolean>
   <s:Boolean x:Key="/Default/UserDictionary/Words/=jwt/@EntryIndexedValue">True</s:Boolean>
   <s:Boolean x:Key="/Default/UserDictionary/Words/=rsa/@EntryIndexedValue">True</s:Boolean>
+  <s:Boolean x:Key="/Default/UserDictionary/Words/=Configurer/@EntryIndexedValue">True</s:Boolean>
   <s:Boolean x:Key="/Default/UserDictionary/Words/=Postgre/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

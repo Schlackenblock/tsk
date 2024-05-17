@@ -3,24 +3,23 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Tsk.Auth.HttpApi.JwtAuth.JwtBearerImplementation;
+namespace Tsk.Auth.Client.Options;
 
-public class JwtBearerOptionsConfigurer : IPostConfigureOptions<JwtBearerOptions>
+internal sealed class JwtBearerOptionsConfigurer : IPostConfigureOptions<JwtBearerOptions>
 {
-    private readonly IOptionsMonitor<JwtAuthOptions> jwtAuthOptionsMonitor;
+    private readonly IOptionsMonitor<TskAuthOptions> tskAuthOptionsMonitor;
 
-    public JwtBearerOptionsConfigurer(IOptionsMonitor<JwtAuthOptions> jwtAuthOptionsMonitor)
+    public JwtBearerOptionsConfigurer(IOptionsMonitor<TskAuthOptions> tskAuthOptionsMonitor)
     {
-        this.jwtAuthOptionsMonitor = jwtAuthOptionsMonitor;
+        this.tskAuthOptionsMonitor = tskAuthOptionsMonitor;
     }
 
-    public void PostConfigure(string? name, JwtBearerOptions options)
+    public void PostConfigure(string? _, JwtBearerOptions options)
     {
         options.TokenValidationParameters = new()
         {
             ValidateIssuer = false,
             ValidateAudience = false,
-            ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
             IssuerSigningKeyResolver = ResolveVerificationKey,
             ValidateIssuerSigningKey = true
@@ -35,7 +34,7 @@ public class JwtBearerOptionsConfigurer : IPostConfigureOptions<JwtBearerOptions
         string ___,
         TokenValidationParameters ____)
     {
-        var jwtVerificationKeyPath = jwtAuthOptionsMonitor.CurrentValue.VerificationKeyPath;
+        var jwtVerificationKeyPath = tskAuthOptionsMonitor.CurrentValue.JwtTokenVerificationKeyPath;
         var jwtVerificationKeyXml = File.ReadAllText(jwtVerificationKeyPath);
 
         var jwtVerificationKey = RSA.Create();
