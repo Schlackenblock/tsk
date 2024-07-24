@@ -2,10 +2,10 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tsk.HttpApi.Products;
+namespace Tsk.HttpApi.Products.ForAdmins;
 
 [ApiController]
-[Route("/products")]
+[Route("/management/products")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
 public class ProductController : ControllerBase
@@ -28,7 +28,8 @@ public class ProductController : ControllerBase
             {
                 Id = product.Id,
                 Title = product.Title,
-                Price = product.Price
+                Price = product.Price,
+                IsForSale = product.IsForSale
             }
         );
         return Ok(productDtos);
@@ -54,7 +55,8 @@ public class ProductController : ControllerBase
         {
             Id = product.Id,
             Title = product.Title,
-            Price = product.Price
+            Price = product.Price,
+            IsForSale = product.IsForSale
         };
         return Ok(productDto);
     }
@@ -79,7 +81,66 @@ public class ProductController : ControllerBase
         {
             Id = product.Id,
             Title = product.Title,
-            Price = product.Price
+            Price = product.Price,
+            IsForSale = product.IsForSale
+        };
+        return Ok(productDto);
+    }
+
+    [HttpPut("{id:guid}/make-for-sale")]
+    [ProducesResponseType<ProductDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> MakeProductForSale([FromRoute] Guid id)
+    {
+        var product = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        if (product is null)
+        {
+            return NotFound();
+        }
+        if (product.IsForSale)
+        {
+            return BadRequest("Specified product is already available for sale.");
+        }
+
+        product.IsForSale = true;
+        await context.SaveChangesAsync();
+
+        var productDto = new ProductDto
+        {
+            Id = product.Id,
+            Title = product.Title,
+            Price = product.Price,
+            IsForSale = product.IsForSale
+        };
+        return Ok(productDto);
+    }
+
+    [HttpPut("{id:guid}/make-not-for-sale")]
+    [ProducesResponseType<ProductDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> MakeProductNotForSale([FromRoute] Guid id)
+    {
+        var product = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        if (product is null)
+        {
+            return NotFound();
+        }
+        if (!product.IsForSale)
+        {
+            return BadRequest("Specified product is already not available for sale.");
+        }
+
+        product.IsForSale = false;
+        await context.SaveChangesAsync();
+
+        var productDto = new ProductDto
+        {
+            Id = product.Id,
+            Title = product.Title,
+            Price = product.Price,
+            IsForSale = product.IsForSale
         };
         return Ok(productDto);
     }
@@ -98,12 +159,6 @@ public class ProductController : ControllerBase
         context.Products.Remove(product);
         await context.SaveChangesAsync();
 
-        var productDto = new ProductDto
-        {
-            Id = product.Id,
-            Title = product.Title,
-            Price = product.Price
-        };
-        return Ok(productDto);
+        return Ok();
     }
 }

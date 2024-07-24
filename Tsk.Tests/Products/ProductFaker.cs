@@ -1,5 +1,6 @@
 using Bogus;
 using Tsk.HttpApi.Products;
+using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.Products;
 

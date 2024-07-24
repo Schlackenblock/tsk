@@ -1,4 +1,5 @@
 using Tsk.HttpApi.Products;
+using Tsk.HttpApi.Products.ForCustomers;
 
 namespace Tsk.Tests.Products;
 
