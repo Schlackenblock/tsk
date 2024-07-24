@@ -8,8 +8,15 @@ namespace Tsk.HttpApi.Products;
 [Route("/products")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
-public class ProductController(TskContext context) : ControllerBase
+public class ProductController : ControllerBase
 {
+    private readonly TskContext context;
+
+    public ProductController(TskContext context)
+    {
+        this.context = context;
+    }
+
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts()
