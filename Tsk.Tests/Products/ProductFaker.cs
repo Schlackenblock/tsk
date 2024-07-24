@@ -10,39 +10,51 @@ public static class ProductFaker
     private const double defaultMinPrice = 0.01;
     private const double defaultMaxPrice = 100.00;
 
-    public static ProductEntity MakeEntity() =>
-        new ProductEntity
+    public static ProductEntity MakeEntity()
+    {
+        return new ProductEntity
         {
             Id = MakeProductId(),
             Title = MakeProductName(),
             Price = MakeProductPrice()
         };
+    }
 
-    public static List<ProductEntity> MakeEntities(int count) =>
-        Enumerable
+    public static List<ProductEntity> MakeEntities(int count)
+    {
+        return Enumerable
             .Range(0, count)
             .Select(_ => MakeEntity())
             .ToList();
+    }
 
-    public static CreateProductDto MakeCreateDto() =>
-        new CreateProductDto
+    public static CreateProductDto MakeCreateDto()
+    {
+        return new CreateProductDto
         {
             Title = MakeProductName(),
             Price = MakeProductPrice()
         };
+    }
 
-    public static CreateProductDto MakeUpdateDto() =>
-        new CreateProductDto
+    public static CreateProductDto MakeUpdateDto()
+    {
+        return new CreateProductDto
         {
             Title = MakeProductName(),
             Price = MakeProductPrice()
         };
+    }
 
-    public static Guid MakeProductId() =>
-        Guid.NewGuid();
+    public static Guid MakeProductId()
+    {
+        return Guid.NewGuid();
+    }
 
-    private static string MakeProductName() =>
-        faker.Commerce.ProductName();
+    private static string MakeProductName()
+    {
+        return faker.Commerce.ProductName();
+    }
 
     private static double MakeProductPrice(double min = defaultMinPrice, double max = defaultMaxPrice)
     {
