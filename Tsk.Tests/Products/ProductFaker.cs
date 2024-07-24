@@ -16,7 +16,8 @@ public static class ProductFaker
         {
             Id = MakeProductId(),
             Title = MakeProductName(),
-            Price = MakeProductPrice()
+            Price = MakeProductPrice(),
+            IsForSale = false
         };
     }
 

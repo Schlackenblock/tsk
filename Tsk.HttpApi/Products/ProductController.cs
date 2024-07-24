@@ -43,7 +43,8 @@ public class ProductController : ControllerBase
         {
             Id = Guid.NewGuid(),
             Title = createProductDto.Title,
-            Price = createProductDto.Price
+            Price = createProductDto.Price,
+            IsForSale = false
         };
 
         context.Products.Add(product);
