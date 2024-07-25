@@ -15,16 +15,16 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
             IsForSale = false
         };
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             dbContext.Products.Add(initialProduct);
             await dbContext.SaveChangesAsync();
-        }
+        });
 
         var response = await HttpClient.PutAsync($"/management/products/{initialProduct.Id}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(new
@@ -34,7 +34,7 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
                 initialProduct.Price,
                 IsForSale = true
             });
-        }
+        });
     }
 
     [Fact]
@@ -48,11 +48,11 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
             IsForSale = true
         };
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             dbContext.Products.Add(productForSale);
             await dbContext.SaveChangesAsync();
-        }
+        });
 
         var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

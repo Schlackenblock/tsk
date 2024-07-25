@@ -23,11 +23,11 @@ public class GetProductsTestSuite : TestSuiteBase
             IsForSale = true
         };
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             dbContext.Products.AddRange([productNotForSale, productForSale]);
             await dbContext.SaveChangesAsync();
-        }
+        });
 
         var response = await HttpClient.GetAsync("/products");
         response.StatusCode.Should().Be(HttpStatusCode.OK);

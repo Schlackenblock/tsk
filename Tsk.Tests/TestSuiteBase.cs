@@ -9,11 +9,12 @@ public abstract class TestSuiteBase : IAsyncLifetime
     private readonly ICollection<TskDbContext> dbContexts = [];
     private readonly TskApiFactory apiFactory = new();
 
-    protected TskDbContext CreateDbContext()
+    protected async Task CallDbAsync(Func<TskDbContext, Task> dbCall)
     {
         var dbContext = apiFactory.CreateDbContext();
         dbContexts.Add(dbContext);
-        return dbContext;
+
+        await dbCall(dbContext);
     }
 
     public async Task InitializeAsync()

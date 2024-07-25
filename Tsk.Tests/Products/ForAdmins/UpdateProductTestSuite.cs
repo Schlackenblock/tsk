@@ -16,11 +16,11 @@ public class UpdateProductTestSuite : TestSuiteBase
             IsForSale = true
         };
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             dbContext.Products.Add(initialProduct);
             await dbContext.SaveChangesAsync();
-        }
+        });
 
         var updateProductDto = new UpdateProductDto
         {
@@ -40,11 +40,11 @@ public class UpdateProductTestSuite : TestSuiteBase
             IsForSale = true
         });
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(updatedProductDto);
-        }
+        });
     }
 
     [Fact]
@@ -58,11 +58,11 @@ public class UpdateProductTestSuite : TestSuiteBase
             IsForSale = false
         };
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             dbContext.Products.Add(initialProduct);
             await dbContext.SaveChangesAsync();
-        }
+        });
 
         var updateProductDto = new UpdateProductDto
         {
@@ -82,11 +82,11 @@ public class UpdateProductTestSuite : TestSuiteBase
             IsForSale = false
         });
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(updatedProductDto);
-        }
+        });
 
     }
 

@@ -26,11 +26,11 @@ public class GetProductsTestSuite : TestSuiteBase
             }
         };
 
-        await using (var dbContext = CreateDbContext())
+        await CallDbAsync(async dbContext =>
         {
             dbContext.Products.AddRange(existingProducts);
             await dbContext.SaveChangesAsync();
-        }
+        });
 
         var response = await HttpClient.GetAsync("/management/products");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
