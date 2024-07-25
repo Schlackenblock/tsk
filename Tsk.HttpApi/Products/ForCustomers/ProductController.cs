@@ -10,18 +10,18 @@ namespace Tsk.HttpApi.Products.ForCustomers;
 [Produces(MediaTypeNames.Application.Json)]
 public class ProductController : ControllerBase
 {
-    private readonly TskContext context;
+    private readonly TskDbContext dbContext;
 
-    public ProductController(TskContext context)
+    public ProductController(TskDbContext dbContext)
     {
-        this.context = context;
+        this.dbContext = dbContext;
     }
 
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts()
     {
-        var products = await context.Products
+        var products = await dbContext.Products
             .Where(product => product.IsForSale)
             .ToListAsync();
 

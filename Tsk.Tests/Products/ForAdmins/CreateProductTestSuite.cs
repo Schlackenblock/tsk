@@ -13,7 +13,9 @@ public class CreateProductTestSuite : TestSuiteBase
             Price = 9.99
         };
 
-        var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.PostAsJsonAsync("/management/products", createProductDto);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var createdProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
@@ -24,7 +26,8 @@ public class CreateProductTestSuite : TestSuiteBase
             IsForSale = false
         });
 
-        var persistedProduct = await Context.Products.SingleAsync();
+        await using var dbContext = CreateDbContext();
+        var persistedProduct = await dbContext.Products.SingleAsync();
         persistedProduct.Should().BeEquivalentTo(new
         {
             createdProductDto!.Id,

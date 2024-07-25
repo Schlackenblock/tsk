@@ -7,20 +7,36 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
     [Fact]
     public async Task MakeProductForSale_WhenProductNotForSale_ShouldSucceed()
     {
-        var productForSale = new ProductEntity
+        var initialProduct = new ProductEntity
         {
             Id = Guid.NewGuid(),
-            Title = "Product for sale",
+            Title = "Product",
             Price = 9.99,
             IsForSale = false
         };
-        Context.Products.Add(productForSale);
-        await Context.SaveChangesAsync();
 
-        var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
+        await using (var dbContext = CreateDbContext())
+        {
+            dbContext.Products.Add(initialProduct);
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.PutAsync($"/management/products/{initialProduct.Id}/make-for-sale", null);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        productForSale.IsForSale.Should().Be(true);
+        await using (var dbContext = CreateDbContext())
+        {
+            var updatedProduct = await dbContext.Products.SingleAsync();
+            updatedProduct.Should().BeEquivalentTo(new
+            {
+                initialProduct.Id,
+                initialProduct.Title,
+                initialProduct.Price,
+                IsForSale = true
+            });
+        }
     }
 
     [Fact]
@@ -29,14 +45,20 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
         var productForSale = new ProductEntity
         {
             Id = Guid.NewGuid(),
-            Title = "Product for sale",
+            Title = "Product",
             Price = 9.99,
             IsForSale = true
         };
-        Context.Products.Add(productForSale);
-        await Context.SaveChangesAsync();
 
-        var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
+        await using (var dbContext = CreateDbContext())
+        {
+            dbContext.Products.Add(productForSale);
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -44,7 +66,10 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
     public async Task MakeProductForSale_WhenProductDoesNotExist_ShouldReturnNotFound()
     {
         var notExistingProductId = Guid.NewGuid();
-        var response = await HttpClient.PutAsync($"/management/products/{notExistingProductId}/make-for-sale", null);
+
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.PutAsync($"/management/products/{notExistingProductId}/make-for-sale", null);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

@@ -11,7 +11,7 @@ using Tsk.HttpApi;
 
 namespace Tsk.HttpApi.Migrations
 {
-    [DbContext(typeof(TskContext))]
+    [DbContext(typeof(TskDbContext))]
     [Migration("20240404140221_RemoveProductDescription")]
     partial class RemoveProductDescription
     {

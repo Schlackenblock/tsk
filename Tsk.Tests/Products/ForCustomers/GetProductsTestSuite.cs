@@ -23,10 +23,15 @@ public class GetProductsTestSuite : TestSuiteBase
             IsForSale = true
         };
 
-        Context.Products.AddRange([productNotForSale, productForSale]);
-        await Context.SaveChangesAsync();
+        await using (var dbContext = CreateDbContext())
+        {
+            dbContext.Products.AddRange([productNotForSale, productForSale]);
+            await dbContext.SaveChangesAsync();
+        }
 
-        var response = await HttpClient.GetAsync("/products");
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.GetAsync("/products");
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
@@ -41,7 +46,9 @@ public class GetProductsTestSuite : TestSuiteBase
     [Fact]
     public async Task GetProducts_WhenNoneExist_ShouldReturnNone()
     {
-        var response = await HttpClient.GetAsync("/products");
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.GetAsync("/products");
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();

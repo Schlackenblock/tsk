@@ -10,18 +10,18 @@ namespace Tsk.HttpApi.Products.ForAdmins;
 [Produces(MediaTypeNames.Application.Json)]
 public class ProductController : ControllerBase
 {
-    private readonly TskContext context;
+    private readonly TskDbContext dbContext;
 
-    public ProductController(TskContext context)
+    public ProductController(TskDbContext dbContext)
     {
-        this.context = context;
+        this.dbContext = dbContext;
     }
 
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts()
     {
-        var products = await context.Products.ToListAsync();
+        var products = await dbContext.Products.ToListAsync();
 
         var productDtos = products.Select(
             product => new ProductDto
@@ -48,8 +48,8 @@ public class ProductController : ControllerBase
             IsForSale = false
         };
 
-        context.Products.Add(product);
-        await context.SaveChangesAsync();
+        dbContext.Products.Add(product);
+        await dbContext.SaveChangesAsync();
 
         var productDto = new ProductDto
         {
@@ -67,7 +67,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateProduct([FromRoute] Guid id, [FromBody] UpdateProductDto updateProductDto)
     {
-        var product = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        var product = await dbContext.Products.SingleOrDefaultAsync(product => product.Id == id);
         if (product is null)
         {
             return NotFound();
@@ -75,7 +75,7 @@ public class ProductController : ControllerBase
 
         product.Title = updateProductDto.Title;
         product.Price = updateProductDto.Price;
-        await context.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
 
         var productDto = new ProductDto
         {
@@ -93,7 +93,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> MakeProductForSale([FromRoute] Guid id)
     {
-        var product = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        var product = await dbContext.Products.SingleOrDefaultAsync(product => product.Id == id);
         if (product is null)
         {
             return NotFound();
@@ -104,7 +104,7 @@ public class ProductController : ControllerBase
         }
 
         product.IsForSale = true;
-        await context.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
 
         var productDto = new ProductDto
         {
@@ -122,7 +122,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> MakeProductNotForSale([FromRoute] Guid id)
     {
-        var product = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        var product = await dbContext.Products.SingleOrDefaultAsync(product => product.Id == id);
         if (product is null)
         {
             return NotFound();
@@ -133,7 +133,7 @@ public class ProductController : ControllerBase
         }
 
         product.IsForSale = false;
-        await context.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
 
         var productDto = new ProductDto
         {
@@ -150,14 +150,14 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
     {
-        var product = await context.Products.SingleOrDefaultAsync(product => product.Id == id);
+        var product = await dbContext.Products.SingleOrDefaultAsync(product => product.Id == id);
         if (product is null)
         {
             return NotFound();
         }
 
-        context.Products.Remove(product);
-        await context.SaveChangesAsync();
+        dbContext.Products.Remove(product);
+        await dbContext.SaveChangesAsync();
 
         return Ok();
     }

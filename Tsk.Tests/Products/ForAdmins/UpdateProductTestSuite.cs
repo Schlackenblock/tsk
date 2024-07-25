@@ -8,15 +8,19 @@ public class UpdateProductTestSuite : TestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductForSale_ShouldStayForSale()
     {
-        var productForSale = new ProductEntity
+        var initialProduct = new ProductEntity
         {
             Id = Guid.NewGuid(),
             Title = "Product for sale",
             Price = 9.99,
             IsForSale = true
         };
-        Context.Products.Add(productForSale);
-        await Context.SaveChangesAsync();
+
+        await using (var dbContext = CreateDbContext())
+        {
+            dbContext.Products.Add(initialProduct);
+            await dbContext.SaveChangesAsync();
+        }
 
         var updateProductDto = new UpdateProductDto
         {
@@ -24,33 +28,43 @@ public class UpdateProductTestSuite : TestSuiteBase
             Price = 8.99
         };
 
-        var response = await HttpClient.PutAsJsonAsync($"/management/products/{productForSale.Id}", updateProductDto);
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
         updatedProductDto.Should().BeEquivalentTo(new
         {
-            productForSale.Id,
+            initialProduct.Id,
             updateProductDto.Title,
             updateProductDto.Price,
             IsForSale = true
         });
 
-        productForSale.Should().BeEquivalentTo(updatedProductDto);
+        await using (var dbContext = CreateDbContext())
+        {
+            var updatedProduct = await dbContext.Products.SingleAsync();
+            updatedProduct.Should().BeEquivalentTo(updatedProductDto);
+        }
     }
 
     [Fact]
     public async Task UpdateProduct_WhenProductNotForSale_ShouldStayForSale()
     {
-        var productForSale = new ProductEntity
+        var initialProduct = new ProductEntity
         {
             Id = Guid.NewGuid(),
             Title = "Product for sale",
             Price = 9.99,
             IsForSale = false
         };
-        Context.Products.Add(productForSale);
-        await Context.SaveChangesAsync();
+
+        await using (var dbContext = CreateDbContext())
+        {
+            dbContext.Products.Add(initialProduct);
+            await dbContext.SaveChangesAsync();
+        }
 
         var updateProductDto = new UpdateProductDto
         {
@@ -58,19 +72,26 @@ public class UpdateProductTestSuite : TestSuiteBase
             Price = 8.99
         };
 
-        var response = await HttpClient.PutAsJsonAsync($"/management/products/{productForSale.Id}", updateProductDto);
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
         updatedProductDto.Should().BeEquivalentTo(new
         {
-            productForSale.Id,
+            initialProduct.Id,
             updateProductDto.Title,
             updateProductDto.Price,
             IsForSale = false
         });
 
-        productForSale.Should().BeEquivalentTo(updatedProductDto);
+        await using (var dbContext = CreateDbContext())
+        {
+            var updatedProduct = await dbContext.Products.SingleAsync();
+            updatedProduct.Should().BeEquivalentTo(updatedProductDto);
+        }
+
     }
 
     [Fact]
@@ -83,7 +104,9 @@ public class UpdateProductTestSuite : TestSuiteBase
             Price = 8.99
         };
 
-        var response = await HttpClient.PutAsJsonAsync($"/management/products/{notExistingProductId}", updateProductDto);
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.PutAsJsonAsync($"/management/products/{notExistingProductId}", updateProductDto);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

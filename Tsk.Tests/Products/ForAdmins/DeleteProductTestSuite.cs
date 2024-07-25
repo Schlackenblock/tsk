@@ -14,14 +14,23 @@ public class DeleteProductTestSuite : TestSuiteBase
             Price = 9.99,
             IsForSale = true
         };
-        Context.Products.Add(existingProduct);
-        await Context.SaveChangesAsync();
 
-        var response = await HttpClient.DeleteAsync($"/management/products/{existingProduct.Id}");
+        await using (var dbContext = CreateDbContext())
+        {
+            dbContext.Products.Add(existingProduct);
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.DeleteAsync($"/management/products/{existingProduct.Id}");
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var persistedProducts = await Context.Products.ToListAsync();
-        persistedProducts.Should().BeEmpty();
+        await using (var dbContext = CreateDbContext())
+        {
+            var persistedProducts = await dbContext.Products.ToListAsync();
+            persistedProducts.Should().BeEmpty();
+        }
     }
     [Fact]
     public async Task DeleteProduct_WhenProductNotForSaleExists_ShouldSucceed()
@@ -33,21 +42,33 @@ public class DeleteProductTestSuite : TestSuiteBase
             Price = 9.99,
             IsForSale = false
         };
-        Context.Products.Add(existingProduct);
-        await Context.SaveChangesAsync();
 
-        var response = await HttpClient.DeleteAsync($"/management/products/{existingProduct.Id}");
+        await using (var dbContext = CreateDbContext())
+        {
+            dbContext.Products.Add(existingProduct);
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.DeleteAsync($"/management/products/{existingProduct.Id}");
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var persistedProducts = await Context.Products.ToListAsync();
-        persistedProducts.Should().BeEmpty();
+        await using (var dbContext = CreateDbContext())
+        {
+            var persistedProducts = await dbContext.Products.ToListAsync();
+            persistedProducts.Should().BeEmpty();
+        }
     }
 
     [Fact]
     public async Task DeleteProduct_WhenProductDoesNotExist_ShouldFail()
     {
         var notExistingProductId = Guid.NewGuid();
-        var response = await HttpClient.DeleteAsync($"/management/products/{notExistingProductId}");
+
+        using var httpClient = CreateHttpClient();
+        var response = await httpClient.DeleteAsync($"/management/products/{notExistingProductId}");
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
