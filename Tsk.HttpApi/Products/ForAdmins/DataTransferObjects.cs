@@ -22,6 +22,7 @@ public class CreateProductDto
 
     [Required]
     [GreaterThan(0)]
+    [RegularExpression(@"^\d+\.\d{2}$")]
     public required decimal Price { get; init; }
 }
 
@@ -34,5 +35,6 @@ public class UpdateProductDto
 
     [Required]
     [GreaterThan(0)]
+    [RegularExpression(@"^\d+\.\d{2}$")]
     public required decimal Price { get; init; }
 }
