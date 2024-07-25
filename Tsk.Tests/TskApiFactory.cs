@@ -15,39 +15,39 @@ public class TskApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
             .WithImage("postgres:latest")
             .Build();
 
-    public TskContext CreateContext()
+    public TskDbContext CreateDbContext()
     {
-        return Services.GetRequiredService<TskContext>();
+        return new TskDbContext(GetDbContextOptions());
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureTestServices(
-            services =>
-            {
-                services.RemoveAll<TskContext>();
-                services.RemoveAll<DbContextOptions>();
-                services.RemoveAll<DbContextOptions<TskContext>>();
-
-                services.AddDbContext<TskContext>(
-                    options => options.UseNpgsql(postgreSqlContainer.GetConnectionString()),
-                    contextLifetime: ServiceLifetime.Singleton,
-                    optionsLifetime: ServiceLifetime.Singleton
-                );
-            }
-        );
+        builder.ConfigureTestServices(services =>
+        {
+            services.Replace(new ServiceDescriptor(
+                serviceType: typeof(DbContextOptions<TskDbContext>),
+                instance: GetDbContextOptions()
+            ));
+        });
     }
 
     public async Task InitializeAsync()
     {
         await postgreSqlContainer.StartAsync();
 
-        var context = CreateContext();
+        await using var context = CreateDbContext();
         await context.Database.EnsureCreatedAsync();
     }
 
     public new async Task DisposeAsync()
     {
         await postgreSqlContainer.StopAsync();
+    }
+
+    private DbContextOptions<TskDbContext> GetDbContextOptions()
+    {
+        return new DbContextOptionsBuilder<TskDbContext>()
+            .UseNpgsql(postgreSqlContainer.GetConnectionString())
+            .Options;
     }
 }

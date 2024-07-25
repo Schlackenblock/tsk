@@ -25,8 +25,12 @@ public class GetProductsTestSuite : TestSuiteBase
                 IsForSale = false
             }
         };
-        Context.Products.AddRange(existingProducts);
-        await Context.SaveChangesAsync();
+
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.AddRange(existingProducts);
+            await dbContext.SaveChangesAsync();
+        });
 
         var response = await HttpClient.GetAsync("/management/products");
         response.StatusCode.Should().Be(HttpStatusCode.OK);

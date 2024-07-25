@@ -7,20 +7,34 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
     [Fact]
     public async Task MakeProductForSale_WhenProductNotForSale_ShouldSucceed()
     {
-        var productForSale = new ProductEntity
+        var initialProduct = new ProductEntity
         {
             Id = Guid.NewGuid(),
-            Title = "Product for sale",
+            Title = "Product",
             Price = 9.99,
             IsForSale = false
         };
-        Context.Products.Add(productForSale);
-        await Context.SaveChangesAsync();
 
-        var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.Add(initialProduct);
+            await dbContext.SaveChangesAsync();
+        });
+
+        var response = await HttpClient.PutAsync($"/management/products/{initialProduct.Id}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        productForSale.IsForSale.Should().Be(true);
+        await CallDbAsync(async dbContext =>
+        {
+            var updatedProduct = await dbContext.Products.SingleAsync();
+            updatedProduct.Should().BeEquivalentTo(new
+            {
+                initialProduct.Id,
+                initialProduct.Title,
+                initialProduct.Price,
+                IsForSale = true
+            });
+        });
     }
 
     [Fact]
@@ -29,12 +43,16 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
         var productForSale = new ProductEntity
         {
             Id = Guid.NewGuid(),
-            Title = "Product for sale",
+            Title = "Product",
             Price = 9.99,
             IsForSale = true
         };
-        Context.Products.Add(productForSale);
-        await Context.SaveChangesAsync();
+
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.Add(productForSale);
+            await dbContext.SaveChangesAsync();
+        });
 
         var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

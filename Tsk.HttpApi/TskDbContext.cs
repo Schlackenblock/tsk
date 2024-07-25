@@ -3,9 +3,9 @@ using Tsk.HttpApi.Products;
 
 namespace Tsk.HttpApi;
 
-public class TskContext : DbContext
+public class TskDbContext : DbContext
 {
-    public TskContext(DbContextOptions<TskContext> options)
+    public TskDbContext(DbContextOptions<TskDbContext> options)
         : base(options)
     {
     }

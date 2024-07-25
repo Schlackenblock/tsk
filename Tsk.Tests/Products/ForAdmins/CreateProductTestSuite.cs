@@ -24,13 +24,16 @@ public class CreateProductTestSuite : TestSuiteBase
             IsForSale = false
         });
 
-        var persistedProduct = await Context.Products.SingleAsync();
-        persistedProduct.Should().BeEquivalentTo(new
+        await CallDbAsync(async dbContext =>
         {
-            createdProductDto!.Id,
-            createdProductDto.Title,
-            createdProductDto.Price,
-            createdProductDto.IsForSale
+            var persistedProduct = await dbContext.Products.SingleAsync();
+            persistedProduct.Should().BeEquivalentTo(new
+            {
+                createdProductDto!.Id,
+                createdProductDto.Title,
+                createdProductDto.Price,
+                createdProductDto.IsForSale
+            });
         });
     }
 }
