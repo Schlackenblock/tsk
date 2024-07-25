@@ -12,14 +12,14 @@ public class GetProductsTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product not for sale",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = false
         };
         var productForSale = new ProductEntity
         {
             Id = Guid.NewGuid(),
             Title = "Product for sale",
-            Price = 8.99,
+            Price = 8.99m,
             IsForSale = true
         };
 

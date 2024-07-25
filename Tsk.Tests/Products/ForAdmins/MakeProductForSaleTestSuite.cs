@@ -11,7 +11,7 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = false
         };
 
@@ -44,7 +44,7 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = true
         };
 

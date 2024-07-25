@@ -10,7 +10,7 @@ public class CreateProductTestSuite : TestSuiteBase
         var createProductDto = new CreateProductDto
         {
             Title = "Product",
-            Price = 9.99
+            Price = 9.99m
         };
 
         var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);

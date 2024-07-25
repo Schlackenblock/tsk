@@ -12,7 +12,7 @@ public class UpdateProductTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product for sale",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = true
         };
 
@@ -25,7 +25,7 @@ public class UpdateProductTestSuite : TestSuiteBase
         var updateProductDto = new UpdateProductDto
         {
             Title = "Updated product for sale",
-            Price = 8.99
+            Price = 8.99m
         };
 
         var response = await HttpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
@@ -54,7 +54,7 @@ public class UpdateProductTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product for sale",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = false
         };
 
@@ -67,7 +67,7 @@ public class UpdateProductTestSuite : TestSuiteBase
         var updateProductDto = new UpdateProductDto
         {
             Title = "Updated product for sale",
-            Price = 8.99
+            Price = 8.99m
         };
 
         var response = await HttpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
@@ -97,7 +97,7 @@ public class UpdateProductTestSuite : TestSuiteBase
         var updateProductDto = new UpdateProductDto
         {
             Title = "Updated not existing product",
-            Price = 8.99
+            Price = 8.99m
         };
 
         var response = await HttpClient.PutAsJsonAsync($"/management/products/{notExistingProductId}", updateProductDto);
