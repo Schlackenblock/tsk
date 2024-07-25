@@ -38,6 +38,7 @@ public class UpdateProductTestSuite : TestSuiteBase
 
         productForSale.Should().BeEquivalentTo(updatedProductDto);
     }
+
     [Fact]
     public async Task UpdateProduct_WhenProductNotForSale_ShouldStayForSale()
     {
