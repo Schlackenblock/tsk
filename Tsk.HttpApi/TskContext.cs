@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Tsk.HttpApi.Products;
-using Tsk.HttpApi.Products.ForCustomers;
 
 namespace Tsk.HttpApi;
 
