@@ -2,7 +2,7 @@ using Tsk.HttpApi;
 
 namespace Tsk.Tests;
 
-public abstract class TestSuiteBase : IAsyncLifetime
+public abstract class IntegrationTestSuiteBase : IAsyncLifetime
 {
     protected HttpClient HttpClient { get; private set; } = null!;
 

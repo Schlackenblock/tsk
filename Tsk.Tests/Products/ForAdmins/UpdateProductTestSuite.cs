@@ -3,7 +3,7 @@ using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.Products.ForAdmins;
 
-public class UpdateProductTestSuite : TestSuiteBase
+public class UpdateProductTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
     public async Task UpdateProduct_WhenProductForSale_ShouldStayForSale()

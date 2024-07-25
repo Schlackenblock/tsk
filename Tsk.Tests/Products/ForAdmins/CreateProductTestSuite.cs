@@ -2,7 +2,7 @@ using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.Products.ForAdmins;
 
-public class CreateProductTestSuite : TestSuiteBase
+public class CreateProductTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
     public async Task CreateProduct_WhenValid_ShouldSucceed()

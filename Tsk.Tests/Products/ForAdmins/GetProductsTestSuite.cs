@@ -3,7 +3,7 @@ using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.Products.ForAdmins;
 
-public class GetProductsTestSuite : TestSuiteBase
+public class GetProductsTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
     public async Task GetProducts_WhenManyExist_ShouldBothForSaleAndNotForSale()

@@ -2,7 +2,7 @@ using Tsk.HttpApi.Products;
 
 namespace Tsk.Tests.Products.ForAdmins;
 
-public class DeleteProductTestSuite : TestSuiteBase
+public class DeleteProductTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
     public async Task DeleteProduct_WhenProductForSaleExists_ShouldSucceed()

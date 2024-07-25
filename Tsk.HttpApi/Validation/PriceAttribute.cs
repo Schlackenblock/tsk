@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace Tsk.HttpApi.Validation;
 
@@ -7,28 +8,26 @@ public class PriceAttribute : ValidationAttribute
 {
     private const string errorMessageTemplate = "The field {0} must be a valid price.";
 
-    private readonly RegularExpressionAttribute regularExpressionAttribute;
     private readonly GreaterThanAttribute greaterThanAttribute;
+    private readonly RegularExpressionAttribute regularExpressionAttribute;
 
     public PriceAttribute()
         : base(errorMessageTemplate)
     {
-        regularExpressionAttribute = new RegularExpressionAttribute(@"^\d+\.\d{2}$");
         greaterThanAttribute = new GreaterThanAttribute(0);
+        regularExpressionAttribute = new RegularExpressionAttribute(@"^\d+\.\d{2}$");
     }
 
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    public override bool IsValid(object? value)
     {
-        if (!regularExpressionAttribute.IsValid(value))
-        {
-            return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
-        }
+        return
+            value is decimal &&
+            greaterThanAttribute.IsValid(value) &&
+            regularExpressionAttribute.IsValid(value);
+    }
 
-        if (!greaterThanAttribute.IsValid(value))
-        {
-            return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
-        }
-
-        return ValidationResult.Success;
+    public override string FormatErrorMessage(string name)
+    {
+        return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name);
     }
 }

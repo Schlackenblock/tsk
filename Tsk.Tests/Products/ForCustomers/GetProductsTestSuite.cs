@@ -3,7 +3,7 @@ using Tsk.HttpApi.Products.ForCustomers;
 
 namespace Tsk.Tests.Products.ForCustomers;
 
-public class GetProductsTestSuite : TestSuiteBase
+public class GetProductsTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
     public async Task GetProducts_WhenManyExist_ShouldReturnMany()

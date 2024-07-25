@@ -2,7 +2,7 @@ using Tsk.HttpApi.Products;
 
 namespace Tsk.Tests.Products.ForAdmins;
 
-public class MakeProductForSaleTestSuite : TestSuiteBase
+public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
     public async Task MakeProductForSale_WhenProductNotForSale_ShouldSucceed()
