@@ -21,9 +21,7 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
             await dbContext.SaveChangesAsync();
         }
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.PutAsync($"/management/products/{initialProduct.Id}/make-for-sale", null);
-
+        var response = await HttpClient.PutAsync($"/management/products/{initialProduct.Id}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         await using (var dbContext = CreateDbContext())
@@ -56,9 +54,7 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
             await dbContext.SaveChangesAsync();
         }
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
-
+        var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -66,10 +62,7 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
     public async Task MakeProductForSale_WhenProductDoesNotExist_ShouldReturnNotFound()
     {
         var notExistingProductId = Guid.NewGuid();
-
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.PutAsync($"/management/products/{notExistingProductId}/make-for-sale", null);
-
+        var response = await HttpClient.PutAsync($"/management/products/{notExistingProductId}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

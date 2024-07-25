@@ -4,17 +4,10 @@ namespace Tsk.Tests;
 
 public abstract class TestSuiteBase : IAsyncLifetime
 {
-    private readonly ICollection<HttpClient> httpClients = [];
+    protected HttpClient HttpClient { get; private set; } = null!;
+
     private readonly ICollection<TskDbContext> dbContexts = [];
-
     private readonly TskApiFactory apiFactory = new();
-
-    protected HttpClient CreateHttpClient()
-    {
-        var httpClient = apiFactory.CreateClient();
-        httpClients.Add(httpClient);
-        return httpClient;
-    }
 
     protected TskDbContext CreateDbContext()
     {
@@ -26,14 +19,12 @@ public abstract class TestSuiteBase : IAsyncLifetime
     public async Task InitializeAsync()
     {
         await apiFactory.InitializeAsync();
+        HttpClient = apiFactory.CreateClient();
     }
 
     public async Task DisposeAsync()
     {
-        foreach (var httpClient in httpClients)
-        {
-            httpClient.Dispose();
-        }
+        HttpClient.Dispose();
 
         var dbContextDisposeTasks = dbContexts.Select(dbContext => dbContext.DisposeAsync().AsTask());
         await Task.WhenAll(dbContextDisposeTasks);

@@ -32,9 +32,7 @@ public class GetProductsTestSuite : TestSuiteBase
             await dbContext.SaveChangesAsync();
         }
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.GetAsync("/management/products");
-
+        var response = await HttpClient.GetAsync("/management/products");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
@@ -44,9 +42,7 @@ public class GetProductsTestSuite : TestSuiteBase
     [Fact]
     public async Task GetProducts_WhenNoneExist_ShouldReturnNone()
     {
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.GetAsync("/management/products");
-
+        var response = await HttpClient.GetAsync("/management/products");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();

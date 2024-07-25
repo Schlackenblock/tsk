@@ -28,9 +28,7 @@ public class UpdateProductTestSuite : TestSuiteBase
             Price = 8.99
         };
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
-
+        var response = await HttpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
@@ -72,9 +70,7 @@ public class UpdateProductTestSuite : TestSuiteBase
             Price = 8.99
         };
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
-
+        var response = await HttpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
@@ -104,9 +100,7 @@ public class UpdateProductTestSuite : TestSuiteBase
             Price = 8.99
         };
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.PutAsJsonAsync($"/management/products/{notExistingProductId}", updateProductDto);
-
+        var response = await HttpClient.PutAsJsonAsync($"/management/products/{notExistingProductId}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

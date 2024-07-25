@@ -13,9 +13,7 @@ public class CreateProductTestSuite : TestSuiteBase
             Price = 9.99
         };
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.PostAsJsonAsync("/management/products", createProductDto);
-
+        var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var createdProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();

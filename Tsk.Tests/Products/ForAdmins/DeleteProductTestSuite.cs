@@ -21,9 +21,7 @@ public class DeleteProductTestSuite : TestSuiteBase
             await dbContext.SaveChangesAsync();
         }
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.DeleteAsync($"/management/products/{existingProduct.Id}");
-
+        var response = await HttpClient.DeleteAsync($"/management/products/{existingProduct.Id}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         await using (var dbContext = CreateDbContext())
@@ -49,9 +47,7 @@ public class DeleteProductTestSuite : TestSuiteBase
             await dbContext.SaveChangesAsync();
         }
 
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.DeleteAsync($"/management/products/{existingProduct.Id}");
-
+        var response = await HttpClient.DeleteAsync($"/management/products/{existingProduct.Id}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         await using (var dbContext = CreateDbContext())
@@ -65,10 +61,7 @@ public class DeleteProductTestSuite : TestSuiteBase
     public async Task DeleteProduct_WhenProductDoesNotExist_ShouldFail()
     {
         var notExistingProductId = Guid.NewGuid();
-
-        using var httpClient = CreateHttpClient();
-        var response = await httpClient.DeleteAsync($"/management/products/{notExistingProductId}");
-
+        var response = await HttpClient.DeleteAsync($"/management/products/{notExistingProductId}");
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
