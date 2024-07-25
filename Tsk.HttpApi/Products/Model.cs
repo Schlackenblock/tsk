@@ -13,4 +13,7 @@ public class ProductEntity
 
     [Column("price")]
     public required double Price { get; set; }
+
+    [Column("is_for_sale")]
+    public required bool IsForSale { get; set; }
 }

@@ -12,15 +12,15 @@ using Tsk.HttpApi;
 namespace Tsk.HttpApi.Migrations
 {
     [DbContext(typeof(TskContext))]
-    [Migration("20240323110016_FixMeetupNaming")]
-    partial class FixMeetupNaming
+    [Migration("20240724180553_AddIsForSale")]
+    partial class AddIsForSale
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -32,10 +32,9 @@ namespace Tsk.HttpApi.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
+                    b.Property<bool>("IsForSale")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_for_sale");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision")
