@@ -9,7 +9,7 @@ public class ProductDto
 {
     public required Guid Id { get; init; }
     public required string Title { get; init; }
-    public required double Price { get; init; }
+    public required decimal Price { get; init; }
     public required bool IsForSale { get; init; }
 }
 
@@ -21,8 +21,8 @@ public class CreateProductDto
     public required string Title { get; init; }
 
     [Required]
-    [GreaterThan(0)]
-    public required double Price { get; init; }
+    [Price]
+    public required decimal Price { get; init; }
 }
 
 [PublicAPI]
@@ -33,6 +33,6 @@ public class UpdateProductDto
     public required string Title { get; init; }
 
     [Required]
-    [GreaterThan(0)]
-    public required double Price { get; init; }
+    [Price]
+    public required decimal Price { get; init; }
 }

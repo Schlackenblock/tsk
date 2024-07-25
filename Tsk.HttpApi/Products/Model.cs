@@ -11,8 +11,8 @@ public class ProductEntity
     [Column("title")]
     public required string Title { get; set; }
 
-    [Column("price")]
-    public required double Price { get; set; }
+    [Column("price", TypeName = "numeric(12,2)")]
+    public required decimal Price { get; set; }
 
     [Column("is_for_sale")]
     public required bool IsForSale { get; set; }

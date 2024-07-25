@@ -2,7 +2,7 @@ using Tsk.HttpApi.Products;
 
 namespace Tsk.Tests.Products.ForAdmins;
 
-public class MakeProductForSaleTestSuite : TestSuiteBase
+public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
     public async Task MakeProductForSale_WhenProductNotForSale_ShouldSucceed()
@@ -11,7 +11,7 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = false
         };
 
@@ -44,7 +44,7 @@ public class MakeProductForSaleTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = true
         };
 

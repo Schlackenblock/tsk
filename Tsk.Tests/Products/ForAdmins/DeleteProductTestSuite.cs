@@ -2,7 +2,7 @@ using Tsk.HttpApi.Products;
 
 namespace Tsk.Tests.Products.ForAdmins;
 
-public class DeleteProductTestSuite : TestSuiteBase
+public class DeleteProductTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
     public async Task DeleteProduct_WhenProductForSaleExists_ShouldSucceed()
@@ -11,7 +11,7 @@ public class DeleteProductTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = true
         };
 
@@ -37,7 +37,7 @@ public class DeleteProductTestSuite : TestSuiteBase
         {
             Id = Guid.NewGuid(),
             Title = "Product",
-            Price = 9.99,
+            Price = 9.99m,
             IsForSale = false
         };
 
