@@ -25,21 +25,21 @@ public class ProductController : ControllerBase
         var productsQuery = dbContext.Products
             .Where(product => product.IsForSale);
 
-        if (string.Equals(orderBy, "title_asc", StringComparison.OrdinalIgnoreCase))
-        {
-            productsQuery = productsQuery.OrderBy(product => product.Title);
-        }
-        else if (string.Equals(orderBy, "title_desc", StringComparison.OrdinalIgnoreCase))
-        {
-            productsQuery = productsQuery.OrderByDescending(product => product.Title);
-        }
-        else if (string.Equals(orderBy, "price_asc", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(orderBy, "price_asc", StringComparison.OrdinalIgnoreCase))
         {
             productsQuery = productsQuery.OrderBy(product => product.Price);
         }
         else if (string.Equals(orderBy, "price_desc", StringComparison.OrdinalIgnoreCase))
         {
             productsQuery = productsQuery.OrderByDescending(product => product.Price);
+        }
+        else if (string.Equals(orderBy, "title_asc", StringComparison.OrdinalIgnoreCase))
+        {
+            productsQuery = productsQuery.OrderBy(product => product.Title);
+        }
+        else if (string.Equals(orderBy, "title_desc", StringComparison.OrdinalIgnoreCase))
+        {
+            productsQuery = productsQuery.OrderByDescending(product => product.Title);
         }
         else
         {
