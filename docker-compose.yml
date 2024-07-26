@@ -1,6 +1,10 @@
 version: '3.8'
 name: tsk_dependencies
 services:
+  api:
+    build: ./Tsk.HttpApi
+    ports:
+      - 5071:8080
   postgres:
     image: postgres
     container_name: tsk_dependencies_postgres
