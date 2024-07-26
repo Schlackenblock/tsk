@@ -20,7 +20,7 @@ public class ProductController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts([Required] [FromQuery] string orderBy)
+    public async Task<IActionResult> GetProducts([Required][FromQuery] string orderBy)
     {
         var productsQuery = dbContext.Products
             .Where(product => product.IsForSale);
