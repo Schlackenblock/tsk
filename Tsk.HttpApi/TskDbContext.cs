@@ -6,7 +6,7 @@ namespace Tsk.HttpApi;
 
 public class TskDbContext : DbContext
 {
-    public DbSet<ProductEntity> Products => Set<ProductEntity>();
+    public DbSet<Product> Products => Set<Product>();
 
     public TskDbContext(DbContextOptions<TskDbContext> options)
         : base(options)

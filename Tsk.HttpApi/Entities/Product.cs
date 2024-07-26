@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Tsk.HttpApi.Entities;
 
-public class ProductEntity
+public class Product
 {
     public Guid Id { get; init; }
     public required string Title { get; set; }
@@ -11,9 +11,9 @@ public class ProductEntity
     public required bool IsForSale { get; set; }
 }
 
-internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<ProductEntity>
+internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product>
 {
-    public void Configure(EntityTypeBuilder<ProductEntity> productEntity)
+    public void Configure(EntityTypeBuilder<Product> productEntity)
     {
         productEntity.ToTable("products");
 

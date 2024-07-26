@@ -11,14 +11,14 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var existingProducts = new[]
         {
-            new ProductEntity
+            new Product
             {
                 Id = Guid.NewGuid(),
                 Title = "Product for sale",
                 Price = 9.99m,
                 IsForSale = true
             },
-            new ProductEntity
+            new Product
             {
                 Id = Guid.NewGuid(),
                 Title = "Product not for sale",

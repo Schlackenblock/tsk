@@ -8,7 +8,7 @@ public class MakeProductNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductNotForSaleTestSuite_WhenProductForSale_ShouldSucceed()
     {
-        var initialProduct = new ProductEntity
+        var initialProduct = new Product
         {
             Id = Guid.NewGuid(),
             Title = "Product",
@@ -41,7 +41,7 @@ public class MakeProductNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductNotForSaleTestSuite_WhenProductAlreadyNotForSale_ShouldReturnBadRequest()
     {
-        var productForSale = new ProductEntity
+        var productForSale = new Product
         {
             Id = Guid.NewGuid(),
             Title = "Product",

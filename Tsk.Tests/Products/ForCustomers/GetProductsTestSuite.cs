@@ -9,14 +9,14 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenManyExist_ShouldReturnMany()
     {
-        var productNotForSale = new ProductEntity
+        var productNotForSale = new Product
         {
             Id = Guid.NewGuid(),
             Title = "Product not for sale",
             Price = 9.99m,
             IsForSale = false
         };
-        var productForSale = new ProductEntity
+        var productForSale = new Product
         {
             Id = Guid.NewGuid(),
             Title = "Product for sale",
