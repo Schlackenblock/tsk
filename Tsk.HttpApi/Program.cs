@@ -4,7 +4,10 @@ using Tsk.HttpApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.CustomSchemaIds(type => type.FullName);
+});
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<TskDbContext>(options =>
