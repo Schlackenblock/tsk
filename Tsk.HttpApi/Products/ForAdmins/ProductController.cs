@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tsk.HttpApi.Entities;
 
 namespace Tsk.HttpApi.Products.ForAdmins;
 
@@ -40,7 +41,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
-        var product = new ProductEntity
+        var product = new Product
         {
             Id = Guid.NewGuid(),
             Title = createProductDto.Title,

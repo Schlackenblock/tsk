@@ -11,7 +11,7 @@ using Tsk.HttpApi;
 namespace Tsk.HttpApi.Migrations
 {
     [DbContext(typeof(TskDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    partial class TskDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -22,7 +22,7 @@ namespace Tsk.HttpApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Tsk.HttpApi.Products.ProductEntity", b =>
+            modelBuilder.Entity("Tsk.HttpApi.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,9 +42,10 @@ namespace Tsk.HttpApi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_products");
 
-                    b.ToTable("products");
+                    b.ToTable("products", (string)null);
                 });
 #pragma warning restore 612, 618
         }

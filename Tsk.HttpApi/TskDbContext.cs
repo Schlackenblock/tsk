@@ -1,14 +1,21 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Tsk.HttpApi.Products;
+using Tsk.HttpApi.Entities;
 
 namespace Tsk.HttpApi;
 
 public class TskDbContext : DbContext
 {
+    public DbSet<Product> Products => Set<Product>();
+
     public TskDbContext(DbContextOptions<TskDbContext> options)
         : base(options)
     {
     }
 
-    public DbSet<ProductEntity> Products => Set<ProductEntity>();
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        var currentAssembly = Assembly.GetExecutingAssembly();
+        modelBuilder.ApplyConfigurationsFromAssembly(currentAssembly);
+    }
 }
