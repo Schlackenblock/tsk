@@ -1,4 +1,4 @@
-using Tsk.HttpApi.Products;
+using Tsk.HttpApi.Entities;
 
 namespace Tsk.Tests.Products.ForAdmins;
 
@@ -7,7 +7,7 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task DeleteProduct_WhenProductForSaleExists_ShouldSucceed()
     {
-        var existingProduct = new ProductEntity
+        var existingProduct = new Product
         {
             Id = Guid.NewGuid(),
             Title = "Product",
@@ -33,7 +33,7 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task DeleteProduct_WhenProductNotForSaleExists_ShouldSucceed()
     {
-        var existingProduct = new ProductEntity
+        var existingProduct = new Product
         {
             Id = Guid.NewGuid(),
             Title = "Product",

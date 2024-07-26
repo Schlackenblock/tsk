@@ -1,4 +1,4 @@
-using Tsk.HttpApi.Products;
+using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.Products.ForAdmins;
@@ -8,7 +8,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductForSale_ShouldStayForSale()
     {
-        var initialProduct = new ProductEntity
+        var initialProduct = new Product
         {
             Id = Guid.NewGuid(),
             Title = "Product for sale",
@@ -50,7 +50,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductNotForSale_ShouldStayForSale()
     {
-        var initialProduct = new ProductEntity
+        var initialProduct = new Product
         {
             Id = Guid.NewGuid(),
             Title = "Product for sale",
