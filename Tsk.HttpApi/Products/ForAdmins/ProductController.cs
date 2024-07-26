@@ -79,6 +79,7 @@ public class ProductController : ControllerBase
 
         product.Title = updateProductDto.Title;
         product.Price = updateProductDto.Price;
+        product.Code = updateProductDto.Code;
         await dbContext.SaveChangesAsync();
 
         var productDto = new ProductDto
