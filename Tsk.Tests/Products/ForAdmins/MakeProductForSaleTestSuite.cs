@@ -10,6 +10,7 @@ public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
         var initialProduct = new Product
         {
             Id = Guid.NewGuid(),
+            Code = "P",
             Title = "Product",
             Price = 9.99m,
             IsForSale = false
@@ -27,11 +28,12 @@ public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
         await CallDbAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
-            updatedProduct.Should().BeEquivalentTo(new
+            updatedProduct.Should().BeEquivalentTo(new Product
             {
-                initialProduct.Id,
-                initialProduct.Title,
-                initialProduct.Price,
+                Id = initialProduct.Id,
+                Code = initialProduct.Code,
+                Title = initialProduct.Title,
+                Price = initialProduct.Price,
                 IsForSale = true
             });
         });
@@ -43,6 +45,7 @@ public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
         var productForSale = new Product
         {
             Id = Guid.NewGuid(),
+            Code = "P",
             Title = "Product",
             Price = 9.99m,
             IsForSale = true

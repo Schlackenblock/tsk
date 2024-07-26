@@ -50,6 +50,7 @@ public class ProductController : ControllerBase
             .Select(product => new ProductDto
             {
                 Id = product.Id,
+                Code = product.Code,
                 Title = product.Title,
                 Price = product.Price
             })

@@ -28,6 +28,7 @@ public class ProductController : ControllerBase
             product => new ProductDto
             {
                 Id = product.Id,
+                Code = product.Code,
                 Title = product.Title,
                 Price = product.Price,
                 IsForSale = product.IsForSale
@@ -44,6 +45,7 @@ public class ProductController : ControllerBase
         var product = new Product
         {
             Id = Guid.NewGuid(),
+            Code = createProductDto.Code,
             Title = createProductDto.Title,
             Price = createProductDto.Price,
             IsForSale = false
@@ -55,6 +57,7 @@ public class ProductController : ControllerBase
         var productDto = new ProductDto
         {
             Id = product.Id,
+            Code = product.Code,
             Title = product.Title,
             Price = product.Price,
             IsForSale = product.IsForSale
@@ -81,6 +84,7 @@ public class ProductController : ControllerBase
         var productDto = new ProductDto
         {
             Id = product.Id,
+            Code = product.Code,
             Title = product.Title,
             Price = product.Price,
             IsForSale = product.IsForSale
@@ -110,6 +114,7 @@ public class ProductController : ControllerBase
         var productDto = new ProductDto
         {
             Id = product.Id,
+            Code = product.Code,
             Title = product.Title,
             Price = product.Price,
             IsForSale = product.IsForSale
@@ -139,6 +144,7 @@ public class ProductController : ControllerBase
         var productDto = new ProductDto
         {
             Id = product.Id,
+            Code = product.Code,
             Title = product.Title,
             Price = product.Price,
             IsForSale = product.IsForSale
