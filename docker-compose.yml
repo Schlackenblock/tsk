@@ -2,12 +2,15 @@ version: '3.8'
 name: tsk_dependencies
 services:
   api:
+    container_name: tsk_api
     build: ./Tsk.HttpApi
     ports:
       - 5071:8080
+    environment:
+      ConnectionStrings__PostgreSQL: 'Server=postgres;Port=5432;Database=postgres;User Id=postgres;Password=postgres'
   postgres:
     image: postgres
-    container_name: tsk_dependencies_postgres
+    container_name: tsk_postgres
     restart: always
     ports:
       - 5072:5432
@@ -18,7 +21,7 @@ services:
       - postgres_volume:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4
-    container_name: tsk_dependencies_pgadmin
+    container_name: tsk_pgadmin
     restart: always
     ports:
       - 5073:80
