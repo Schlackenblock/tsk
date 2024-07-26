@@ -1,19 +1,37 @@
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Tsk.HttpApi.Entities;
 
-[Table("products")]
 public class ProductEntity
 {
-    [Column("id")]
     public Guid Id { get; init; }
-
-    [Column("title")]
     public required string Title { get; set; }
-
-    [Column("price", TypeName = "numeric(12,2)")]
     public required decimal Price { get; set; }
-
-    [Column("is_for_sale")]
     public required bool IsForSale { get; set; }
+}
+
+internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<ProductEntity>
+{
+    public void Configure(EntityTypeBuilder<ProductEntity> productEntity)
+    {
+        productEntity.ToTable("products");
+
+        productEntity
+            .Property(product => product.Id)
+            .HasColumnName("id");
+
+        productEntity
+            .Property(product => product.Title)
+            .HasColumnName("title");
+
+        productEntity
+            .Property(product => product.Price)
+            .HasColumnType("numeric(12,2)")
+            .HasColumnName("price");
+
+        productEntity
+            .Property(product => product.IsForSale)
+            .HasColumnName("is_for_sale");
+    }
 }
