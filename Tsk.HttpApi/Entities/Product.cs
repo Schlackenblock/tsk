@@ -32,7 +32,8 @@ internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product
 
         productEntity
             .HasIndex(product => product.Code)
-            .IsUnique();
+            .IsUnique()
+            .HasDatabaseName("ix_products_code");
 
         productEntity
             .Property(product => product.Title)
