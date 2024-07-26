@@ -10,11 +10,11 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var products = new[]
         {
-            new Product { Id = Guid.NewGuid(), Title = "Product #1", Price = 2.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #2", Price = 5.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #3", Price = 1.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #4", Price = 4.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #5", Price = 3.99m, IsForSale = true }
+            new Product { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Price = 2.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Price = 5.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Price = 1.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Price = 4.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Price = 3.99m, IsForSale = true }
         };
 
         await CallDbAsync(async dbContext =>
@@ -31,6 +31,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             .Select(product => new ProductDto
             {
                 Id = product.Id,
+                Code = product.Code,
                 Title = product.Title,
                 Price = product.Price
             });
@@ -44,11 +45,11 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var products = new[]
         {
-            new Product { Id = Guid.NewGuid(), Title = "Product #1", Price = 2.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #2", Price = 5.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #3", Price = 1.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #4", Price = 4.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #5", Price = 3.99m, IsForSale = true }
+            new Product { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Price = 2.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Price = 5.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Price = 1.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Price = 4.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Price = 3.99m, IsForSale = true }
         };
 
         await CallDbAsync(async dbContext =>
@@ -65,6 +66,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             .Select(product => new ProductDto
             {
                 Id = product.Id,
+                Code = product.Code,
                 Title = product.Title,
                 Price = product.Price
             });
@@ -78,11 +80,11 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var products = new[]
         {
-            new Product { Id = Guid.NewGuid(), Title = "Product #2", Price = 1.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #5", Price = 2.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #1", Price = 3.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #4", Price = 4.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #3", Price = 5.99m, IsForSale = true }
+            new Product { Id = Guid.NewGuid(), Code = "P1", Title = "Product #2", Price = 1.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #5", Price = 2.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #1", Price = 3.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Price = 4.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #3", Price = 5.99m, IsForSale = true }
         };
 
         await CallDbAsync(async dbContext =>
@@ -99,6 +101,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             .Select(product => new ProductDto
             {
                 Id = product.Id,
+                Code = product.Code,
                 Title = product.Title,
                 Price = product.Price
             });
@@ -112,11 +115,11 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var products = new[]
         {
-            new Product { Id = Guid.NewGuid(), Title = "Product #2", Price = 1.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #5", Price = 2.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #1", Price = 3.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #4", Price = 4.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #3", Price = 5.99m, IsForSale = true }
+            new Product { Id = Guid.NewGuid(), Code = "P1", Title = "Product #2", Price = 1.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #5", Price = 2.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #1", Price = 3.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Price = 4.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #3", Price = 5.99m, IsForSale = true }
         };
 
         await CallDbAsync(async dbContext =>
@@ -133,6 +136,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             .Select(product => new ProductDto
             {
                 Id = product.Id,
+                Code = product.Code,
                 Title = product.Title,
                 Price = product.Price
             });
@@ -146,11 +150,11 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var products = new[]
         {
-            new Product { Id = Guid.NewGuid(), Title = "Product #1", Price = 2.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #2", Price = 5.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #3", Price = 1.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #4", Price = 4.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #5", Price = 3.99m, IsForSale = true }
+            new Product { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Price = 2.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Price = 5.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Price = 1.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Price = 4.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Price = 3.99m, IsForSale = true }
         };
 
         await CallDbAsync(async dbContext =>
@@ -168,11 +172,11 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var products = new[]
         {
-            new Product { Id = Guid.NewGuid(), Title = "Product #1", Price = 2.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #2", Price = 5.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #3", Price = 1.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Title = "Product #4", Price = 4.99m, IsForSale = false },
-            new Product { Id = Guid.NewGuid(), Title = "Product #5", Price = 3.99m, IsForSale = false }
+            new Product { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Price = 2.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Price = 5.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Price = 1.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Price = 4.99m, IsForSale = false },
+            new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Price = 3.99m, IsForSale = false }
         };
 
         await CallDbAsync(async dbContext =>
@@ -189,6 +193,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             .Select(product => new ProductDto
             {
                 Id = product.Id,
+                Code = product.Code,
                 Title = product.Title,
                 Price = product.Price
             });

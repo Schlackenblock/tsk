@@ -1,3 +1,4 @@
+using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.Products.ForAdmins;
@@ -7,33 +8,59 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task CreateProduct_WhenValid_ShouldSucceed()
     {
-        var createProductDto = new CreateProductDto
-        {
-            Title = "Product",
-            Price = 9.99m
-        };
+        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Price = 9.99m };
 
         var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var createdProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
-        createdProductDto.Should().BeEquivalentTo(new
-        {
-            createProductDto.Title,
-            createProductDto.Price,
-            IsForSale = false
-        });
+        createdProductDto.Should().BeEquivalentTo(
+            new Product
+            {
+                Id = default,
+                Code = createProductDto.Code,
+                Title = createProductDto.Title,
+                Price = createProductDto.Price,
+                IsForSale = false
+            },
+            config => config.Excluding(product => product.Id)
+        );
 
         await CallDbAsync(async dbContext =>
         {
             var persistedProduct = await dbContext.Products.SingleAsync();
-            persistedProduct.Should().BeEquivalentTo(new
+            persistedProduct.Should().BeEquivalentTo(new Product
             {
-                createdProductDto!.Id,
-                createdProductDto.Title,
-                createdProductDto.Price,
-                createdProductDto.IsForSale
+                Id = createdProductDto!.Id,
+                Code = createdProductDto.Code,
+                Title = createdProductDto.Title,
+                Price = createdProductDto.Price,
+                IsForSale = createdProductDto.IsForSale
             });
         });
+    }
+
+    [Fact]
+    public async Task CreateProduct_WhenCodeIsAlreadyInUse_ShouldFail()
+    {
+        var existingProductWithSameCode = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = "P",
+            Title = "Product 1",
+            Price = 9.99m,
+            IsForSale = false
+        };
+
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.Add(existingProductWithSameCode);
+            await dbContext.SaveChangesAsync();
+        });
+
+        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Price = 9.99m };
+
+        var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 }

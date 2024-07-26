@@ -10,20 +10,8 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var existingProducts = new[]
         {
-            new Product
-            {
-                Id = Guid.NewGuid(),
-                Title = "Product for sale",
-                Price = 9.99m,
-                IsForSale = true
-            },
-            new Product
-            {
-                Id = Guid.NewGuid(),
-                Title = "Product not for sale",
-                Price = 8.99m,
-                IsForSale = false
-            }
+            new Product { Id = Guid.NewGuid(), Code = "P1", Title = "For sale", Price = 9.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Not for sale", Price = 8.99m, IsForSale = false }
         };
 
         await CallDbAsync(async dbContext =>

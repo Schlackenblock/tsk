@@ -8,6 +8,7 @@ namespace Tsk.HttpApi.Products.ForAdmins;
 public class ProductDto
 {
     public required Guid Id { get; init; }
+    public required string Code { get; init; }
     public required string Title { get; init; }
     public required decimal Price { get; init; }
     public required bool IsForSale { get; init; }
@@ -21,6 +22,10 @@ public class CreateProductDto
     public required string Title { get; init; }
 
     [Required]
+    [MaxLength(50)]
+    public required string Code { get; init; }
+
+    [Required]
     [Price]
     public required decimal Price { get; init; }
 }
@@ -31,6 +36,10 @@ public class UpdateProductDto
     [Required]
     [MaxLength(100)]
     public required string Title { get; init; }
+
+    [Required]
+    [MaxLength(50)]
+    public required string Code { get; init; }
 
     [Required]
     [Price]

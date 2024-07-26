@@ -28,6 +28,7 @@ public class ProductController : ControllerBase
             product => new ProductDto
             {
                 Id = product.Id,
+                Code = product.Code,
                 Title = product.Title,
                 Price = product.Price,
                 IsForSale = product.IsForSale
@@ -41,9 +42,19 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
+        var codeIsAlreadyInUse = await dbContext.Products
+            .Where(product => product.Code == createProductDto.Code)
+            .AnyAsync();
+
+        if (codeIsAlreadyInUse)
+        {
+            return BadRequest("Specified code is already used by some other product.");
+        }
+
         var product = new Product
         {
             Id = Guid.NewGuid(),
+            Code = createProductDto.Code,
             Title = createProductDto.Title,
             Price = createProductDto.Price,
             IsForSale = false
@@ -55,6 +66,7 @@ public class ProductController : ControllerBase
         var productDto = new ProductDto
         {
             Id = product.Id,
+            Code = product.Code,
             Title = product.Title,
             Price = product.Price,
             IsForSale = product.IsForSale
@@ -74,13 +86,25 @@ public class ProductController : ControllerBase
             return NotFound();
         }
 
+        var codeIsAlreadyInUse = await dbContext.Products
+            .Where(anotherProduct => anotherProduct.Id != product.Id)
+            .Where(anotherProduct => anotherProduct.Code == updateProductDto.Code)
+            .AnyAsync();
+
+        if (codeIsAlreadyInUse)
+        {
+            return BadRequest("Specified code is already used by some other product.");
+        }
+
         product.Title = updateProductDto.Title;
         product.Price = updateProductDto.Price;
+        product.Code = updateProductDto.Code;
         await dbContext.SaveChangesAsync();
 
         var productDto = new ProductDto
         {
             Id = product.Id,
+            Code = product.Code,
             Title = product.Title,
             Price = product.Price,
             IsForSale = product.IsForSale
@@ -110,6 +134,7 @@ public class ProductController : ControllerBase
         var productDto = new ProductDto
         {
             Id = product.Id,
+            Code = product.Code,
             Title = product.Title,
             Price = product.Price,
             IsForSale = product.IsForSale
@@ -139,6 +164,7 @@ public class ProductController : ControllerBase
         var productDto = new ProductDto
         {
             Id = product.Id,
+            Code = product.Code,
             Title = product.Title,
             Price = product.Price,
             IsForSale = product.IsForSale

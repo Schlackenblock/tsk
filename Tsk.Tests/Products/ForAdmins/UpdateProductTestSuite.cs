@@ -11,6 +11,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         var initialProduct = new Product
         {
             Id = Guid.NewGuid(),
+            Code = "Initial P",
             Title = "Product for sale",
             Price = 9.99m,
             IsForSale = true
@@ -24,6 +25,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
 
         var updateProductDto = new UpdateProductDto
         {
+            Code = "Updated P",
             Title = "Updated product for sale",
             Price = 8.99m
         };
@@ -32,12 +34,13 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
-        updatedProductDto.Should().BeEquivalentTo(new
+        updatedProductDto.Should().BeEquivalentTo(new Product
         {
-            initialProduct.Id,
-            updateProductDto.Title,
-            updateProductDto.Price,
-            IsForSale = true
+            Id = initialProduct.Id,
+            Code = updateProductDto.Code,
+            Title = updateProductDto.Title,
+            Price = updateProductDto.Price,
+            IsForSale = initialProduct.IsForSale
         });
 
         await CallDbAsync(async dbContext =>
@@ -53,6 +56,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         var initialProduct = new Product
         {
             Id = Guid.NewGuid(),
+            Code = "Initial P",
             Title = "Product for sale",
             Price = 9.99m,
             IsForSale = false
@@ -66,6 +70,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
 
         var updateProductDto = new UpdateProductDto
         {
+            Code = "Updated P",
             Title = "Updated product for sale",
             Price = 8.99m
         };
@@ -74,12 +79,13 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
-        updatedProductDto.Should().BeEquivalentTo(new
+        updatedProductDto.Should().BeEquivalentTo(new Product
         {
-            initialProduct.Id,
-            updateProductDto.Title,
-            updateProductDto.Price,
-            IsForSale = false
+            Id = initialProduct.Id,
+            Code = updateProductDto.Code,
+            Title = updateProductDto.Title,
+            Price = updateProductDto.Price,
+            IsForSale = initialProduct.IsForSale
         });
 
         await CallDbAsync(async dbContext =>
@@ -87,7 +93,44 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(updatedProductDto);
         });
+    }
+    [Fact]
+    public async Task UpdateProduct_WhenCodeIsAlreadyInUse_ShouldFail()
+    {
+        var initialProduct = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = "Initial P",
+            Title = "Product",
+            Price = 9.99m,
+            IsForSale = true
+        };
 
+        var anotherProductWithSpecifiedCode = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = "Updated P",
+            Title = "Another product",
+            Price = 9.99m,
+            IsForSale = true
+        };
+
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.Add(initialProduct);
+            dbContext.Products.Add(anotherProductWithSpecifiedCode);
+            await dbContext.SaveChangesAsync();
+        });
+
+        var updateProductDto = new UpdateProductDto
+        {
+            Code = "Updated P",
+            Title = "Updated product for sale",
+            Price = 8.99m
+        };
+
+        var response = await HttpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -96,6 +139,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         var notExistingProductId = Guid.NewGuid();
         var updateProductDto = new UpdateProductDto
         {
+            Code = "P",
             Title = "Updated not existing product",
             Price = 8.99m
         };
