@@ -39,4 +39,28 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
             });
         });
     }
+
+    [Fact]
+    public async Task CreateProduct_WhenCodeIsAlreadyInUse_ShouldFail()
+    {
+        var existingProductWithSameCode = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = "P",
+            Title = "Product 1",
+            Price = 9.99m,
+            IsForSale = false
+        };
+
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.Add(existingProductWithSameCode);
+            await dbContext.SaveChangesAsync();
+        });
+
+        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Price = 9.99m };
+
+        var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 }

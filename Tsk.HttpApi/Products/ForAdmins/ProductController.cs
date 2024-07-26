@@ -42,6 +42,15 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
+        var codeIsAlreadyInUse = await dbContext.Products
+            .Where(product => product.Code == createProductDto.Code)
+            .AnyAsync();
+
+        if (codeIsAlreadyInUse)
+        {
+            return BadRequest("Specified code is already used by some other product.");
+        }
+
         var product = new Product
         {
             Id = Guid.NewGuid(),
@@ -75,6 +84,16 @@ public class ProductController : ControllerBase
         if (product is null)
         {
             return NotFound();
+        }
+
+        var codeIsAlreadyInUse = await dbContext.Products
+            .Where(anotherProduct => anotherProduct.Id != product.Id)
+            .Where(anotherProduct => anotherProduct.Code == updateProductDto.Code)
+            .AnyAsync();
+
+        if (codeIsAlreadyInUse)
+        {
+            return BadRequest("Specified code is already used by some other product.");
         }
 
         product.Title = updateProductDto.Title;

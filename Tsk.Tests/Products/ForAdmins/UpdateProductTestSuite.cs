@@ -93,7 +93,44 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(updatedProductDto);
         });
+    }
+    [Fact]
+    public async Task UpdateProduct_WhenCodeIsAlreadyInUse_ShouldFail()
+    {
+        var initialProduct = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = "Initial P",
+            Title = "Product",
+            Price = 9.99m,
+            IsForSale = true
+        };
 
+        var anotherProductWithSpecifiedCode = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = "Updated P",
+            Title = "Another product",
+            Price = 9.99m,
+            IsForSale = true
+        };
+
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.Add(initialProduct);
+            dbContext.Products.Add(anotherProductWithSpecifiedCode);
+            await dbContext.SaveChangesAsync();
+        });
+
+        var updateProductDto = new UpdateProductDto
+        {
+            Code = "Updated P",
+            Title = "Updated product for sale",
+            Price = 8.99m
+        };
+
+        var response = await HttpClient.PutAsJsonAsync($"/management/products/{initialProduct.Id}", updateProductDto);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
