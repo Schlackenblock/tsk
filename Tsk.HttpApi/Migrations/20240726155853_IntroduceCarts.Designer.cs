@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tsk.HttpApi;
@@ -11,9 +12,11 @@ using Tsk.HttpApi;
 namespace Tsk.HttpApi.Migrations
 {
     [DbContext(typeof(TskDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240726155853_IntroduceCarts")]
+    partial class IntroduceCarts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

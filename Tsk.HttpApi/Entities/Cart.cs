@@ -7,10 +7,10 @@ public class Cart
 {
     public Guid Id { get; init; }
 
-    public List<ProductInCart>? Products { get; init; }
+    public List<CartProduct>? Products { get; init; }
 }
 
-public class ProductInCart
+public class CartProduct
 {
     public required Guid Id { get; init; }
 
@@ -30,41 +30,59 @@ internal class CartEntityTypeConfiguration : IEntityTypeConfiguration<Cart>
         cartEntity.ToTable("carts");
 
         cartEntity
-            .Property(cart => cart.Id)
-            .HasColumnName("id");
+            .HasKey(cart => cart.Id)
+            .HasName("pk_carts");
 
         cartEntity
-            .HasMany(cart => cart.Products)
-            .WithOne(productInCart => productInCart.Cart)
-            .HasForeignKey(productInCart => productInCart.CartId);
+            .Property(cart => cart.Id)
+            .HasColumnName("id");
     }
 }
 
-internal class ProductInCartEntityTypeConfiguration : IEntityTypeConfiguration<ProductInCart>
+internal class CartProductEntityTypeConfiguration : IEntityTypeConfiguration<CartProduct>
 {
-    public void Configure(EntityTypeBuilder<ProductInCart> productInCartEntity)
+    public void Configure(EntityTypeBuilder<CartProduct> cartProductEntity)
     {
-        productInCartEntity.ToTable("product_in_cart");
+        cartProductEntity.ToTable("cart_products");
 
-        productInCartEntity
-            .Property(productInCart => productInCart.Id)
+        cartProductEntity
+            .HasKey(cartProduct => cartProduct.Id)
+            .HasName("pk_cart_products");
+
+        cartProductEntity
+            .Property(cartProduct => cartProduct.Id)
             .HasColumnName("id");
 
-        productInCartEntity
-            .Property(productInCart => productInCart.ProductId)
+        cartProductEntity
+            .Property(cartProduct => cartProduct.ProductId)
             .HasColumnName("product_id");
 
-        productInCartEntity
-            .HasOne(productInCart => productInCart.Product)
+        cartProductEntity
+            .HasOne(cartProduct => cartProduct.Product)
             .WithMany()
-            .HasForeignKey(productInCart => productInCart.ProductId);
+            .HasForeignKey(cartProduct => cartProduct.ProductId)
+            .HasConstraintName("fk_cart_products_products_product_id");
 
-        productInCartEntity
-            .Property(productInCart => productInCart.Quantity)
+        cartProductEntity
+            .HasIndex(cartProduct => cartProduct.ProductId)
+            .HasDatabaseName("ix_cart_products_product_id");
+
+        cartProductEntity
+            .Property(cartProduct => cartProduct.Quantity)
             .HasColumnName("quantity");
 
-        productInCartEntity
-            .Property(productInCart => productInCart.CartId)
+        cartProductEntity
+            .Property(cartProduct => cartProduct.CartId)
             .HasColumnName("cart_id");
+
+        cartProductEntity
+            .HasOne(cartProduct => cartProduct.Cart)
+            .WithMany(cart => cart.Products)
+            .HasForeignKey(cartProduct => cartProduct.CartId)
+            .HasConstraintName("fk_cart_products_carts_cart_id");
+
+        cartProductEntity
+            .HasIndex(cartProduct => cartProduct.CartId)
+            .HasDatabaseName("ix_cart_products_cart_id");
     }
 }
