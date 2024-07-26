@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,20 +20,40 @@ public class ProductController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts()
+    public async Task<IActionResult> GetProducts([Required] [FromQuery] string orderBy)
     {
-        var products = await dbContext.Products
-            .Where(product => product.IsForSale)
-            .ToListAsync();
+        var productsQuery = dbContext.Products
+            .Where(product => product.IsForSale);
 
-        var productDtos = products.Select(
-            product => new ProductDto
+        if (string.Equals(orderBy, "title_asc", StringComparison.OrdinalIgnoreCase))
+        {
+            productsQuery = productsQuery.OrderBy(product => product.Title);
+        }
+        else if (string.Equals(orderBy, "title_desc", StringComparison.OrdinalIgnoreCase))
+        {
+            productsQuery = productsQuery.OrderByDescending(product => product.Title);
+        }
+        else if (string.Equals(orderBy, "price_asc", StringComparison.OrdinalIgnoreCase))
+        {
+            productsQuery = productsQuery.OrderBy(product => product.Price);
+        }
+        else if (string.Equals(orderBy, "price_desc", StringComparison.OrdinalIgnoreCase))
+        {
+            productsQuery = productsQuery.OrderByDescending(product => product.Price);
+        }
+        else
+        {
+            return BadRequest("Unsupported ordering option selected.");
+        }
+
+        var productDtos = await productsQuery
+            .Select(product => new ProductDto
             {
                 Id = product.Id,
                 Title = product.Title,
                 Price = product.Price
-            }
-        );
+            })
+            .ToListAsync();
         return Ok(productDtos);
     }
 }
