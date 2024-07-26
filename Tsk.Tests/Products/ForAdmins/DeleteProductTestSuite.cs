@@ -1,4 +1,4 @@
-using Tsk.HttpApi.Products;
+using Tsk.HttpApi.Entities;
 
 namespace Tsk.Tests.Products.ForAdmins;
 

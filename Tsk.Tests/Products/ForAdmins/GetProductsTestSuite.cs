@@ -1,3 +1,4 @@
+using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products;
 using Tsk.HttpApi.Products.ForAdmins;
 

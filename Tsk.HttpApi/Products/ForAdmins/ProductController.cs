@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tsk.HttpApi.Entities;
 
 namespace Tsk.HttpApi.Products.ForAdmins;
 

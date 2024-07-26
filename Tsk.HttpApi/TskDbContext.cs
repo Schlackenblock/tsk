@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products;
 
 namespace Tsk.HttpApi;
