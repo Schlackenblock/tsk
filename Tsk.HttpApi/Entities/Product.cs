@@ -18,6 +18,10 @@ internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product
         productEntity.ToTable("products");
 
         productEntity
+            .HasKey(product => product.Id)
+            .HasName("pk_products");
+
+        productEntity
             .Property(product => product.Id)
             .HasColumnName("id");
 
