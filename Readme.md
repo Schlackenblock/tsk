@@ -16,7 +16,7 @@ dotnet tool restore
 
 Run all dependencies:
 ```bash
-docker-compose --file ./dependencies.yml up --detach
+docker-compose up --detach
 ```
 
 Migrate the database:
