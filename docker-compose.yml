@@ -1,5 +1,5 @@
 version: '3.8'
-name: tsk_dependencies
+name: tsk
 services:
   api:
     container_name: tsk_api
