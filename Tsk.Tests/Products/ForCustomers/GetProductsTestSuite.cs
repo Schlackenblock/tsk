@@ -23,7 +23,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             await dbContext.SaveChangesAsync();
         });
 
-        var response = await HttpClient.GetAsync("/products?orderBy=price_asc");
+        var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var expectedProductDtos = products
@@ -58,7 +58,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             await dbContext.SaveChangesAsync();
         });
 
-        var response = await HttpClient.GetAsync("/products?orderBy=price_desc");
+        var response = await HttpClient.GetAsync("/products?orderBy=price_desc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var expectedProductDtos = products
@@ -93,7 +93,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             await dbContext.SaveChangesAsync();
         });
 
-        var response = await HttpClient.GetAsync("/products?orderBy=title_asc");
+        var response = await HttpClient.GetAsync("/products?orderBy=title_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var expectedProductDtos = products
@@ -128,7 +128,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             await dbContext.SaveChangesAsync();
         });
 
-        var response = await HttpClient.GetAsync("/products?orderBy=title_desc");
+        var response = await HttpClient.GetAsync("/products?orderBy=title_desc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var expectedProductDtos = products
@@ -163,7 +163,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             await dbContext.SaveChangesAsync();
         });
 
-        var response = await HttpClient.GetAsync("/products?orderBy=popularity_desc");
+        var response = await HttpClient.GetAsync("/products?orderBy=popularity_desc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -185,7 +185,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             await dbContext.SaveChangesAsync();
         });
 
-        var response = await HttpClient.GetAsync("/products?orderBy=price_asc");
+        var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var expectedProductDtos = products
@@ -205,7 +205,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenNoneExist_ShouldReturnNone()
     {
-        var response = await HttpClient.GetAsync("/products?orderBy=price_asc");
+        var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
