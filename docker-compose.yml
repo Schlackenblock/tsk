@@ -1,5 +1,5 @@
-version: '3.8'
 name: tsk
+
 services:
   api:
     container_name: tsk_api
@@ -8,6 +8,9 @@ services:
       - 5071:8080
     environment:
       ConnectionStrings__PostgreSQL: 'Server=postgres;Port=5432;Database=postgres;User Id=postgres;Password=postgres'
+    depends_on:
+      postgres:
+        condition: service_healthy
   postgres:
     image: postgres
     container_name: tsk_postgres
@@ -17,6 +20,11 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres_volume:/var/lib/postgresql/data
   pgadmin:
@@ -30,6 +38,9 @@ services:
       PGADMIN_DEFAULT_PASSWORD: postgres
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
       - pgadmin_volume:/var/lib/pgadmin
 
