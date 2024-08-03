@@ -393,7 +393,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             });
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
-        productsPageDto!.ProductsCount.Should().Be(productsForSale.Count());
+        productsPageDto!.ProductsCount.Should().Be(productsForSale.Length);
         productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
     }
 
