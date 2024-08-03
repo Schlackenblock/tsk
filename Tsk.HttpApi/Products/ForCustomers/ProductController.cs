@@ -19,8 +19,11 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts([Required][FromQuery] string orderBy)
+    [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProducts(
+        [Required][FromQuery] string orderBy,
+        [Required][FromQuery][Range(0, int.MaxValue)] int pageNumber,
+        [Required][FromQuery][Range(1, 50)] int pageSize)
     {
         var productsQuery = dbContext.Products
             .Where(product => product.IsForSale);
@@ -46,7 +49,11 @@ public class ProductController : ControllerBase
             return BadRequest("Unsupported ordering option selected.");
         }
 
+        var productsCount = await productsQuery.CountAsync();
+
         var productDtos = await productsQuery
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
             .Select(product => new ProductDto
             {
                 Id = product.Id,
@@ -55,6 +62,12 @@ public class ProductController : ControllerBase
                 Price = product.Price
             })
             .ToListAsync();
-        return Ok(productDtos);
+
+        var productsPageDto = new ProductsPageDto
+        {
+            Products = productDtos,
+            ProductsCount = productsCount
+        };
+        return Ok(productsPageDto);
     }
 }

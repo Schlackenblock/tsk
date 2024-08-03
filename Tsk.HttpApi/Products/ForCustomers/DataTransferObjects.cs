@@ -10,3 +10,10 @@ public class ProductDto
     public required string Title { get; init; }
     public required decimal Price { get; init; }
 }
+
+[PublicAPI]
+public class ProductsPageDto
+{
+    public required IReadOnlyCollection<ProductDto> Products { get; init; }
+    public required int ProductsCount { get; init; }
+}
