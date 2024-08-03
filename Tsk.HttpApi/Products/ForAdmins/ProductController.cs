@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -142,6 +143,58 @@ public class ProductController : ControllerBase
         return Ok(productDto);
     }
 
+    [HttpPut("make-for-sale")]
+    [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> MakeProductsForSale(
+        [FromBody][Required][MinLength(1)] IReadOnlyCollection<Guid> productIds)
+    {
+        if (productIds.Distinct().Count() != productIds.Count)
+        {
+            return BadRequest("Duplicated product IDs were provided.");
+        }
+
+        var products = await dbContext.Products
+            .Where(product => productIds.Contains(product.Id))
+            .ToListAsync();
+
+        if (products.Count < productIds.Count)
+        {
+            var existingProductIds = products.Select(product => product.Id);
+            var missingProductIds = productIds.Except(existingProductIds);
+
+            var serializedProductIds = string.Join(", ", missingProductIds.Select(productId => $"\"{productId}\""));
+            return NotFound($"The following products weren't found: {string.Join(", ", serializedProductIds)}.");
+        }
+
+        var conflictingProductIds = products
+            .Where(product => product.IsForSale)
+            .Select(product => product.Id)
+            .ToList();
+        if (conflictingProductIds.Any())
+        {
+            var serializedProductIds = string.Join(", ", conflictingProductIds.Select(productId => $"\"{productId}\""));
+            return BadRequest($"The following products are already available for sale: {serializedProductIds}.");
+        }
+
+        foreach (var product in products)
+        {
+            product.IsForSale = true;
+        }
+        await dbContext.SaveChangesAsync();
+
+        var productDtos = products.Select(product => new ProductDto
+        {
+            Id = product.Id,
+            Code = product.Code,
+            Title = product.Title,
+            Price = product.Price,
+            IsForSale = product.IsForSale
+        });
+        return Ok(productDtos);
+    }
+
     [HttpPut("{id:guid}/make-not-for-sale")]
     [ProducesResponseType<ProductDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -170,6 +223,58 @@ public class ProductController : ControllerBase
             IsForSale = product.IsForSale
         };
         return Ok(productDto);
+    }
+
+    [HttpPut("make-not-for-sale")]
+    [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> MakeProductsNotForSale(
+        [FromBody][Required][MinLength(1)] IReadOnlyCollection<Guid> productIds)
+    {
+        if (productIds.Distinct().Count() != productIds.Count)
+        {
+            return BadRequest("Duplicated product IDs were provided.");
+        }
+
+        var products = await dbContext.Products
+            .Where(product => productIds.Contains(product.Id))
+            .ToListAsync();
+
+        if (products.Count < productIds.Count)
+        {
+            var existingProductIds = products.Select(product => product.Id);
+            var missingProductIds = productIds.Except(existingProductIds);
+
+            var serializedProductIds = string.Join(", ", missingProductIds.Select(productId => $"\"{productId}\""));
+            return NotFound($"The following products weren't found: {string.Join(", ", serializedProductIds)}.");
+        }
+
+        var conflictingProductIds = products
+            .Where(product => !product.IsForSale)
+            .Select(product => product.Id)
+            .ToList();
+        if (conflictingProductIds.Any())
+        {
+            var serializedProductIds = string.Join(", ", conflictingProductIds.Select(productId => $"\"{productId}\""));
+            return BadRequest($"The following are already not available for sale: {serializedProductIds}.");
+        }
+
+        foreach (var product in products)
+        {
+            product.IsForSale = false;
+        }
+        await dbContext.SaveChangesAsync();
+
+        var productDtos = products.Select(product => new ProductDto
+        {
+            Id = product.Id,
+            Code = product.Code,
+            Title = product.Title,
+            Price = product.Price,
+            IsForSale = product.IsForSale
+        });
+        return Ok(productDtos);
     }
 
     [HttpDelete("{id:guid}")]
