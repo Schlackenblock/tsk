@@ -1,4 +1,6 @@
+using HealthChecks.UI.Client;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Tsk.HttpApi;
 
@@ -10,15 +12,15 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddControllers();
 
+var postgreSqlConnectionString = builder.Configuration.GetConnectionString("PostgreSQL")!;
 builder.Services.AddDbContext<TskDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(postgreSqlConnectionString);
 });
 
 builder.Services
     .AddHealthChecks()
-    .AddDbContextCheck<TskDbContext>();
+    .AddNpgSql(postgreSqlConnectionString);
 
 var app = builder.Build();
 
@@ -28,7 +30,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapHealthChecks("/_health");
+app.MapHealthChecks("/_health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseRouting();
 app.MapControllers();
