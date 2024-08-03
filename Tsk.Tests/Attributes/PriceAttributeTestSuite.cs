@@ -4,51 +4,60 @@ namespace Tsk.Tests.Attributes;
 
 public class PriceAttributeTestSuite
 {
-    [Fact]
-    public void PriceAttribute_WhenValueIsValid_ShouldSucceed()
+    [Theory]
+    [MemberData(nameof(ValidPrices))]
+    public void PriceAttribute_WhenValueIsValid_ShouldSucceed(decimal value)
     {
         var attribute = new PriceAttribute();
-        var result = attribute.IsValid(9.99m);
-        result.Should().BeTrue();
+        attribute.IsValid(value).Should().BeTrue();
     }
 
-    [Fact]
-    public void PriceAttribute_WhenValueHasMoreThan2FractionalDigits_ShouldFail()
+    public static TheoryData<decimal> ValidPrices =
+        new() { 0.09m, 0.9m, 0.99m, 9.99m };
+
+    [Theory]
+    [MemberData(nameof(PricesWithMoreThan2DecimalPlaces))]
+    public void PriceAttribute_WhenValueHasMoreThan2DecimalPlaces_ShouldFail(decimal value)
     {
         var attribute = new PriceAttribute();
-        var result = attribute.IsValid(9.999m);
-        result.Should().BeFalse();
+        attribute.IsValid(value).Should().BeFalse();
     }
 
-    [Fact]
-    public void PriceAttribute_WhenValueHasLessThan2FractionalDigits_ShouldFail()
+    public static TheoryData<decimal> PricesWithMoreThan2DecimalPlaces()
     {
-        var attribute = new PriceAttribute();
-        var result = attribute.IsValid(9.9m);
-        result.Should().BeFalse();
+        return new() { 9.999m, 9.9999m, 9.99999m, 9.999999m, 9.9999999m };
     }
 
-    [Fact]
-    public void PriceAttribute_WhenValueIsNotDecimal_ShouldFail()
+    [Theory]
+    [MemberData(nameof(NegativePrices))]
+    public void PriceAttribute_WhenValueIsNegative_ShouldFail(decimal value)
     {
         var attribute = new PriceAttribute();
-        var result = attribute.IsValid(9.99);
-        result.Should().BeFalse();
+        attribute.IsValid(value).Should().BeFalse();
+    }
+
+    public static TheoryData<decimal> NegativePrices()
+    {
+        return new() { -9.99m, -0.99m, -0.9m, -0.09m };
     }
 
     [Fact]
     public void PriceAttribute_WhenValueIsZero_ShouldFail()
     {
         var attribute = new PriceAttribute();
-        var result = attribute.IsValid(0m);
-        result.Should().BeFalse();
+        attribute.IsValid(0m).Should().BeFalse();
     }
 
-    [Fact]
-    public void PriceAttribute_WhenValueIsLessThanZero_ShouldFail()
+    [Theory]
+    [MemberData(nameof(PricesOfOtherTypes))]
+    public void PriceAttribute_WhenValueIsNotDecimal_ShouldFail(object value)
     {
         var attribute = new PriceAttribute();
-        var result = attribute.IsValid(-9.99m);
-        result.Should().BeFalse();
+        attribute.Invoking(x => x.IsValid(value)).Should().Throw<Exception>();
+    }
+
+    public static TheoryData<object> PricesOfOtherTypes()
+    {
+        return new() { 9, 9.99f, 9.99d, "9.99" };
     }
 }
