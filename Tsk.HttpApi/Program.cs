@@ -16,6 +16,10 @@ builder.Services.AddDbContext<TskDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
+builder.Services
+    .AddHealthChecks()
+    .AddDbContextCheck<TskDbContext>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -23,6 +27,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapHealthChecks("/_health");
 
 app.UseRouting();
 app.MapControllers();
