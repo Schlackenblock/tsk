@@ -22,8 +22,8 @@ public class ProductController : ControllerBase
     [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProducts(
         [Required][FromQuery] string orderBy,
-        [Required][FromQuery] int pageNumber,
-        [Required][FromQuery] int pageSize)
+        [Required][FromQuery][Range(0, int.MaxValue)] int pageNumber,
+        [Required][FromQuery][Range(1, 50)] int pageSize)
     {
         var productsQuery = dbContext.Products
             .Where(product => product.IsForSale);
