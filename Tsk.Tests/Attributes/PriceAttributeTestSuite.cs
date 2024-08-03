@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using Tsk.HttpApi.Validation;
 
 namespace Tsk.Tests.Attributes;
 
+[SuppressMessage("ReSharper", "UseCollectionExpression")]
 public class PriceAttributeTestSuite
 {
     [Theory]
