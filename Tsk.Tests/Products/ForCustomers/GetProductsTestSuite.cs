@@ -41,8 +41,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
     }
 
     [Fact]
@@ -82,8 +83,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
     }
 
     [Fact]
@@ -123,8 +125,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
     }
 
     [Fact]
@@ -146,8 +149,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=1&pageSize=3");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(Enumerable.Empty<ProductDto>());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEmpty();
     }
 
     [Fact]
@@ -183,8 +187,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
     }
 
     [Fact]
@@ -218,8 +223,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
     }
 
     [Fact]
@@ -253,8 +259,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
     }
 
     [Fact]
@@ -288,8 +295,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
     }
 
     [Fact]
@@ -323,8 +331,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(products.Length);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos, config => config.WithStrictOrdering());
     }
 
     [Fact]
@@ -352,26 +361,29 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenNotForSaleExist_ShouldReturnOnlyForSale()
     {
-        var products = new[]
+        var productsForSale = new[]
         {
             new Product { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Price = 2.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Price = 5.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Price = 1.99m, IsForSale = true },
+            new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Price = 1.99m, IsForSale = true }
+        };
+        var productsNotForSale = new[]
+        {
             new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Price = 4.99m, IsForSale = false },
             new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Price = 3.99m, IsForSale = false }
         };
 
         await CallDbAsync(async dbContext =>
         {
-            dbContext.Products.AddRange(products);
+            dbContext.Products.AddRange(productsForSale);
+            dbContext.Products.AddRange(productsNotForSale);
             await dbContext.SaveChangesAsync();
         });
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var expectedProductDtos = products
-            .Where(product => product.IsForSale)
+        var expectedProductDtos = productsForSale
             .Select(product => new ProductDto
             {
                 Id = product.Id,
@@ -380,8 +392,9 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
                 Price = product.Price
             });
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEquivalentTo(expectedProductDtos);
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(productsForSale.Count());
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
     }
 
     [Fact]
@@ -390,7 +403,8 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var productDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
-        productDtos.Should().BeEmpty();
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(0);
+        productsPageDto.Products.Should().BeEmpty();
     }
 }
