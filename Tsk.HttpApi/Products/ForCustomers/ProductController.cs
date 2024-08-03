@@ -20,7 +20,10 @@ public class ProductController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType<List<ProductDto>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProducts([Required][FromQuery] string orderBy)
+    public async Task<IActionResult> GetProducts(
+        [Required][FromQuery] string orderBy,
+        [Required][FromQuery] int pageNumber,
+        [Required][FromQuery] int pageSize)
     {
         var productsQuery = dbContext.Products
             .Where(product => product.IsForSale);
@@ -47,6 +50,8 @@ public class ProductController : ControllerBase
         }
 
         var productDtos = await productsQuery
+            .Skip(pageNumber * pageSize)
+            .Take(pageSize)
             .Select(product => new ProductDto
             {
                 Id = product.Id,
