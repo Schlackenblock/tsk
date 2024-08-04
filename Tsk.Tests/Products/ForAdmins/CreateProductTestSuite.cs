@@ -8,7 +8,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task CreateProduct_WhenValid_ShouldSucceed()
     {
-        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Price = 9.99m };
+        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Pictures = ["Product Picture"], Price = 9.99m };
 
         var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -20,6 +20,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
                 Id = default,
                 Code = createProductDto.Code,
                 Title = createProductDto.Title,
+                Pictures = createProductDto.Pictures,
                 Price = createProductDto.Price,
                 IsForSale = false
             },
@@ -34,6 +35,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
                 Id = createdProductDto!.Id,
                 Code = createdProductDto.Code,
                 Title = createdProductDto.Title,
+                Pictures = createdProductDto.Pictures,
                 Price = createdProductDto.Price,
                 IsForSale = createdProductDto.IsForSale
             });
@@ -48,6 +50,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "P",
             Title = "Product 1",
+            Pictures = ["Product 1 Picture 1", "Product 1 Picture 2"],
             Price = 9.99m,
             IsForSale = false
         };
@@ -58,7 +61,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
             await dbContext.SaveChangesAsync();
         });
 
-        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Price = 9.99m };
+        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Pictures = ["Product Picture"], Price = 9.99m };
 
         var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

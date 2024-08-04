@@ -13,6 +13,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "Initial P",
             Title = "Product for sale",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = true
         };
@@ -27,6 +28,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         {
             Code = "Updated P",
             Title = "Updated product for sale",
+            Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
         };
 
@@ -39,6 +41,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = initialProduct.Id,
             Code = updateProductDto.Code,
             Title = updateProductDto.Title,
+            Pictures = updateProductDto.Pictures,
             Price = updateProductDto.Price,
             IsForSale = initialProduct.IsForSale
         });
@@ -57,7 +60,8 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         {
             Id = Guid.NewGuid(),
             Code = "Initial P",
-            Title = "Product for sale",
+            Title = "Product not for sale",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = false
         };
@@ -71,7 +75,8 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         var updateProductDto = new UpdateProductDto
         {
             Code = "Updated P",
-            Title = "Updated product for sale",
+            Title = "Updated product not for sale",
+            Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
         };
 
@@ -84,6 +89,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = initialProduct.Id,
             Code = updateProductDto.Code,
             Title = updateProductDto.Title,
+            Pictures = updateProductDto.Pictures,
             Price = updateProductDto.Price,
             IsForSale = initialProduct.IsForSale
         });
@@ -102,6 +108,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "Initial P",
             Title = "Product",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = true
         };
@@ -111,6 +118,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "Updated P",
             Title = "Another product",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = true
         };
@@ -126,6 +134,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         {
             Code = "Updated P",
             Title = "Updated product for sale",
+            Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
         };
 
@@ -141,6 +150,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         {
             Code = "P",
             Title = "Updated not existing product",
+            Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
         };
 

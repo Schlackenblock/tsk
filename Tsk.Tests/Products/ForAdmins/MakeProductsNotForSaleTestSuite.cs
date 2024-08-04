@@ -10,8 +10,8 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     {
         var products = new List<Product>
         {
-            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", IsForSale = true, Price = 1m },
-            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", IsForSale = true, Price = 2m }
+            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Pictures = ["Product #1 Picture #1", "Product #1 Picture #2"], IsForSale = true, Price = 1m },
+            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = true, Price = 2m }
         };
 
         await CallDbAsync(async dbContext =>
@@ -30,6 +30,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
             Id = product.Id,
             Code = product.Code,
             Title = product.Title,
+            Pictures = product.Pictures,
             IsForSale = false,
             Price = product.Price
         });
@@ -47,7 +48,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenSingleProductSpecified_ShouldSucceed()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", IsForSale = true, Price = 1m };
+        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = true, Price = 1m };
 
         await CallDbAsync(async dbContext =>
         {
@@ -67,6 +68,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
             Id = product.Id,
             Code = product.Code,
             Title = product.Title,
+            Pictures = product.Pictures,
             IsForSale = false,
             Price = product.Price
         });
@@ -83,9 +85,9 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     {
         var products = new List<Product>
         {
-            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", IsForSale = true, Price = 1m },
-            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", IsForSale = true, Price = 2m },
-            new() { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", IsForSale = false, Price = 3m }
+            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Pictures = ["Product #1 Picture #1", "Product #1 Picture #2"], IsForSale = true, Price = 1m },
+            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = true, Price = 2m },
+            new() { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Pictures = ["Product #3 Picture #1", "Product #3 Picture #2"], IsForSale = false, Price = 3m }
         };
 
         await CallDbAsync(async dbContext =>
@@ -109,7 +111,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenSingleSpecifiedProductIsAlreadyNotForSale_ShouldReturnBadRequest()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", IsForSale = false, Price = 1m };
+        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = false, Price = 1m };
 
         await CallDbAsync(async dbContext =>
         {
@@ -134,8 +136,8 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     {
         var existingProducts = new List<Product>
         {
-            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", IsForSale = true, Price = 1m },
-            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", IsForSale = true, Price = 2m }
+            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Pictures = ["Product #1 Picture #1", "Product #1 Picture #2"], IsForSale = true, Price = 1m },
+            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = true, Price = 2m }
         };
 
         await CallDbAsync(async dbContext =>
@@ -179,7 +181,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenDuplicatingProductIdsProvided_ShouldReturnBadRequest()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", IsForSale = true, Price = 1m };
+        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = true, Price = 1m };
 
         await CallDbAsync(async dbContext =>
         {
