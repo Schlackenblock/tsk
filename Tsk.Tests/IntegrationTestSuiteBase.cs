@@ -6,14 +6,23 @@ public abstract class IntegrationTestSuiteBase : IAsyncLifetime
 {
     protected HttpClient HttpClient { get; private set; } = null!;
 
-    private readonly ICollection<TskDbContext> dbContexts = [];
     private readonly TskApiFactory apiFactory = new();
 
-    protected async Task CallDbAsync(Func<TskDbContext, Task> dbCall)
+    protected async Task SeedInitialDataAsync(object entity)
     {
-        var dbContext = apiFactory.CreateDbContext();
-        dbContexts.Add(dbContext);
+        await SeedInitialDataAsync(Enumerable.Repeat(entity, 1));
+    }
 
+    protected async Task SeedInitialDataAsync(IEnumerable<object> entities)
+    {
+        await using var dbContext = apiFactory.CreateDbContext();
+        dbContext.AddRange(entities);
+        await dbContext.SaveChangesAsync();
+    }
+
+    protected async Task AssertDbStateAsync(Func<TskDbContext, Task> dbCall)
+    {
+        await using var dbContext = apiFactory.CreateDbContext();
         await dbCall(dbContext);
     }
 
@@ -26,10 +35,6 @@ public abstract class IntegrationTestSuiteBase : IAsyncLifetime
     public async Task DisposeAsync()
     {
         HttpClient.Dispose();
-
-        var dbContextDisposeTasks = dbContexts.Select(dbContext => dbContext.DisposeAsync().AsTask());
-        await Task.WhenAll(dbContextDisposeTasks);
-
         await apiFactory.DisposeAsync();
     }
 }

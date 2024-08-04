@@ -17,12 +17,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             IsForSale = false,
             Price = 9.99m
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(productWithPictures);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(productWithPictures);
 
         var updateProductDto = new UpdateProductDto
         {
@@ -46,7 +41,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Price = updateProductDto.Price
         });
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(new Product
@@ -73,12 +68,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             IsForSale = false,
             Price = 9.99m
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(productWithPictures);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(productWithPictures);
 
         var updateProductDto = new UpdateProductDto
         {
@@ -102,7 +92,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Price = updateProductDto.Price
         });
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(new Product
@@ -129,12 +119,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Price = 9.99m,
             IsForSale = true
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(initialProduct);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(initialProduct);
 
         var updateProductDto = new UpdateProductDto
         {
@@ -158,7 +143,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             IsForSale = initialProduct.IsForSale
         });
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(updatedProductDto);
@@ -177,12 +162,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Price = 9.99m,
             IsForSale = false
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(initialProduct);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(initialProduct);
 
         var updateProductDto = new UpdateProductDto
         {
@@ -206,7 +186,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             IsForSale = initialProduct.IsForSale
         });
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(updatedProductDto);
@@ -224,6 +204,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Price = 9.99m,
             IsForSale = true
         };
+        await SeedInitialDataAsync(initialProduct);
 
         var anotherProductWithSpecifiedCode = new Product
         {
@@ -234,13 +215,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Price = 9.99m,
             IsForSale = true
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(initialProduct);
-            dbContext.Products.Add(anotherProductWithSpecifiedCode);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(anotherProductWithSpecifiedCode);
 
         var updateProductDto = new UpdateProductDto
         {

@@ -27,7 +27,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
             config => config.Excluding(product => product.Id)
         );
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var createdProduct = await dbContext.Products.SingleAsync();
             createdProduct.Should().BeEquivalentTo(new Product
@@ -64,7 +64,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
             config => config.Excluding(product => product.Id)
         );
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var createdProduct = await dbContext.Products.SingleAsync();
             createdProduct.Should().BeEquivalentTo(new Product
@@ -101,7 +101,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
             config => config.Excluding(product => product.Id)
         );
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var createdProduct = await dbContext.Products.SingleAsync();
             createdProduct.Should().BeEquivalentTo(new Product
@@ -128,12 +128,7 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
             Price = 9.99m,
             IsForSale = false
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(existingProductWithSameCode);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(existingProductWithSameCode);
 
         var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Pictures = ["Product Picture"], Price = 9.99m };
 

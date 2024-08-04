@@ -13,12 +13,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
             new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Pictures = ["Product #1 Picture #1", "Product #1 Picture #2"], IsForSale = false, Price = 1m },
             new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = false, Price = 2m }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var productIds = products.Select(product => product.Id);
 
@@ -38,7 +33,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
         var updatedProductDtos = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
         updatedProductDtos.Should().BeEquivalentTo(expectedProductDtos);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var updatedProducts = await dbContext.Products.ToListAsync();
             updatedProducts.Should().BeEquivalentTo(expectedProductDtos);
@@ -49,12 +44,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
     public async Task MakeProductsForSale_WhenSingleProductSpecified_ShouldSucceed()
     {
         var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = false, Price = 1m };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(product);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(product);
 
         var productIds = new[] { product.Id };
 
@@ -73,7 +63,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
             Price = product.Price
         });
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(updatedProductDto);
@@ -89,19 +79,14 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
             new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = false, Price = 2m },
             new() { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Pictures = ["Product #3 Picture #1", "Product #3 Picture #2"], IsForSale = true, Price = 3m }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var productIds = products.Select(product => product.Id);
 
         var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productsAfterInvocation = await dbContext.Products.ToListAsync();
             productsAfterInvocation.Should().BeEquivalentTo(products);
@@ -112,19 +97,14 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
     public async Task MakeProductsForSale_WhenSingleSpecifiedProductIsAlreadyForSale_ShouldReturnBadRequest()
     {
         var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = true, Price = 1m };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(product);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(product);
 
         var productIds = new[] { product.Id };
 
         var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productAfterInvocation = await dbContext.Products.SingleAsync();
             productAfterInvocation.Should().BeEquivalentTo(product);
@@ -139,12 +119,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
             new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Pictures = ["Product #1 Picture #1", "Product #1 Picture #2"], IsForSale = false, Price = 1m },
             new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = false, Price = 2m }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(existingProducts);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(existingProducts);
 
         var notExistingProductId = Guid.NewGuid();
 
@@ -155,7 +130,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
         var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productsAfterInvocation = await dbContext.Products.ToListAsync();
             productsAfterInvocation.Should().BeEquivalentTo(existingProducts);
@@ -171,7 +146,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
         var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productsAfterInvocation = await dbContext.Products.ToListAsync();
             productsAfterInvocation.Should().BeEmpty();
@@ -182,19 +157,14 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
     public async Task MakeProductsForSale_WhenDuplicatingProductIdsProvided_ShouldReturnBadRequest()
     {
         var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = false, Price = 1m };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(product);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(product);
 
         var productIds = Enumerable.Repeat(product.Id, 2);
 
         var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productAfterInvocation = await dbContext.Products.SingleAsync();
             productAfterInvocation.Should().BeEquivalentTo(product);
@@ -209,7 +179,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
         var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productsIds);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productsAfterInvocation = await dbContext.Products.ToListAsync();
             productsAfterInvocation.Should().BeEmpty();
@@ -222,7 +192,7 @@ public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
         var response = await HttpClient.PutAsJsonAsync<object?>("management/products/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productsAfterInvocation = await dbContext.Products.ToListAsync();
             productsAfterInvocation.Should().BeEmpty();

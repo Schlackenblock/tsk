@@ -16,17 +16,12 @@ public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
             Price = 9.99m,
             IsForSale = false
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(initialProduct);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(initialProduct);
 
         var response = await HttpClient.PutAsync($"/management/products/{initialProduct.Id}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(new Product
@@ -53,12 +48,7 @@ public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
             Price = 9.99m,
             IsForSale = true
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(productForSale);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(productForSale);
 
         var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

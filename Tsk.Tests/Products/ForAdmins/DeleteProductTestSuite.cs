@@ -8,17 +8,12 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
     public async Task DeleteProduct_WhenProductForSaleExists_ShouldSucceed()
     {
         var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "P", Pictures = ["Picture 1", "Picture 2"], Price = 9.99m, IsForSale = true };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(product);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(product);
 
         var response = await HttpClient.DeleteAsync($"/management/products/{product.Id}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productsExist = await dbContext.Products.AnyAsync();
             productsExist.Should().BeFalse();
@@ -28,17 +23,12 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
     public async Task DeleteProduct_WhenProductNotForSaleExists_ShouldSucceed()
     {
         var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "P", Pictures = ["Picture 1", "Picture 2"], Price = 9.99m, IsForSale = true };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(product);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(product);
 
         var response = await HttpClient.DeleteAsync($"/management/products/{product.Id}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var productsExist = await dbContext.Products.AnyAsync();
             productsExist.Should().BeFalse();

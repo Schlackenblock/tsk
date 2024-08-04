@@ -20,12 +20,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P8", Title = "Product #8", Pictures = [ "P8 #1", "P8 #2" ], Price = 8.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P9", Title = "Product #9", Pictures = [ "P9 #1", "P9 #2" ], Price = 9.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=3");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -62,12 +57,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P8", Title = "Product #8", Pictures = [ "P8 #1", "P8 #2" ], Price = 8.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P9", Title = "Product #9", Pictures = [ "P9 #1", "P9 #2" ], Price = 9.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=1&pageSize=3");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -105,12 +95,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P8", Title = "Product #8", Pictures = [ "P8 #1", "P8 #2" ], Price = 8.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P9", Title = "Product #9", Pictures = [ "P9 #1", "P9 #2" ], Price = 9.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=2&pageSize=3");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -142,12 +127,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = [ "P2 #1", "P2 #2" ], Price = 2.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Pictures = [ "P3 #1", "P3 #2" ], Price = 3.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=1&pageSize=3");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -168,12 +148,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Pictures = [ "P4 #1", "P4 #2" ], Price = 4.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Pictures = [ "P5 #1", "P5 #2" ], Price = 5.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=1&pageSize=3");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -207,12 +182,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Pictures = [ "P4 #1", "P4 #2" ], Price = 4.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Pictures = [ "P5 #1", "P5 #2" ], Price = 3.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -244,12 +214,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Pictures = [ "P4 #1", "P4 #2" ], Price = 4.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Pictures = [ "P5 #1", "P5 #2" ], Price = 3.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_desc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -281,12 +246,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Pictures = [ "P4 #1", "P4 #2" ], Price = 4.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #3", Pictures = [ "P3 #1", "P3 #2" ], Price = 5.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=title_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -318,12 +278,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Pictures = [ "P4 #1", "P4 #2" ], Price = 4.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #3", Pictures = [ "P3 #1", "P3 #2" ], Price = 5.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=title_desc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -355,12 +310,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Pictures = [ "P4 #1", "P4 #2" ], Price = 4.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Pictures = [ "P5 #1", "P5 #2" ], Price = 3.99m, IsForSale = true }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(products);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=popularity_desc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -375,18 +325,14 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = [ "P2 #1", "P2 #2" ], Price = 5.99m, IsForSale = true },
             new Product { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Pictures = [ "P3 #1", "P3 #2" ], Price = 1.99m, IsForSale = true }
         };
+        await SeedInitialDataAsync(productsForSale);
+
         var productsNotForSale = new[]
         {
             new Product { Id = Guid.NewGuid(), Code = "P4", Title = "Product #4", Pictures = [ "P4 #1", "P4 #2" ], Price = 4.99m, IsForSale = false },
             new Product { Id = Guid.NewGuid(), Code = "P5", Title = "Product #5", Pictures = [ "P5 #1", "P5 #2" ], Price = 3.99m, IsForSale = false }
         };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.AddRange(productsForSale);
-            dbContext.Products.AddRange(productsNotForSale);
-            await dbContext.SaveChangesAsync();
-        });
+        await SeedInitialDataAsync(productsNotForSale);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
