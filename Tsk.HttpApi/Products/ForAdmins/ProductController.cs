@@ -24,18 +24,7 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> GetProducts()
     {
         var products = await dbContext.Products.ToListAsync();
-
-        var productDtos = products.Select(
-            product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price,
-                IsForSale = product.IsForSale
-            }
-        );
+        var productDtos = products.Select(ProductDto.FromProductEntity);
         return Ok(productDtos);
     }
 
@@ -66,15 +55,7 @@ public class ProductController : ControllerBase
         dbContext.Products.Add(product);
         await dbContext.SaveChangesAsync();
 
-        var productDto = new ProductDto
-        {
-            Id = product.Id,
-            Code = product.Code,
-            Title = product.Title,
-            Pictures = product.Pictures,
-            Price = product.Price,
-            IsForSale = product.IsForSale
-        };
+        var productDto = ProductDto.FromProductEntity(product);
         return Ok(productDto);
     }
 
@@ -106,15 +87,7 @@ public class ProductController : ControllerBase
         product.Code = updateProductDto.Code;
         await dbContext.SaveChangesAsync();
 
-        var productDto = new ProductDto
-        {
-            Id = product.Id,
-            Code = product.Code,
-            Title = product.Title,
-            Pictures = product.Pictures,
-            Price = product.Price,
-            IsForSale = product.IsForSale
-        };
+        var productDto = ProductDto.FromProductEntity(product);
         return Ok(productDto);
     }
 
@@ -137,15 +110,7 @@ public class ProductController : ControllerBase
         product.IsForSale = true;
         await dbContext.SaveChangesAsync();
 
-        var productDto = new ProductDto
-        {
-            Id = product.Id,
-            Code = product.Code,
-            Title = product.Title,
-            Pictures = product.Pictures,
-            Price = product.Price,
-            IsForSale = product.IsForSale
-        };
+        var productDto = ProductDto.FromProductEntity(product);
         return Ok(productDto);
     }
 
@@ -190,15 +155,7 @@ public class ProductController : ControllerBase
         }
         await dbContext.SaveChangesAsync();
 
-        var productDtos = products.Select(product => new ProductDto
-        {
-            Id = product.Id,
-            Code = product.Code,
-            Title = product.Title,
-            Pictures = product.Pictures,
-            Price = product.Price,
-            IsForSale = product.IsForSale
-        });
+        var productDtos = products.Select(ProductDto.FromProductEntity);
         return Ok(productDtos);
     }
 
@@ -221,15 +178,7 @@ public class ProductController : ControllerBase
         product.IsForSale = false;
         await dbContext.SaveChangesAsync();
 
-        var productDto = new ProductDto
-        {
-            Id = product.Id,
-            Code = product.Code,
-            Title = product.Title,
-            Pictures = product.Pictures,
-            Price = product.Price,
-            IsForSale = product.IsForSale
-        };
+        var productDto = ProductDto.FromProductEntity(product);
         return Ok(productDto);
     }
 
@@ -274,15 +223,7 @@ public class ProductController : ControllerBase
         }
         await dbContext.SaveChangesAsync();
 
-        var productDtos = products.Select(product => new ProductDto
-        {
-            Id = product.Id,
-            Code = product.Code,
-            Title = product.Title,
-            Pictures = product.Pictures,
-            Price = product.Price,
-            IsForSale = product.IsForSale
-        });
+        var productDtos = products.Select(ProductDto.FromProductEntity);
         return Ok(productDtos);
     }
 

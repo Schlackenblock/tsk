@@ -7,26 +7,13 @@ public class MakeProductNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductNotForSaleTestSuite_WhenProductForSale_ShouldSucceed()
     {
-        var initialProduct = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "P",
-            Title = "Product",
-            Pictures = ["Picture 1", "Picture 2"],
-            Price = 9.99m,
-            IsForSale = true
-        };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(initialProduct);
-            await dbContext.SaveChangesAsync();
-        });
+        var initialProduct = TestDataGenerator.GenerateProduct(isForSale: true);
+        await SeedInitialDataAsync(initialProduct);
 
         var response = await HttpClient.PutAsync($"/management/products/{initialProduct.Id}/make-not-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await CallDbAsync(async dbContext =>
+        await AssertDbStateAsync(async dbContext =>
         {
             var updatedProduct = await dbContext.Products.SingleAsync();
             updatedProduct.Should().BeEquivalentTo(new Product
@@ -44,21 +31,8 @@ public class MakeProductNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductNotForSaleTestSuite_WhenProductAlreadyNotForSale_ShouldReturnBadRequest()
     {
-        var productForSale = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "P",
-            Title = "Product",
-            Pictures = ["Picture 1", "Picture 2"],
-            Price = 9.99m,
-            IsForSale = false
-        };
-
-        await CallDbAsync(async dbContext =>
-        {
-            dbContext.Products.Add(productForSale);
-            await dbContext.SaveChangesAsync();
-        });
+        var productForSale = TestDataGenerator.GenerateProduct(isForSale: false);
+        await SeedInitialDataAsync(productForSale);
 
         var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-not-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
