@@ -8,7 +8,7 @@ public class Product
     public required Guid Id { get; init; }
     public required string Code { get; set; }
     public required string Title { get; set; }
-    public required IReadOnlyCollection<string> Pictures { get; set; }
+    public required List<string> Pictures { get; set; }
     public required decimal Price { get; set; }
     public required bool IsForSale { get; set; }
 }

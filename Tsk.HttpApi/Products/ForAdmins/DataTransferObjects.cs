@@ -10,7 +10,7 @@ public class ProductDto
     public required Guid Id { get; init; }
     public required string Code { get; init; }
     public required string Title { get; init; }
-    public required IReadOnlyCollection<string> Pictures { get; init; }
+    public required List<string> Pictures { get; init; }
     public required decimal Price { get; init; }
     public required bool IsForSale { get; init; }
 }
@@ -28,7 +28,7 @@ public class CreateProductDto
 
     [Required]
     [MaxLength(15)]
-    public required IReadOnlyCollection<string> Pictures { get; init; }
+    public required List<string> Pictures { get; init; }
 
     [Required]
     [Price]
@@ -48,7 +48,7 @@ public class UpdateProductDto
 
     [Required]
     [MaxLength(15)]
-    public required IReadOnlyCollection<string> Pictures { get; init; }
+    public required List<string> Pictures { get; init; }
 
     [Required]
     [Price]
