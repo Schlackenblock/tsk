@@ -42,7 +42,6 @@ internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product
 
         productEntity
             .Property(product => product.Pictures)
-            .HasColumnType("jsonb")
             .HasColumnName("pictures");
 
         productEntity
