@@ -1,13 +1,11 @@
-using Tsk.HttpApi.Entities;
-
 namespace Tsk.Tests.Products.ForAdmins;
 
 public class DeleteProductTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
-    public async Task DeleteProduct_WhenProductForSaleExists_ShouldSucceed()
+    public async Task DeleteProduct_WhenProductIsForSale_ShouldSucceed()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "P", Pictures = ["Picture 1", "Picture 2"], Price = 9.99m, IsForSale = true };
+        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
         await SeedInitialDataAsync(product);
 
         var response = await HttpClient.DeleteAsync($"/management/products/{product.Id}");
@@ -20,9 +18,9 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
         });
     }
     [Fact]
-    public async Task DeleteProduct_WhenProductNotForSaleExists_ShouldSucceed()
+    public async Task DeleteProduct_WhenProductIsNotForSale_ShouldSucceed()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "P", Pictures = ["Picture 1", "Picture 2"], Price = 9.99m, IsForSale = true };
+        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = false);
         await SeedInitialDataAsync(product);
 
         var response = await HttpClient.DeleteAsync($"/management/products/{product.Id}");

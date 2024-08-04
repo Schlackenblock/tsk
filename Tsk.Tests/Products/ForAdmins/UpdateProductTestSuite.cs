@@ -8,16 +8,8 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductDidntHavePictures_ShouldBeOverridden()
     {
-        var productWithPictures = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "P",
-            Title = "Product",
-            Pictures = [],
-            IsForSale = false,
-            Price = 9.99m
-        };
-        await SeedInitialDataAsync(productWithPictures);
+        var productWithoutPictures = TestDataGenerator.GenerateProduct(config: product => product.Pictures = []);
+        await SeedInitialDataAsync(productWithoutPictures);
 
         var updateProductDto = new UpdateProductDto
         {
@@ -27,17 +19,17 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Price = 4.99m
         };
 
-        var response = await HttpClient.PutAsJsonAsync($"management/products/{productWithPictures.Id}", updateProductDto);
+        var response = await HttpClient.PutAsJsonAsync($"management/products/{productWithoutPictures.Id}", updateProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
         updatedProductDto.Should().BeEquivalentTo(new ProductDto
         {
-            Id = productWithPictures.Id,
+            Id = productWithoutPictures.Id,
             Code = updateProductDto.Code,
             Title = updateProductDto.Title,
             Pictures = updateProductDto.Pictures,
-            IsForSale = productWithPictures.IsForSale,
+            IsForSale = productWithoutPictures.IsForSale,
             Price = updateProductDto.Price
         });
 
@@ -59,15 +51,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductHadPictures_ShouldBeOverridden()
     {
-        var productWithPictures = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "P",
-            Title = "Product",
-            Pictures = ["Picture #1", "Picture #2"],
-            IsForSale = false,
-            Price = 9.99m
-        };
+        var productWithPictures = TestDataGenerator.GenerateProduct(config: product => product.Pictures = ["Picture #1", "Picture #2"]);
         await SeedInitialDataAsync(productWithPictures);
 
         var updateProductDto = new UpdateProductDto
@@ -110,15 +94,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductForSale_ShouldStayForSale()
     {
-        var initialProduct = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "Initial P",
-            Title = "Product for sale",
-            Pictures = ["Picture 1", "Picture 2"],
-            Price = 9.99m,
-            IsForSale = true
-        };
+        var initialProduct = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
         await SeedInitialDataAsync(initialProduct);
 
         var updateProductDto = new UpdateProductDto
@@ -151,17 +127,9 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task UpdateProduct_WhenProductNotForSale_ShouldStayForSale()
+    public async Task UpdateProduct_WhenProductNotForSale_ShouldStayNotForSale()
     {
-        var initialProduct = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "Initial P",
-            Title = "Product not for sale",
-            Pictures = ["Picture 1", "Picture 2"],
-            Price = 9.99m,
-            IsForSale = false
-        };
+        var initialProduct = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = false);
         await SeedInitialDataAsync(initialProduct);
 
         var updateProductDto = new UpdateProductDto
@@ -195,31 +163,15 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenCodeIsAlreadyInUse_ShouldFail()
     {
-        var initialProduct = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "Initial P",
-            Title = "Product",
-            Pictures = ["Picture 1", "Picture 2"],
-            Price = 9.99m,
-            IsForSale = true
-        };
+        var initialProduct = TestDataGenerator.GenerateProduct();
         await SeedInitialDataAsync(initialProduct);
 
-        var anotherProductWithSpecifiedCode = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "Updated P",
-            Title = "Another product",
-            Pictures = ["Picture 1", "Picture 2"],
-            Price = 9.99m,
-            IsForSale = true
-        };
+        var anotherProductWithSpecifiedCode = TestDataGenerator.GenerateProduct(config: product => product.Code = "Same Code");
         await SeedInitialDataAsync(anotherProductWithSpecifiedCode);
 
         var updateProductDto = new UpdateProductDto
         {
-            Code = "Updated P",
+            Code = "Same Code",
             Title = "Updated product for sale",
             Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
@@ -233,6 +185,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     public async Task UpdateProduct_WhenProductDoesNotExist_ShouldFail()
     {
         var notExistingProductId = Guid.NewGuid();
+
         var updateProductDto = new UpdateProductDto
         {
             Code = "P",

@@ -8,11 +8,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenMultipleProductsSpecified_ShouldSucceed()
     {
-        var products = new List<Product>
-        {
-            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Pictures = ["Product #1 Picture #1", "Product #1 Picture #2"], IsForSale = true, Price = 1m },
-            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = true, Price = 2m }
-        };
+        var products = TestDataGenerator.GenerateProducts(2, config: product => product.IsForSale = true);
         await SeedInitialDataAsync(products);
 
         var productIds = products.Select(product => product.Id);
@@ -43,7 +39,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenSingleProductSpecified_ShouldSucceed()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = true, Price = 1m };
+        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
         await SeedInitialDataAsync(product);
 
         var productIds = new[] { product.Id };
@@ -75,9 +71,9 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     {
         var products = new List<Product>
         {
-            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Pictures = ["Product #1 Picture #1", "Product #1 Picture #2"], IsForSale = true, Price = 1m },
-            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = true, Price = 2m },
-            new() { Id = Guid.NewGuid(), Code = "P3", Title = "Product #3", Pictures = ["Product #3 Picture #1", "Product #3 Picture #2"], IsForSale = false, Price = 3m }
+            TestDataGenerator.GenerateProduct(index: 1, config: product => product.IsForSale = true),
+            TestDataGenerator.GenerateProduct(index: 2, config: product => product.IsForSale = true),
+            TestDataGenerator.GenerateProduct(index: 3, config: product => product.IsForSale = false)
         };
         await SeedInitialDataAsync(products);
 
@@ -96,7 +92,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenSingleSpecifiedProductIsAlreadyNotForSale_ShouldReturnBadRequest()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = false, Price = 1m };
+        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = false);
         await SeedInitialDataAsync(product);
 
         var productIds = new[] { product.Id };
@@ -114,11 +110,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenOneOfSpecifiedProductsDoesNotExist_ShouldReturnNotFound()
     {
-        var existingProducts = new List<Product>
-        {
-            new() { Id = Guid.NewGuid(), Code = "P1", Title = "Product #1", Pictures = ["Product #1 Picture #1", "Product #1 Picture #2"], IsForSale = true, Price = 1m },
-            new() { Id = Guid.NewGuid(), Code = "P2", Title = "Product #2", Pictures = ["Product #2 Picture #1", "Product #2 Picture #2"], IsForSale = true, Price = 2m }
-        };
+        var existingProducts = TestDataGenerator.GenerateProducts(2, config: product => product.IsForSale = true);
         await SeedInitialDataAsync(existingProducts);
 
         var notExistingProductId = Guid.NewGuid();
@@ -156,7 +148,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenDuplicatingProductIdsProvided_ShouldReturnBadRequest()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "Product", Pictures = ["Picture 1", "Picture 2"], IsForSale = true, Price = 1m };
+        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
         await SeedInitialDataAsync(product);
 
         var productIds = Enumerable.Repeat(product.Id, 2);

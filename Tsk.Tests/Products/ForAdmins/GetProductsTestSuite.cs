@@ -1,4 +1,3 @@
-using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.Products.ForAdmins;
@@ -6,12 +5,12 @@ namespace Tsk.Tests.Products.ForAdmins;
 public class GetProductsTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
-    public async Task GetProducts_WhenManyExist_ShouldBothForSaleAndNotForSale()
+    public async Task GetProducts_WhenManyExist_ShouldReturnBothForSaleAndNotForSale()
     {
         var existingProducts = new[]
         {
-            new Product { Id = Guid.NewGuid(), Code = "P1", Title = "For sale", Pictures = ["For sale Picture 1", "For sale Picture 2"], Price = 9.99m, IsForSale = true },
-            new Product { Id = Guid.NewGuid(), Code = "P2", Title = "Not for sale", Pictures = ["Not for sale Picture 1", "Not for sale Picture 2"], Price = 8.99m, IsForSale = false }
+            TestDataGenerator.GenerateProduct(index: 1, config: product => product.IsForSale = true),
+            TestDataGenerator.GenerateProduct(index: 2, config: product => product.IsForSale = false)
         };
         await SeedInitialDataAsync(existingProducts);
 

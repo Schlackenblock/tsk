@@ -8,7 +8,9 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task CreateProduct_WithMultiplePictures_ShouldSucceed()
     {
-        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Pictures = ["Picture #1", "Picture #2"], Price = 9.99m };
+        var createProductDto = TestDataGenerator
+            .GenerateProduct(config: product => product.Pictures = ["Picture #1", "Picture #2"])
+            .ToCreateProductDto();
 
         var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -45,7 +47,9 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task CreateProduct_WithSinglePicture_ShouldSucceed()
     {
-        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Pictures = ["Picture"], Price = 9.99m };
+        var createProductDto = TestDataGenerator
+            .GenerateProduct(config: product => product.Pictures = ["Picture"])
+            .ToCreateProductDto();
 
         var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -82,7 +86,9 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task CreateProduct_WithoutPictures_ShouldSucceed()
     {
-        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Pictures = [], Price = 9.99m };
+        var createProductDto = TestDataGenerator
+            .GenerateProduct(config: product => product.Pictures = [])
+            .ToCreateProductDto();
 
         var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -119,18 +125,12 @@ public class CreateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task CreateProduct_WhenCodeIsAlreadyInUse_ShouldFail()
     {
-        var existingProductWithSameCode = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "P",
-            Title = "Product 1",
-            Pictures = ["Product 1 Picture 1", "Product 1 Picture 2"],
-            Price = 9.99m,
-            IsForSale = false
-        };
+        var existingProductWithSameCode = TestDataGenerator.GenerateProduct(config: product => product.Code = "P");
         await SeedInitialDataAsync(existingProductWithSameCode);
 
-        var createProductDto = new CreateProductDto { Code = "P", Title = "Product", Pictures = ["Product Picture"], Price = 9.99m };
+        var createProductDto = TestDataGenerator
+            .GenerateProduct(config: product => product.Code = "P")
+            .ToCreateProductDto();
 
         var response = await HttpClient.PostAsJsonAsync("/management/products", createProductDto);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

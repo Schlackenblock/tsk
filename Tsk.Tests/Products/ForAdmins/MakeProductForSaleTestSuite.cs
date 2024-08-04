@@ -7,15 +7,7 @@ public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductForSale_WhenProductNotForSale_ShouldSucceed()
     {
-        var initialProduct = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "P",
-            Title = "Product",
-            Pictures = ["Picture 1", "Picture 2"],
-            Price = 9.99m,
-            IsForSale = false
-        };
+        var initialProduct = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = false);
         await SeedInitialDataAsync(initialProduct);
 
         var response = await HttpClient.PutAsync($"/management/products/{initialProduct.Id}/make-for-sale", null);
@@ -39,15 +31,7 @@ public class MakeProductForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductForSale_WhenProductAlreadyForSale_ShouldReturnBadRequest()
     {
-        var productForSale = new Product
-        {
-            Id = Guid.NewGuid(),
-            Code = "P",
-            Title = "Product",
-            Pictures = ["Picture 1", "Picture 2"],
-            Price = 9.99m,
-            IsForSale = true
-        };
+        var productForSale = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
         await SeedInitialDataAsync(productForSale);
 
         var response = await HttpClient.PutAsync($"/management/products/{productForSale.Id}/make-for-sale", null);

@@ -1,4 +1,3 @@
-using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products.ForCustomers;
 
 namespace Tsk.Tests.Products.ForCustomers;
@@ -8,7 +7,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenFirstPageRequested_ShouldReturnOnlyFirstPage()
     {
-        var products = GenerateTestProducts(9);
+        var products = TestDataGenerator.GenerateProducts(9);
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=3");
@@ -27,7 +26,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenMiddlePageRequested_ShouldReturnOnlyMiddlePage()
     {
-        var products = GenerateTestProducts(9);
+        var products = TestDataGenerator.GenerateProducts(9);
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=1&pageSize=3");
@@ -47,7 +46,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenLastPageRequested_ShouldReturnOnlyLastPage()
     {
-        var products = GenerateTestProducts(9);
+        var products = TestDataGenerator.GenerateProducts(9);
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=2&pageSize=3");
@@ -67,7 +66,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenNotExistingPageRequested_ShouldReturnEmptyPage()
     {
-        var products = GenerateTestProducts(3);
+        var products = TestDataGenerator.GenerateProducts(3);
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=1&pageSize=3");
@@ -81,7 +80,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenPartiallyFilledPageRequested_ShouldReturnPartiallyFilledPage()
     {
-        var products = GenerateTestProducts(5);
+        var products = TestDataGenerator.GenerateProducts(5);
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=1&pageSize=3");
@@ -101,7 +100,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenOrderedByPriceAscending_ShouldReturnOrdered()
     {
-        var products = GenerateTestProducts(10).Shuffle();
+        var products = TestDataGenerator.GenerateProducts(10).Shuffle();
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=10");
@@ -119,7 +118,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenOrderedByPriceDescending_ShouldReturnOrdered()
     {
-        var products = GenerateTestProducts(10).Shuffle();
+        var products = TestDataGenerator.GenerateProducts(10).Shuffle();
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_desc&pageNumber=0&pageSize=10");
@@ -137,7 +136,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenOrderedByTitleAscending_ShouldReturnOrdered()
     {
-        var products = GenerateTestProducts(10).Shuffle();
+        var products = TestDataGenerator.GenerateProducts(10).Shuffle();
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=title_asc&pageNumber=0&pageSize=10");
@@ -155,7 +154,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenOrderedByTitleDescending_ShouldReturnOrdered()
     {
-        var products = GenerateTestProducts(10).Shuffle();
+        var products = TestDataGenerator.GenerateProducts(10).Shuffle();
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=title_desc&pageNumber=0&pageSize=10");
@@ -173,7 +172,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenOrderedByUnsupportedOption_ShouldRespondWithBadRequest()
     {
-        var products = GenerateTestProducts(10).Shuffle();
+        var products = TestDataGenerator.GenerateProducts(10).Shuffle();
         await SeedInitialDataAsync(products);
 
         var response = await HttpClient.GetAsync("/products?orderBy=popularity_desc&pageNumber=0&pageSize=10");
@@ -183,13 +182,10 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenNotForSaleExist_ShouldReturnOnlyForSale()
     {
-        var products = GenerateTestProducts(5);
-
-        var productsForSale = products.Take(3).ToList();
+        var productsForSale = TestDataGenerator.GenerateProducts(startIndex: 1, count: 3, config: product => product.IsForSale = true);
         await SeedInitialDataAsync(productsForSale);
 
-        var productsNotForSale = products.Skip(3).ToList();
-        productsNotForSale.ForEach(product => product.IsForSale = false);
+        var productsNotForSale = TestDataGenerator.GenerateProducts(startIndex: 4, count: 2, config: product => product.IsForSale = false);
         await SeedInitialDataAsync(productsNotForSale);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
@@ -211,21 +207,5 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(0);
         productsPageDto.Products.Should().BeEmpty();
-    }
-
-    private static IReadOnlyCollection<Product> GenerateTestProducts(int count)
-    {
-        return Enumerable
-            .Range(1, count)
-            .Select(index => new Product
-            {
-                Id = Guid.NewGuid(),
-                Code = $"PRD #{index}",
-                Title = $"Product #{index}",
-                Pictures = [$"Product #{index} Picture #1", $"Product #{index} Picture #2"],
-                IsForSale = true,
-                Price = index + 0.99m
-            })
-            .ToList();
     }
 }
