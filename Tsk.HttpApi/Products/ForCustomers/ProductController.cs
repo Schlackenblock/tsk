@@ -59,6 +59,7 @@ public class ProductController : ControllerBase
                 Id = product.Id,
                 Code = product.Code,
                 Title = product.Title,
+                Pictures = product.Pictures,
                 Price = product.Price
             })
             .ToListAsync();
