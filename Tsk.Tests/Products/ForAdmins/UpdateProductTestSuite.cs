@@ -56,7 +56,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
                 Title = updatedProductDto.Title,
                 Pictures = updatedProductDto.Pictures,
                 IsForSale = updatedProductDto.IsForSale,
-                Price = updatedProductDto.Price,
+                Price = updatedProductDto.Price
             });
         });
     }
@@ -112,7 +112,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
                 Title = updatedProductDto.Title,
                 Pictures = updatedProductDto.Pictures,
                 IsForSale = updatedProductDto.IsForSale,
-                Price = updatedProductDto.Price,
+                Price = updatedProductDto.Price
             });
         });
     }
