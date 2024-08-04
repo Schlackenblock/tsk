@@ -7,7 +7,7 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task DeleteProduct_WhenProductForSaleExists_ShouldSucceed()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "P", Price = 9.99m, IsForSale = true };
+        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "P", Pictures = ["Picture 1", "Picture 2"], Price = 9.99m, IsForSale = true };
 
         await CallDbAsync(async dbContext =>
         {
@@ -27,7 +27,7 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task DeleteProduct_WhenProductNotForSaleExists_ShouldSucceed()
     {
-        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "P", Price = 9.99m, IsForSale = true };
+        var product = new Product { Id = Guid.NewGuid(), Code = "P", Title = "P", Pictures = ["Picture 1", "Picture 2"], Price = 9.99m, IsForSale = true };
 
         await CallDbAsync(async dbContext =>
         {

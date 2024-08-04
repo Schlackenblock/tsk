@@ -31,6 +31,7 @@ public class ProductController : ControllerBase
                 Id = product.Id,
                 Code = product.Code,
                 Title = product.Title,
+                Pictures = product.Pictures,
                 Price = product.Price,
                 IsForSale = product.IsForSale
             }
@@ -57,6 +58,7 @@ public class ProductController : ControllerBase
             Id = Guid.NewGuid(),
             Code = createProductDto.Code,
             Title = createProductDto.Title,
+            Pictures = createProductDto.Pictures,
             Price = createProductDto.Price,
             IsForSale = false
         };
@@ -69,6 +71,7 @@ public class ProductController : ControllerBase
             Id = product.Id,
             Code = product.Code,
             Title = product.Title,
+            Pictures = product.Pictures,
             Price = product.Price,
             IsForSale = product.IsForSale
         };
@@ -99,6 +102,7 @@ public class ProductController : ControllerBase
 
         product.Title = updateProductDto.Title;
         product.Price = updateProductDto.Price;
+        product.Pictures = updateProductDto.Pictures;
         product.Code = updateProductDto.Code;
         await dbContext.SaveChangesAsync();
 
@@ -107,6 +111,7 @@ public class ProductController : ControllerBase
             Id = product.Id,
             Code = product.Code,
             Title = product.Title,
+            Pictures = product.Pictures,
             Price = product.Price,
             IsForSale = product.IsForSale
         };
@@ -137,6 +142,7 @@ public class ProductController : ControllerBase
             Id = product.Id,
             Code = product.Code,
             Title = product.Title,
+            Pictures = product.Pictures,
             Price = product.Price,
             IsForSale = product.IsForSale
         };
@@ -189,6 +195,7 @@ public class ProductController : ControllerBase
             Id = product.Id,
             Code = product.Code,
             Title = product.Title,
+            Pictures = product.Pictures,
             Price = product.Price,
             IsForSale = product.IsForSale
         });
@@ -219,6 +226,7 @@ public class ProductController : ControllerBase
             Id = product.Id,
             Code = product.Code,
             Title = product.Title,
+            Pictures = product.Pictures,
             Price = product.Price,
             IsForSale = product.IsForSale
         };
@@ -271,6 +279,7 @@ public class ProductController : ControllerBase
             Id = product.Id,
             Code = product.Code,
             Title = product.Title,
+            Pictures = product.Pictures,
             Price = product.Price,
             IsForSale = product.IsForSale
         });

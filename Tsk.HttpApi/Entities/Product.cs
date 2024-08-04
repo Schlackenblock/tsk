@@ -8,6 +8,7 @@ public class Product
     public required Guid Id { get; init; }
     public required string Code { get; set; }
     public required string Title { get; set; }
+    public required List<string> Pictures { get; set; }
     public required decimal Price { get; set; }
     public required bool IsForSale { get; set; }
 }
@@ -38,6 +39,10 @@ internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product
         productEntity
             .Property(product => product.Title)
             .HasColumnName("title");
+
+        productEntity
+            .Property(product => product.Pictures)
+            .HasColumnName("pictures");
 
         productEntity
             .Property(product => product.Price)

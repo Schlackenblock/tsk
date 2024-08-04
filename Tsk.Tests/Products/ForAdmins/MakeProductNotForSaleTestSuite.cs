@@ -12,6 +12,7 @@ public class MakeProductNotForSaleTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "P",
             Title = "Product",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = true
         };
@@ -33,6 +34,7 @@ public class MakeProductNotForSaleTestSuite : IntegrationTestSuiteBase
                 Id = initialProduct.Id,
                 Code = initialProduct.Code,
                 Title = initialProduct.Title,
+                Pictures = initialProduct.Pictures,
                 Price = initialProduct.Price,
                 IsForSale = false
             });
@@ -47,6 +49,7 @@ public class MakeProductNotForSaleTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "P",
             Title = "Product",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = false
         };

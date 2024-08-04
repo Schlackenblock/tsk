@@ -6,6 +6,118 @@ namespace Tsk.Tests.Products.ForAdmins;
 public class UpdateProductTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
+    public async Task UpdateProduct_WhenProductDidntHavePictures_ShouldBeOverridden()
+    {
+        var productWithPictures = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = "P",
+            Title = "Product",
+            Pictures = [],
+            IsForSale = false,
+            Price = 9.99m
+        };
+
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.Add(productWithPictures);
+            await dbContext.SaveChangesAsync();
+        });
+
+        var updateProductDto = new UpdateProductDto
+        {
+            Code = "Updated P",
+            Title = "Updated Product",
+            Pictures = ["Updated picture"],
+            Price = 4.99m
+        };
+
+        var response = await HttpClient.PutAsJsonAsync($"management/products/{productWithPictures.Id}", updateProductDto);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
+        updatedProductDto.Should().BeEquivalentTo(new ProductDto
+        {
+            Id = productWithPictures.Id,
+            Code = updateProductDto.Code,
+            Title = updateProductDto.Title,
+            Pictures = updateProductDto.Pictures,
+            IsForSale = productWithPictures.IsForSale,
+            Price = updateProductDto.Price
+        });
+
+        await CallDbAsync(async dbContext =>
+        {
+            var updatedProduct = await dbContext.Products.SingleAsync();
+            updatedProduct.Should().BeEquivalentTo(new Product
+            {
+                Id = updatedProductDto!.Id,
+                Code = updatedProductDto.Code,
+                Title = updatedProductDto.Title,
+                Pictures = updatedProductDto.Pictures,
+                IsForSale = updatedProductDto.IsForSale,
+                Price = updatedProductDto.Price
+            });
+        });
+    }
+
+    [Fact]
+    public async Task UpdateProduct_WhenProductHadPictures_ShouldBeOverridden()
+    {
+        var productWithPictures = new Product
+        {
+            Id = Guid.NewGuid(),
+            Code = "P",
+            Title = "Product",
+            Pictures = ["Picture #1", "Picture #2"],
+            IsForSale = false,
+            Price = 9.99m
+        };
+
+        await CallDbAsync(async dbContext =>
+        {
+            dbContext.Products.Add(productWithPictures);
+            await dbContext.SaveChangesAsync();
+        });
+
+        var updateProductDto = new UpdateProductDto
+        {
+            Code = "Updated P",
+            Title = "Updated Product",
+            Pictures = ["Updated picture"],
+            Price = 4.99m
+        };
+
+        var response = await HttpClient.PutAsJsonAsync($"management/products/{productWithPictures.Id}", updateProductDto);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedProductDto = await response.Content.ReadFromJsonAsync<ProductDto>();
+        updatedProductDto.Should().BeEquivalentTo(new ProductDto
+        {
+            Id = productWithPictures.Id,
+            Code = updateProductDto.Code,
+            Title = updateProductDto.Title,
+            Pictures = updateProductDto.Pictures,
+            IsForSale = productWithPictures.IsForSale,
+            Price = updateProductDto.Price
+        });
+
+        await CallDbAsync(async dbContext =>
+        {
+            var updatedProduct = await dbContext.Products.SingleAsync();
+            updatedProduct.Should().BeEquivalentTo(new Product
+            {
+                Id = updatedProductDto!.Id,
+                Code = updatedProductDto.Code,
+                Title = updatedProductDto.Title,
+                Pictures = updatedProductDto.Pictures,
+                IsForSale = updatedProductDto.IsForSale,
+                Price = updatedProductDto.Price
+            });
+        });
+    }
+
+    [Fact]
     public async Task UpdateProduct_WhenProductForSale_ShouldStayForSale()
     {
         var initialProduct = new Product
@@ -13,6 +125,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "Initial P",
             Title = "Product for sale",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = true
         };
@@ -27,6 +140,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         {
             Code = "Updated P",
             Title = "Updated product for sale",
+            Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
         };
 
@@ -39,6 +153,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = initialProduct.Id,
             Code = updateProductDto.Code,
             Title = updateProductDto.Title,
+            Pictures = updateProductDto.Pictures,
             Price = updateProductDto.Price,
             IsForSale = initialProduct.IsForSale
         });
@@ -57,7 +172,8 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         {
             Id = Guid.NewGuid(),
             Code = "Initial P",
-            Title = "Product for sale",
+            Title = "Product not for sale",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = false
         };
@@ -71,7 +187,8 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         var updateProductDto = new UpdateProductDto
         {
             Code = "Updated P",
-            Title = "Updated product for sale",
+            Title = "Updated product not for sale",
+            Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
         };
 
@@ -84,6 +201,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = initialProduct.Id,
             Code = updateProductDto.Code,
             Title = updateProductDto.Title,
+            Pictures = updateProductDto.Pictures,
             Price = updateProductDto.Price,
             IsForSale = initialProduct.IsForSale
         });
@@ -102,6 +220,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "Initial P",
             Title = "Product",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = true
         };
@@ -111,6 +230,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
             Id = Guid.NewGuid(),
             Code = "Updated P",
             Title = "Another product",
+            Pictures = ["Picture 1", "Picture 2"],
             Price = 9.99m,
             IsForSale = true
         };
@@ -126,6 +246,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         {
             Code = "Updated P",
             Title = "Updated product for sale",
+            Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
         };
 
@@ -141,6 +262,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         {
             Code = "P",
             Title = "Updated not existing product",
+            Pictures = ["Updated Picture 1", "Updated Picture 2"],
             Price = 8.99m
         };
 
