@@ -51,22 +51,14 @@ public class ProductController : ControllerBase
 
         var productsCount = await productsQuery.CountAsync();
 
-        var productDtos = await productsQuery
+        var products = await productsQuery
             .Skip(pageNumber * pageSize)
             .Take(pageSize)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            })
             .ToListAsync();
 
         var productsPageDto = new ProductsPageDto
         {
-            Products = productDtos,
+            Products = products.ConvertAll(ProductDto.FromProductEntity),
             ProductsCount = productsCount
         };
         return Ok(productsPageDto);

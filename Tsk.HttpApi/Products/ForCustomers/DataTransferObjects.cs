@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using Tsk.HttpApi.Entities;
 
 namespace Tsk.HttpApi.Products.ForCustomers;
 
@@ -10,6 +11,18 @@ public class ProductDto
     public required string Title { get; init; }
     public required List<string> Pictures { get; init; }
     public required decimal Price { get; init; }
+
+    public static ProductDto FromProductEntity(Product product)
+    {
+        return new ProductDto
+        {
+            Id = product.Id,
+            Code = product.Code,
+            Title = product.Title,
+            Pictures = product.Pictures,
+            Price = product.Price
+        };
+    }
 }
 
 [PublicAPI]

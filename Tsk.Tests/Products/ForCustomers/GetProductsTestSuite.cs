@@ -17,14 +17,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
         var expectedProductDtos = products
             .OrderBy(product => product.Price)
             .Take(3)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+            .Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(products.Count);
@@ -44,14 +37,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             .OrderBy(product => product.Price)
             .Skip(3)
             .Take(3)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+            .Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(products.Count);
@@ -71,14 +57,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             .OrderBy(product => product.Price)
             .Skip(6)
             .Take(3)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+            .Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(products.Count);
@@ -112,14 +91,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
             .OrderBy(product => product.Price)
             .Skip(3)
             .Take(2)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+            .Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(products.Count);
@@ -137,14 +109,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
 
         var expectedProductDtos = products
             .OrderBy(product => product.Price)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+            .Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(products.Count);
@@ -162,14 +127,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
 
         var expectedProductDtos = products
             .OrderByDescending(product => product.Price)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+            .Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(products.Count);
@@ -187,14 +145,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
 
         var expectedProductDtos = products
             .OrderBy(product => product.Title)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+            .Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(products.Count);
@@ -212,14 +163,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
 
         var expectedProductDtos = products
             .OrderByDescending(product => product.Title)
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+            .Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(products.Count);
@@ -251,15 +195,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var expectedProductDtos = productsForSale
-            .Select(product => new ProductDto
-            {
-                Id = product.Id,
-                Code = product.Code,
-                Title = product.Title,
-                Pictures = product.Pictures,
-                Price = product.Price
-            });
+        var expectedProductDtos = productsForSale.Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(productsForSale.Count);

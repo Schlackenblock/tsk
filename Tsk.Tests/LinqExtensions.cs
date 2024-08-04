@@ -2,9 +2,9 @@
 
 public static class LinqExtensions
 {
-    public static IReadOnlyCollection<T> Shuffle<T>(this IReadOnlyCollection<T> list)
+    public static IReadOnlyCollection<T> Shuffle<T>(this IReadOnlyCollection<T> collection)
     {
-        return list
+        return collection
             .OrderBy(_ => Random.Shared.Next())
             .ToList();
     }
