@@ -1,4 +1,4 @@
-﻿namespace Tsk.Tests;
+namespace Tsk.Tests;
 
 public static class LinqExtensions
 {
