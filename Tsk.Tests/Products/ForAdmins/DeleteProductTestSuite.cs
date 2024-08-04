@@ -5,7 +5,7 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task DeleteProduct_WhenProductIsForSale_ShouldSucceed()
     {
-        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
+        var product = TestDataGenerator.GenerateProduct(isForSale: true);
         await SeedInitialDataAsync(product);
 
         var response = await HttpClient.DeleteAsync($"/management/products/{product.Id}");
@@ -20,7 +20,7 @@ public class DeleteProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task DeleteProduct_WhenProductIsNotForSale_ShouldSucceed()
     {
-        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = false);
+        var product = TestDataGenerator.GenerateProduct(isForSale: false);
         await SeedInitialDataAsync(product);
 
         var response = await HttpClient.DeleteAsync($"/management/products/{product.Id}");

@@ -9,8 +9,8 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     {
         var existingProducts = new[]
         {
-            TestDataGenerator.GenerateProduct(index: 1, config: product => product.IsForSale = true),
-            TestDataGenerator.GenerateProduct(index: 2, config: product => product.IsForSale = false)
+            TestDataGenerator.GenerateProduct(index: 1, isForSale: true),
+            TestDataGenerator.GenerateProduct(index: 2, isForSale: false)
         };
         await SeedInitialDataAsync(existingProducts);
 

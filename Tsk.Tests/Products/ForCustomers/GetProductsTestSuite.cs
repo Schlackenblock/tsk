@@ -182,10 +182,10 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task GetProducts_WhenNotForSaleExist_ShouldReturnOnlyForSale()
     {
-        var productsForSale = TestDataGenerator.GenerateProducts(startIndex: 1, count: 3, config: product => product.IsForSale = true);
+        var productsForSale = TestDataGenerator.GenerateProducts(startIndex: 1, count: 3, isForSale: true);
         await SeedInitialDataAsync(productsForSale);
 
-        var productsNotForSale = TestDataGenerator.GenerateProducts(startIndex: 4, count: 2, config: product => product.IsForSale = false);
+        var productsNotForSale = TestDataGenerator.GenerateProducts(startIndex: 4, count: 2, isForSale: false);
         await SeedInitialDataAsync(productsNotForSale);
 
         var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5");

@@ -8,7 +8,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenMultipleProductsSpecified_ShouldSucceed()
     {
-        var products = TestDataGenerator.GenerateProducts(2, config: product => product.IsForSale = true);
+        var products = TestDataGenerator.GenerateProducts(2, isForSale: true);
         await SeedInitialDataAsync(products);
 
         var productIds = products.Select(product => product.Id);
@@ -39,7 +39,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenSingleProductSpecified_ShouldSucceed()
     {
-        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
+        var product = TestDataGenerator.GenerateProduct(isForSale: true);
         await SeedInitialDataAsync(product);
 
         var productIds = new[] { product.Id };
@@ -71,9 +71,9 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     {
         var products = new List<Product>
         {
-            TestDataGenerator.GenerateProduct(index: 1, config: product => product.IsForSale = true),
-            TestDataGenerator.GenerateProduct(index: 2, config: product => product.IsForSale = true),
-            TestDataGenerator.GenerateProduct(index: 3, config: product => product.IsForSale = false)
+            TestDataGenerator.GenerateProduct(index: 1, isForSale: true),
+            TestDataGenerator.GenerateProduct(index: 2, isForSale: true),
+            TestDataGenerator.GenerateProduct(index: 3, isForSale: false)
         };
         await SeedInitialDataAsync(products);
 
@@ -92,7 +92,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenSingleSpecifiedProductIsAlreadyNotForSale_ShouldReturnBadRequest()
     {
-        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = false);
+        var product = TestDataGenerator.GenerateProduct(isForSale: false);
         await SeedInitialDataAsync(product);
 
         var productIds = new[] { product.Id };
@@ -110,7 +110,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenOneOfSpecifiedProductsDoesNotExist_ShouldReturnNotFound()
     {
-        var existingProducts = TestDataGenerator.GenerateProducts(2, config: product => product.IsForSale = true);
+        var existingProducts = TestDataGenerator.GenerateProducts(2, isForSale: true);
         await SeedInitialDataAsync(existingProducts);
 
         var notExistingProductId = Guid.NewGuid();
@@ -148,7 +148,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task MakeProductsNotForSale_WhenDuplicatingProductIdsProvided_ShouldReturnBadRequest()
     {
-        var product = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
+        var product = TestDataGenerator.GenerateProduct(isForSale: true);
         await SeedInitialDataAsync(product);
 
         var productIds = Enumerable.Repeat(product.Id, 2);

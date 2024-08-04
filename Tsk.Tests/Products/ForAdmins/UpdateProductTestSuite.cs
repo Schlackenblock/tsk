@@ -8,7 +8,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductDidntHavePictures_ShouldBeOverridden()
     {
-        var productWithoutPictures = TestDataGenerator.GenerateProduct(config: product => product.Pictures = []);
+        var productWithoutPictures = TestDataGenerator.GenerateProduct(pictures: []);
         await SeedInitialDataAsync(productWithoutPictures);
 
         var updateProductDto = new UpdateProductDto
@@ -51,7 +51,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductHadPictures_ShouldBeOverridden()
     {
-        var productWithPictures = TestDataGenerator.GenerateProduct(config: product => product.Pictures = ["Picture #1", "Picture #2"]);
+        var productWithPictures = TestDataGenerator.GenerateProduct(pictures: ["Picture #1", "Picture #2"]);
         await SeedInitialDataAsync(productWithPictures);
 
         var updateProductDto = new UpdateProductDto
@@ -94,7 +94,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductForSale_ShouldStayForSale()
     {
-        var initialProduct = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = true);
+        var initialProduct = TestDataGenerator.GenerateProduct(isForSale: true);
         await SeedInitialDataAsync(initialProduct);
 
         var updateProductDto = new UpdateProductDto
@@ -129,7 +129,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
     [Fact]
     public async Task UpdateProduct_WhenProductNotForSale_ShouldStayNotForSale()
     {
-        var initialProduct = TestDataGenerator.GenerateProduct(config: product => product.IsForSale = false);
+        var initialProduct = TestDataGenerator.GenerateProduct(isForSale: false);
         await SeedInitialDataAsync(initialProduct);
 
         var updateProductDto = new UpdateProductDto
@@ -166,7 +166,7 @@ public class UpdateProductTestSuite : IntegrationTestSuiteBase
         var initialProduct = TestDataGenerator.GenerateProduct();
         await SeedInitialDataAsync(initialProduct);
 
-        var anotherProductWithSpecifiedCode = TestDataGenerator.GenerateProduct(config: product => product.Code = "Same Code");
+        var anotherProductWithSpecifiedCode = TestDataGenerator.GenerateProduct(code: "Same Code");
         await SeedInitialDataAsync(anotherProductWithSpecifiedCode);
 
         var updateProductDto = new UpdateProductDto
