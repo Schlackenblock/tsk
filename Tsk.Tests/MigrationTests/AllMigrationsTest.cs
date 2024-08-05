@@ -1,4 +1,4 @@
-﻿namespace Tsk.Tests.MigrationTests;
+namespace Tsk.Tests.MigrationTests;
 
 public class AllMigrationsTest : MigrationsTestBase
 {
