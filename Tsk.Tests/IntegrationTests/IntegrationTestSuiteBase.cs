@@ -1,6 +1,6 @@
 using Tsk.HttpApi;
 
-namespace Tsk.Tests;
+namespace Tsk.Tests.IntegrationTests;
 
 public abstract class IntegrationTestSuiteBase : IAsyncLifetime
 {

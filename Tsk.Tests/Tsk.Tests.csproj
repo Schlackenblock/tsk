@@ -30,4 +30,8 @@
     <ProjectReference Include="..\Tsk.HttpApi\Tsk.HttpApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UnitTests\" />
+  </ItemGroup>
+
 </Project>

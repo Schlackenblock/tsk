@@ -1,19 +1,19 @@
 using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products.ForAdmins;
 
-namespace Tsk.Tests.Products.ForAdmins;
+namespace Tsk.Tests.IntegrationTests.Products.ForAdmins;
 
-public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
+public class MakeProductsForSaleTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
-    public async Task MakeProductsNotForSale_WhenMultipleProductsSpecified_ShouldSucceed()
+    public async Task MakeProductsForSale_WhenMultipleProductsSpecified_ShouldSucceed()
     {
-        var products = TestDataGenerator.GenerateProducts(2, isForSale: true);
+        var products = TestDataGenerator.GenerateProducts(2, isForSale: false);
         await SeedInitialDataAsync(products);
 
         var productIds = products.Select(product => product.Id);
 
-        var response = await HttpClient.PutAsJsonAsync("management/products/make-not-for-sale", productIds);
+        var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var expectedProductDtos = products.ConvertAll(product => new ProductDto
@@ -22,7 +22,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
             Code = product.Code,
             Title = product.Title,
             Pictures = product.Pictures,
-            IsForSale = false,
+            IsForSale = true,
             Price = product.Price
         });
 
@@ -37,14 +37,14 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task MakeProductsNotForSale_WhenSingleProductSpecified_ShouldSucceed()
+    public async Task MakeProductsForSale_WhenSingleProductSpecified_ShouldSucceed()
     {
-        var product = TestDataGenerator.GenerateProduct(isForSale: true);
+        var product = TestDataGenerator.GenerateProduct(isForSale: false);
         await SeedInitialDataAsync(product);
 
         var productIds = new[] { product.Id };
 
-        var response = await HttpClient.PutAsJsonAsync("management/products/make-not-for-sale", productIds);
+        var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedProductsDto = await response.Content.ReadFromJsonAsync<List<ProductDto>>();
@@ -55,7 +55,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
             Code = product.Code,
             Title = product.Title,
             Pictures = product.Pictures,
-            IsForSale = false,
+            IsForSale = true,
             Price = product.Price
         });
 
@@ -67,19 +67,19 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task MakeProductsNotForSale_WhenOneOfSpecifiedProductsIsAlreadyNotForSale_ShouldReturnBadRequest()
+    public async Task MakeProductsForSale_WhenOneOfSpecifiedProductsIsAlreadyForSale_ShouldReturnBadRequest()
     {
         var products = new List<Product>
         {
-            TestDataGenerator.GenerateProduct(index: 1, isForSale: true),
-            TestDataGenerator.GenerateProduct(index: 2, isForSale: true),
-            TestDataGenerator.GenerateProduct(index: 3, isForSale: false)
+            TestDataGenerator.GenerateProduct(index: 1, isForSale: false),
+            TestDataGenerator.GenerateProduct(index: 2, isForSale: false),
+            TestDataGenerator.GenerateProduct(index: 3, isForSale: true)
         };
         await SeedInitialDataAsync(products);
 
         var productIds = products.Select(product => product.Id);
 
-        var response = await HttpClient.PutAsJsonAsync("management/products/make-not-for-sale", productIds);
+        var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         await AssertDbStateAsync(async dbContext =>
@@ -90,14 +90,14 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task MakeProductsNotForSale_WhenSingleSpecifiedProductIsAlreadyNotForSale_ShouldReturnBadRequest()
+    public async Task MakeProductsForSale_WhenSingleSpecifiedProductIsAlreadyForSale_ShouldReturnBadRequest()
     {
-        var product = TestDataGenerator.GenerateProduct(isForSale: false);
+        var product = TestDataGenerator.GenerateProduct(isForSale: true);
         await SeedInitialDataAsync(product);
 
         var productIds = new[] { product.Id };
 
-        var response = await HttpClient.PutAsJsonAsync("management/products/make-not-for-sale", productIds);
+        var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         await AssertDbStateAsync(async dbContext =>
@@ -108,9 +108,9 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task MakeProductsNotForSale_WhenOneOfSpecifiedProductsDoesNotExist_ShouldReturnNotFound()
+    public async Task MakeProductsForSale_WhenOneOfSpecifiedProductsDoesNotExist_ShouldReturnNotFound()
     {
-        var existingProducts = TestDataGenerator.GenerateProducts(2, isForSale: true);
+        var existingProducts = TestDataGenerator.GenerateProducts(2, isForSale: false);
         await SeedInitialDataAsync(existingProducts);
 
         var notExistingProductId = Guid.NewGuid();
@@ -119,7 +119,7 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
             .Select(product => product.Id)
             .Append(notExistingProductId);
 
-        var response = await HttpClient.PutAsJsonAsync("management/products/make-not-for-sale", productIds);
+        var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
         await AssertDbStateAsync(async dbContext =>
@@ -130,12 +130,12 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task MakeProductsNotForSale_WhenSingleSpecifiedProductDoesNotExist_ShouldReturnNotFound()
+    public async Task MakeProductsForSale_WhenSingleSpecifiedProductDoesNotExist_ShouldReturnNotFound()
     {
         var notExistingProductId = Guid.NewGuid();
         var productIds = new[] { notExistingProductId };
 
-        var response = await HttpClient.PutAsJsonAsync("management/products/make-not-for-sale", productIds);
+        var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
         await AssertDbStateAsync(async dbContext =>
@@ -146,14 +146,14 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task MakeProductsNotForSale_WhenDuplicatingProductIdsProvided_ShouldReturnBadRequest()
+    public async Task MakeProductsForSale_WhenDuplicatingProductIdsProvided_ShouldReturnBadRequest()
     {
-        var product = TestDataGenerator.GenerateProduct(isForSale: true);
+        var product = TestDataGenerator.GenerateProduct(isForSale: false);
         await SeedInitialDataAsync(product);
 
         var productIds = Enumerable.Repeat(product.Id, 2);
 
-        var response = await HttpClient.PutAsJsonAsync("management/products/make-not-for-sale", productIds);
+        var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productIds);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         await AssertDbStateAsync(async dbContext =>
@@ -164,11 +164,11 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task MakeProductsNotForSale_WhenNoProductIdsProvided_ShouldReturnBadRequest()
+    public async Task MakeProductsForSale_WhenNoProductIdsProvided_ShouldReturnBadRequest()
     {
         var productsIds = Enumerable.Empty<Guid>();
 
-        var response = await HttpClient.PutAsJsonAsync("management/products/make-not-for-sale", productsIds);
+        var response = await HttpClient.PutAsJsonAsync("management/products/make-for-sale", productsIds);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         await AssertDbStateAsync(async dbContext =>
@@ -179,9 +179,9 @@ public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task MakeProductsNotForSale_WhenNullInsteadOfProductIdsProvided_ShouldReturnBadRequest()
+    public async Task MakeProductsForSale_WhenNullInsteadOfProductIdsProvided_ShouldReturnBadRequest()
     {
-        var response = await HttpClient.PutAsJsonAsync<object?>("management/products/make-not-for-sale", null);
+        var response = await HttpClient.PutAsJsonAsync<object?>("management/products/make-for-sale", null);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         await AssertDbStateAsync(async dbContext =>
