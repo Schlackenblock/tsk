@@ -18,7 +18,7 @@ namespace Tsk.HttpApi.Migrations
             migrationBuilder.Sql(
                 """
                 UPDATE products
-                SET is_for_sale = FALSE;
+                SET is_for_sale = TRUE;
                 """
             );
 
