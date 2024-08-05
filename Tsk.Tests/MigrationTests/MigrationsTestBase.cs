@@ -11,7 +11,7 @@ public abstract class MigrationsTestBase : IAsyncLifetime
 {
     protected DatabaseFacade Database { get; private set; } = null!;
     protected IMigrator Migrator { get; private set; } = null!;
-    protected List<string> Migrations { get; private set; } = null!;
+    protected IReadOnlyCollection<string> Migrations { get; private set; } = null!;
 
     private readonly PostgreSqlContainer postgreSqlContainer =
         new PostgreSqlBuilder()
