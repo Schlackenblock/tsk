@@ -2,7 +2,7 @@
 
 namespace Tsk.Tests.MigrationTests;
 
-public class AllMigrationsTest : MigrationTestBase
+public class AllMigrationsTest : MigrationsTestBase
 {
     /// <summary>
     /// This test serves as a marker for all other migration tests: if this test fails, then we can't trust our

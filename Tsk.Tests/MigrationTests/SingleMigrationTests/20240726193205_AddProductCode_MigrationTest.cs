@@ -1,26 +1,21 @@
 ﻿using Dapper;
 
-namespace Tsk.Tests.MigrationTests;
+namespace Tsk.Tests.MigrationTests.SingleMigrationTests;
 
 public class AddProductCodeMigrationTest : MigrationTestBase
 {
-    private const string previousMigration = "20240726153710_FixProductsPKName";
-    private const string migrationUnderTest = "20240726193205_AddProductCode";
+    protected override string MigrationUnderTest => "20240726193205_AddProductCode";
 
     [Fact]
     public async Task AddProductCode_WhenApplied_ShouldAutomaticallyCreateProductCodesFromTheirIds()
     {
-        await using var connection = Database.GetDbConnection();
-
-        await Migrator.MigrateAsync(previousMigration);
-
         var productsBeforeMigration = new ProductBeforeMigration[]
         {
             new(Guid.NewGuid(), "Product #1", 1.99m, true),
             new(Guid.NewGuid(), "Product #2", 2.99m, true),
             new(Guid.NewGuid(), "Product #3", 3.99m, false)
         };
-        await connection.ExecuteAsync(
+        await Connection.ExecuteAsync(
             """
             INSERT INTO products(id, title, price, is_for_sale)
             VALUES (@Id, @Title, @Price, @IsForSale);
@@ -28,7 +23,7 @@ public class AddProductCodeMigrationTest : MigrationTestBase
             productsBeforeMigration
         );
 
-        await Migrator.MigrateAsync(migrationUnderTest);
+        await ApplyTestedMigrationAsync();
 
         var expectedProductsAfterMigration = productsBeforeMigration.Select(product => new ProductAfterMigration(
             product.Id,
@@ -38,7 +33,7 @@ public class AddProductCodeMigrationTest : MigrationTestBase
             Code: product.Id.ToString()
         ));
 
-        var productsAfterMigration = await connection.QueryAsync<ProductAfterMigration>("SELECT * FROM products;");
+        var productsAfterMigration = await Connection.QueryAsync<ProductAfterMigration>("SELECT * FROM products;");
         productsAfterMigration.Should().BeEquivalentTo(expectedProductsAfterMigration);
     }
 

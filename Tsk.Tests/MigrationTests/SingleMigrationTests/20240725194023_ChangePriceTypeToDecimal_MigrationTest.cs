@@ -1,19 +1,14 @@
 ﻿using Dapper;
 
-namespace Tsk.Tests.MigrationTests;
+namespace Tsk.Tests.MigrationTests.SingleMigrationTests;
 
 public class ChangePriceTypeToDecimalMigrationTest : MigrationTestBase
 {
-    private const string previousMigration = "20240724180553_AddIsForSale";
-    private const string migrationUnderTest = "20240725194023_ChangePriceTypeToDecimal";
+    protected override string MigrationUnderTest => "20240725194023_ChangePriceTypeToDecimal";
 
     [Fact]
     public async Task ChangePriceTypeToDecimal_WhenApplied_ShouldProperlyTransformPrices()
     {
-        await using var connection = Database.GetDbConnection();
-
-        await Migrator.MigrateAsync(previousMigration);
-
         var productsBeforeMigration = new ProductBeforeMigration[]
         {
             new(Guid.NewGuid(), "Product for Sale", 1.99, true),
@@ -22,7 +17,7 @@ public class ChangePriceTypeToDecimalMigrationTest : MigrationTestBase
             new(Guid.NewGuid(), "Round price up in corner-case", 1.005, true),
             new(Guid.NewGuid(), "Round price up", 1.006, true)
         };
-        await connection.ExecuteAsync(
+        await Connection.ExecuteAsync(
             """
             INSERT INTO products(id, title, price, is_for_sale)
             VALUES (@Id, @Title, @Price, @IsForSale);
@@ -30,7 +25,7 @@ public class ChangePriceTypeToDecimalMigrationTest : MigrationTestBase
             productsBeforeMigration
         );
 
-        await Migrator.MigrateAsync(migrationUnderTest);
+        await ApplyTestedMigrationAsync();
 
         var expectedProductsAfterMigration = productsBeforeMigration.Select(product => new ProductAfterMigration(
             product.Id,
@@ -39,7 +34,7 @@ public class ChangePriceTypeToDecimalMigrationTest : MigrationTestBase
             product.IsForSale
         ));
 
-        var productsAfterMigration = await connection.QueryAsync<ProductAfterMigration>("SELECT * FROM products;");
+        var productsAfterMigration = await Connection.QueryAsync<ProductAfterMigration>("SELECT * FROM products;");
         productsAfterMigration.Should().BeEquivalentTo(expectedProductsAfterMigration);
     }
 

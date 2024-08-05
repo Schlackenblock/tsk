@@ -7,7 +7,7 @@ using Tsk.HttpApi;
 
 namespace Tsk.Tests.MigrationTests;
 
-public abstract class MigrationTestBase : IAsyncLifetime
+public abstract class MigrationsTestBase : IAsyncLifetime
 {
     protected DatabaseFacade Database { get; private set; } = null!;
     protected IMigrator Migrator { get; private set; } = null!;
@@ -20,7 +20,7 @@ public abstract class MigrationTestBase : IAsyncLifetime
 
     private TskDbContext dbContext = null!;
 
-    public async Task InitializeAsync()
+    public virtual async Task InitializeAsync()
     {
         await postgreSqlContainer.StartAsync();
 
@@ -37,7 +37,7 @@ public abstract class MigrationTestBase : IAsyncLifetime
         ConfigureDapperDefaults();
     }
 
-    public async Task DisposeAsync()
+    public virtual async Task DisposeAsync()
     {
         await dbContext.DisposeAsync();
         await postgreSqlContainer.StopAsync();
