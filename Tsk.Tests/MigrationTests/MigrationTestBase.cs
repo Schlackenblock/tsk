@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Testcontainers.PostgreSql;
@@ -45,5 +46,22 @@ public abstract class MigrationTestBase : IAsyncLifetime
     private static void ConfigureDapperDefaults()
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
+        SqlMapper.AddTypeHandler(new GenericListTypeHandler<string>());
+    }
+
+    private class GenericListTypeHandler<T> : SqlMapper.TypeHandler<List<T>>
+    {
+        public override List<T> Parse(object value)
+        {
+            return value is T[] arrayValue
+                ? arrayValue.ToList()
+                : throw new ArgumentException($"Provided value must be of type {typeof(T[])}.", nameof(value));
+        }
+
+        public override void SetValue(IDbDataParameter parameter, List<T>? value)
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            parameter.Value = value.ToArray();
+        }
     }
 }
