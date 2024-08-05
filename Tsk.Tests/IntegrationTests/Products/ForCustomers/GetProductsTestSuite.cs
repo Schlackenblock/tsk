@@ -1,6 +1,6 @@
 using Tsk.HttpApi.Products.ForCustomers;
 
-namespace Tsk.Tests.Products.ForCustomers;
+namespace Tsk.Tests.IntegrationTests.Products.ForCustomers;
 
 public class GetProductsTestSuite : IntegrationTestSuiteBase
 {

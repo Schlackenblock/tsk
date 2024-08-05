@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
 using Tsk.HttpApi;
 
-namespace Tsk.Tests;
+namespace Tsk.Tests.IntegrationTests;
 
 public class TskApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
