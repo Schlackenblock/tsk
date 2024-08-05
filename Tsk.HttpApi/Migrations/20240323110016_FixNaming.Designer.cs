@@ -12,7 +12,7 @@ using Tsk.HttpApi;
 namespace Tsk.HttpApi.Migrations
 {
     [DbContext(typeof(TskDbContext))]
-    [Migration("20240323110016_FixMeetupNaming")]
+    [Migration("20240323110016_FixNaming")]
     partial class FixMeetupNaming
     {
         /// <inheritdoc />
