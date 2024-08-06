@@ -23,7 +23,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProducts(
-        [Required][FromQuery] string orderBy,
+        [Required][FromQuery] ProductOrderingOption orderBy,
         [Required][FromQuery][Range(0, int.MaxValue)] int pageNumber,
         [Required][FromQuery][Range(1, 50)] int pageSize,
         [FromQuery][Price] decimal? minPrice = null,
@@ -41,25 +41,21 @@ public class ProductController : ControllerBase
             productsQuery = productsQuery.Where(product => product.Price <= maxPrice);
         }
 
-        if (string.Equals(orderBy, "price_asc", StringComparison.OrdinalIgnoreCase))
+        if (orderBy is ProductOrderingOption.PriceAscending)
         {
             productsQuery = productsQuery.OrderBy(product => product.Price);
         }
-        else if (string.Equals(orderBy, "price_desc", StringComparison.OrdinalIgnoreCase))
+        else if (orderBy is ProductOrderingOption.PriceDescending)
         {
             productsQuery = productsQuery.OrderByDescending(product => product.Price);
         }
-        else if (string.Equals(orderBy, "title_asc", StringComparison.OrdinalIgnoreCase))
+        else if (orderBy is ProductOrderingOption.TitleAscending)
         {
             productsQuery = productsQuery.OrderBy(product => product.Title);
         }
-        else if (string.Equals(orderBy, "title_desc", StringComparison.OrdinalIgnoreCase))
+        else if (orderBy is ProductOrderingOption.TitleDescending)
         {
             productsQuery = productsQuery.OrderByDescending(product => product.Title);
-        }
-        else
-        {
-            return BadRequest("Unsupported ordering option selected.");
         }
 
         var productsCount = await productsQuery.CountAsync();

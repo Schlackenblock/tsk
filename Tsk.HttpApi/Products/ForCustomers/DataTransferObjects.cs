@@ -31,3 +31,12 @@ public class ProductsPageDto
     public required List<ProductDto> Products { get; init; }
     public required int ProductsCount { get; init; }
 }
+
+[PublicAPI]
+public enum ProductOrderingOption
+{
+    PriceAscending,
+    PriceDescending,
+    TitleAscending,
+    TitleDescending
+}
