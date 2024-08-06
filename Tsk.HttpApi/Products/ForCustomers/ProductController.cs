@@ -35,8 +35,8 @@ public class ProductController : ControllerBase
             .Where(product => product.IsForSale)
             .Where(product =>
                 search == null ||
-                EF.Functions.ILike(product.Code, $"%{search}%") ||
-                EF.Functions.ILike(product.Title, $"%{search}%")
+                EF.Functions.ILike(product.Title, $"%{search}%") ||
+                EF.Functions.ILike(product.Code, search)
             )
             .Where(product => minPrice == null || product.Price >= minPrice)
             .Where(product => maxPrice == null || product.Price <= maxPrice)
