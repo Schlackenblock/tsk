@@ -31,25 +31,17 @@ public class ProductController : ControllerBase
         [FromQuery][Price] decimal? maxPrice = null)
     {
         var productsQuery = dbContext.Products
-            .Where(product => product.IsForSale);
-
-        if (minPrice is not null)
-        {
-            productsQuery = productsQuery.Where(product => product.Price >= minPrice);
-        }
-        if (maxPrice is not null)
-        {
-            productsQuery = productsQuery.Where(product => product.Price <= maxPrice);
-        }
-
-        productsQuery = productsQuery.ApplyOrdering(orderBy switch
-        {
-            ProductOrderingOption.PriceAscending => products => products.OrderBy(product => product.Price),
-            ProductOrderingOption.PriceDescending => products => products.OrderByDescending(product => product.Price),
-            ProductOrderingOption.TitleAscending => products => products.OrderBy(product => product.Title),
-            ProductOrderingOption.TitleDescending => products => products.OrderByDescending(product => product.Title),
-            _ => throw new ArgumentOutOfRangeException(nameof(orderBy), orderBy, "Unsupported ordering option.")
-        });
+            .Where(product => product.IsForSale)
+            .Where(product => minPrice == null || product.Price >= minPrice)
+            .Where(product => maxPrice == null || product.Price <= maxPrice)
+            .ApplyOrdering(orderBy switch
+            {
+                ProductOrderingOption.PriceAscending => products => products.OrderBy(product => product.Price),
+                ProductOrderingOption.PriceDescending => products => products.OrderByDescending(product => product.Price),
+                ProductOrderingOption.TitleAscending => products => products.OrderBy(product => product.Title),
+                ProductOrderingOption.TitleDescending => products => products.OrderByDescending(product => product.Title),
+                _ => throw new ArgumentOutOfRangeException(nameof(orderBy), orderBy, "Unsupported ordering option.")
+            });
 
         var productsCount = await productsQuery.CountAsync();
 
