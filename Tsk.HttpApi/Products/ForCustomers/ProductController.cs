@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tsk.HttpApi.Querying;
 using Tsk.HttpApi.Validation;
 
@@ -26,11 +27,13 @@ public class ProductController : ControllerBase
         [Required][FromQuery] ProductsOrder orderBy,
         [Required][FromQuery][Range(0, int.MaxValue)] int pageNumber,
         [Required][FromQuery][Range(1, 50)] int pageSize,
+        [FromQuery] string? code = null,
         [FromQuery][Price] decimal? minPrice = null,
         [FromQuery][Price] decimal? maxPrice = null)
     {
         var products = await dbContext.Products
             .Where(product => product.IsForSale)
+            .Where(product => code == null || EF.Functions.ILike(product.Code, $"%{code}%"))
             .Where(product => minPrice == null || product.Price >= minPrice)
             .Where(product => maxPrice == null || product.Price <= maxPrice)
             .ApplyOrdering(orderBy switch

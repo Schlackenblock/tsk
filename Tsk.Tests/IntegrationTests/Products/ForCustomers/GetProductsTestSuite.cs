@@ -5,6 +5,54 @@ namespace Tsk.Tests.IntegrationTests.Products.ForCustomers;
 public class GetProductsTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
+    public async Task GetProducts_WhenAppliedCodeFilterMatchesPartially_ShouldSucceed()
+    {
+        var products = new[]
+        {
+            TestDataGenerator.GenerateProduct(index: 1, code: "P1"),
+            TestDataGenerator.GenerateProduct(index: 2, code: "P12"),
+            TestDataGenerator.GenerateProduct(index: 3, code: "P123")
+        };
+        await SeedInitialDataAsync(products);
+
+        var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageNumber=0&pageSize=5&code=P12");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var expectedProductDtos = products
+            .Where(product => product.Code.Contains("P12", StringComparison.OrdinalIgnoreCase))
+            .Select(ProductDto.FromProductEntity)
+            .ToList();
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(expectedProductDtos.Count);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
+    }
+
+    [Fact]
+    public async Task GetProducts_WhenCodeFilterApplied_ShouldIgnoreCase()
+    {
+        var products = new[]
+        {
+            TestDataGenerator.GenerateProduct(index: 1, code: "CASE"),
+            TestDataGenerator.GenerateProduct(index: 2, code: "case"),
+            TestDataGenerator.GenerateProduct(index: 3, code: "P3")
+        };
+        await SeedInitialDataAsync(products);
+
+        var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageNumber=0&pageSize=5&code=case");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var expectedProductDtos = products
+            .Where(product => product.Code.Contains("case", StringComparison.OrdinalIgnoreCase))
+            .Select(ProductDto.FromProductEntity)
+            .ToList();
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(expectedProductDtos.Count);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
+    }
+
+    [Fact]
     public async Task GetProducts_WhenMinPriceFilterApplied_ShouldReturnFiltered()
     {
         var products = new[]
