@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Tsk.HttpApi.Querying;
 using Tsk.HttpApi.Validation;
 
@@ -30,7 +29,7 @@ public class ProductController : ControllerBase
         [FromQuery][Price] decimal? minPrice = null,
         [FromQuery][Price] decimal? maxPrice = null)
     {
-        var productsQuery = dbContext.Products
+        var products = await dbContext.Products
             .Where(product => product.IsForSale)
             .Where(product => minPrice == null || product.Price >= minPrice)
             .Where(product => maxPrice == null || product.Price <= maxPrice)
@@ -41,19 +40,13 @@ public class ProductController : ControllerBase
                 ProductsOrder.TitleAscending => products => products.OrderBy(product => product.Title),
                 ProductsOrder.TitleDescending => products => products.OrderByDescending(product => product.Title),
                 _ => throw new ArgumentOutOfRangeException(nameof(orderBy), orderBy, "Unsupported ordering option.")
-            });
-
-        var productsCount = await productsQuery.CountAsync();
-
-        var products = await productsQuery
-            .Skip(pageNumber * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+            })
+            .PaginateAsync(pageNumber, pageSize);
 
         var productsPageDto = new ProductsPageDto
         {
-            Products = products.ConvertAll(ProductDto.FromProductEntity),
-            ProductsCount = productsCount
+            Products = products.Items.ConvertAll(ProductDto.FromProductEntity),
+            ProductsCount = products.Count
         };
         return Ok(productsPageDto);
     }
