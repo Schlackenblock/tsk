@@ -33,7 +33,7 @@ public class ProductsPageDto
 }
 
 [PublicAPI]
-public enum ProductOrderingOption
+public enum ProductsOrder
 {
     PriceAscending,
     PriceDescending,

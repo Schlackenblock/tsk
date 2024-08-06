@@ -24,7 +24,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProducts(
-        [Required][FromQuery] ProductOrderingOption orderBy,
+        [Required][FromQuery] ProductsOrder orderBy,
         [Required][FromQuery][Range(0, int.MaxValue)] int pageNumber,
         [Required][FromQuery][Range(1, 50)] int pageSize,
         [FromQuery][Price] decimal? minPrice = null,
@@ -36,10 +36,10 @@ public class ProductController : ControllerBase
             .Where(product => maxPrice == null || product.Price <= maxPrice)
             .ApplyOrdering(orderBy switch
             {
-                ProductOrderingOption.PriceAscending => products => products.OrderBy(product => product.Price),
-                ProductOrderingOption.PriceDescending => products => products.OrderByDescending(product => product.Price),
-                ProductOrderingOption.TitleAscending => products => products.OrderBy(product => product.Title),
-                ProductOrderingOption.TitleDescending => products => products.OrderByDescending(product => product.Title),
+                ProductsOrder.PriceAscending => products => products.OrderBy(product => product.Price),
+                ProductsOrder.PriceDescending => products => products.OrderByDescending(product => product.Price),
+                ProductsOrder.TitleAscending => products => products.OrderBy(product => product.Title),
+                ProductsOrder.TitleDescending => products => products.OrderByDescending(product => product.Title),
                 _ => throw new ArgumentOutOfRangeException(nameof(orderBy), orderBy, "Unsupported ordering option.")
             });
 
