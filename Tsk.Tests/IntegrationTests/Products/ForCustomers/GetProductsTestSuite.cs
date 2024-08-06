@@ -11,7 +11,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
         {
             TestDataGenerator.GenerateProduct(index: 1, title: "Full Match"),
             TestDataGenerator.GenerateProduct(index: 2, title: "Not a Full Match"),
-            TestDataGenerator.GenerateProduct(index: 3, title: "Product #3"),
+            TestDataGenerator.GenerateProduct(index: 3, title: "Product #3")
         };
         await SeedInitialDataAsync(products);
 
@@ -35,7 +35,7 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
         {
             TestDataGenerator.GenerateProduct(index: 1, title: "CASE"),
             TestDataGenerator.GenerateProduct(index: 2, title: "case"),
-            TestDataGenerator.GenerateProduct(index: 3, title: "Product #3"),
+            TestDataGenerator.GenerateProduct(index: 3, title: "Product #3")
         };
         await SeedInitialDataAsync(products);
 
