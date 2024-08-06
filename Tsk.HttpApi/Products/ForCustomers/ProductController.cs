@@ -27,13 +27,17 @@ public class ProductController : ControllerBase
         [Required][FromQuery] ProductsOrder orderBy,
         [Required][FromQuery][Range(0, int.MaxValue)] int pageNumber,
         [Required][FromQuery][Range(1, 50)] int pageSize,
-        [FromQuery] string? code = null,
+        [FromQuery] string? search = null,
         [FromQuery][Price] decimal? minPrice = null,
         [FromQuery][Price] decimal? maxPrice = null)
     {
         var products = await dbContext.Products
             .Where(product => product.IsForSale)
-            .Where(product => code == null || EF.Functions.ILike(product.Code, $"%{code}%"))
+            .Where(product =>
+                search == null ||
+                EF.Functions.ILike(product.Code, $"%{search}%") ||
+                EF.Functions.ILike(product.Title, $"%{search}%")
+            )
             .Where(product => minPrice == null || product.Price >= minPrice)
             .Where(product => maxPrice == null || product.Price <= maxPrice)
             .ApplyOrdering(orderBy switch

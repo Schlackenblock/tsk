@@ -8,12 +8,13 @@ public static class TestDataGenerator
     public static Product GenerateProduct(
         int? index = null,
         string? code = null,
+        string? title = null,
         List<string>? pictures = null,
         decimal? price = null,
         bool isForSale = true)
     {
         var generatedCode = index is null ? "PRD" : $"PRD #{index}";
-        var generatedTitle = index is null ? "Product" : $"Product #{index}";
+        var generatedTitle = title ?? (index is null ? "Product" : $"Product #{index}");
         var generatedPictures = new List<string> { $"{generatedTitle} Picture #1", $"{generatedTitle} Picture #2" };
         var generatedPrice = price ?? (index ?? 0) + 0.99m;
 

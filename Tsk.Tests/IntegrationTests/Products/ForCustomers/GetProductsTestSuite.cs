@@ -5,21 +5,22 @@ namespace Tsk.Tests.IntegrationTests.Products.ForCustomers;
 public class GetProductsTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
-    public async Task GetProducts_WhenAppliedCodeFilterMatchesPartially_ShouldSucceed()
+    public async Task GetProducts_WhenSearchApplied_ShouldAcceptBothCodeAndTitle()
     {
         var products = new[]
         {
-            TestDataGenerator.GenerateProduct(index: 1, code: "P1"),
-            TestDataGenerator.GenerateProduct(index: 2, code: "P12"),
-            TestDataGenerator.GenerateProduct(index: 3, code: "P123")
+            TestDataGenerator.GenerateProduct(index: 1, code: "match #1", title: "Product #1"),
+            TestDataGenerator.GenerateProduct(index: 2, code: "P2", title: "match #2"),
+            TestDataGenerator.GenerateProduct(index: 3, code: "match #3", title: "match #3"),
+            TestDataGenerator.GenerateProduct(index: 4, code: "P4", title: "Product #4")
         };
         await SeedInitialDataAsync(products);
 
-        var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageNumber=0&pageSize=5&code=P12");
+        var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageNumber=0&pageSize=5&search=match");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var expectedProductDtos = products
-            .Where(product => product.Code.Contains("P12", StringComparison.OrdinalIgnoreCase))
+            .Where(product => product.Code.Contains("match") || product.Title.Contains("match"))
             .Select(ProductDto.FromProductEntity)
             .ToList();
 
@@ -29,21 +30,24 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task GetProducts_WhenCodeFilterApplied_ShouldIgnoreCase()
+    public async Task GetProducts_WhenSearchApplied_ShouldIgnoreCase()
     {
         var products = new[]
         {
-            TestDataGenerator.GenerateProduct(index: 1, code: "CASE"),
-            TestDataGenerator.GenerateProduct(index: 2, code: "case"),
-            TestDataGenerator.GenerateProduct(index: 3, code: "P3")
+            TestDataGenerator.GenerateProduct(index: 1, code: "UPPER CASE"),
+            TestDataGenerator.GenerateProduct(index: 2, code: "lower case"),
+            TestDataGenerator.GenerateProduct(index: 3, code: "Product #3", title: "Product #3")
         };
         await SeedInitialDataAsync(products);
 
-        var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageNumber=0&pageSize=5&code=case");
+        var response = await HttpClient.GetAsync("/products?orderBy=priceAscending&pageNumber=0&pageSize=5&search=case");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var expectedProductDtos = products
-            .Where(product => product.Code.Contains("case", StringComparison.OrdinalIgnoreCase))
+            .Where(product =>
+                product.Code.Contains("case", StringComparison.OrdinalIgnoreCase) ||
+                product.Title.Contains("case", StringComparison.OrdinalIgnoreCase)
+            )
             .Select(ProductDto.FromProductEntity)
             .ToList();
 
