@@ -21,6 +21,7 @@ public class ProductController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType<ProductsPageDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProducts(
         [Required][FromQuery] string orderBy,
         [Required][FromQuery][Range(0, int.MaxValue)] int pageNumber,
