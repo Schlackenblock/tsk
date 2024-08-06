@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tsk.HttpApi.Querying;
 using Tsk.HttpApi.Validation;
 
 namespace Tsk.HttpApi.Products.ForCustomers;
@@ -41,22 +42,14 @@ public class ProductController : ControllerBase
             productsQuery = productsQuery.Where(product => product.Price <= maxPrice);
         }
 
-        if (orderBy is ProductOrderingOption.PriceAscending)
+        productsQuery = productsQuery.ApplyOrdering(orderBy switch
         {
-            productsQuery = productsQuery.OrderBy(product => product.Price);
-        }
-        else if (orderBy is ProductOrderingOption.PriceDescending)
-        {
-            productsQuery = productsQuery.OrderByDescending(product => product.Price);
-        }
-        else if (orderBy is ProductOrderingOption.TitleAscending)
-        {
-            productsQuery = productsQuery.OrderBy(product => product.Title);
-        }
-        else if (orderBy is ProductOrderingOption.TitleDescending)
-        {
-            productsQuery = productsQuery.OrderByDescending(product => product.Title);
-        }
+            ProductOrderingOption.PriceAscending => products => products.OrderBy(product => product.Price),
+            ProductOrderingOption.PriceDescending => products => products.OrderByDescending(product => product.Price),
+            ProductOrderingOption.TitleAscending => products => products.OrderBy(product => product.Title),
+            ProductOrderingOption.TitleDescending => products => products.OrderByDescending(product => product.Title),
+            _ => throw new ArgumentOutOfRangeException(nameof(orderBy), orderBy, "Unsupported ordering option.")
+        });
 
         var productsCount = await productsQuery.CountAsync();
 
