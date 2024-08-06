@@ -5,6 +5,58 @@ namespace Tsk.Tests.IntegrationTests.Products.ForCustomers;
 public class GetProductsTestSuite : IntegrationTestSuiteBase
 {
     [Fact]
+    public async Task GetProducts_WhenMinPriceFilterApplied_ShouldReturnFiltered()
+    {
+        var products = new[]
+        {
+            TestDataGenerator.GenerateProduct(index: 1, price: 1.99m),
+            TestDataGenerator.GenerateProduct(index: 2, price: 2.99m),
+            TestDataGenerator.GenerateProduct(index: 3, price: 3.99m),
+            TestDataGenerator.GenerateProduct(index: 4, price: 4.99m),
+            TestDataGenerator.GenerateProduct(index: 5, price: 5.99m)
+        };
+        await SeedInitialDataAsync(products);
+
+        var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5&minPrice=3.99");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var expectedProductDtos = products
+            .Where(product => product.Price >= 3.99m)
+            .Select(ProductDto.FromProductEntity)
+            .ToList();
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(expectedProductDtos.Count);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
+    }
+
+    [Fact]
+    public async Task GetProducts_WhenMaxPriceFilterApplied_ShouldReturnFiltered()
+    {
+        var products = new[]
+        {
+            TestDataGenerator.GenerateProduct(index: 1, price: 1.99m),
+            TestDataGenerator.GenerateProduct(index: 2, price: 2.99m),
+            TestDataGenerator.GenerateProduct(index: 3, price: 3.99m),
+            TestDataGenerator.GenerateProduct(index: 4, price: 4.99m),
+            TestDataGenerator.GenerateProduct(index: 5, price: 5.99m)
+        };
+        await SeedInitialDataAsync(products);
+
+        var response = await HttpClient.GetAsync("/products?orderBy=price_asc&pageNumber=0&pageSize=5&maxPrice=3.99");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var expectedProductDtos = products
+            .Where(product => product.Price <= 3.99m)
+            .Select(ProductDto.FromProductEntity)
+            .ToList();
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(expectedProductDtos.Count);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
+    }
+
+    [Fact]
     public async Task GetProducts_WhenFirstPageRequested_ShouldReturnOnlyFirstPage()
     {
         var products = TestDataGenerator.GenerateProducts(9);

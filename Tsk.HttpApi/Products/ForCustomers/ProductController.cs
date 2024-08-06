@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tsk.HttpApi.Validation;
 
 namespace Tsk.HttpApi.Products.ForCustomers;
 
@@ -23,10 +24,21 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> GetProducts(
         [Required][FromQuery] string orderBy,
         [Required][FromQuery][Range(0, int.MaxValue)] int pageNumber,
-        [Required][FromQuery][Range(1, 50)] int pageSize)
+        [Required][FromQuery][Range(1, 50)] int pageSize,
+        [FromQuery][Price] decimal? minPrice = null,
+        [FromQuery][Price] decimal? maxPrice = null)
     {
         var productsQuery = dbContext.Products
             .Where(product => product.IsForSale);
+
+        if (minPrice is not null)
+        {
+            productsQuery = productsQuery.Where(product => product.Price >= minPrice);
+        }
+        if (maxPrice is not null)
+        {
+            productsQuery = productsQuery.Where(product => product.Price <= maxPrice);
+        }
 
         if (string.Equals(orderBy, "price_asc", StringComparison.OrdinalIgnoreCase))
         {
