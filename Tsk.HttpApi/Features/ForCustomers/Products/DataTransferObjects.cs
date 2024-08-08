@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using Tsk.HttpApi.Entities;
 
-namespace Tsk.HttpApi.Products.ForCustomers;
+namespace Tsk.HttpApi.Features.ForCustomers.Products;
 
 [PublicAPI]
 public class ProductDto

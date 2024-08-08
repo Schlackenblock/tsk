@@ -6,7 +6,7 @@ using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Querying;
 using Tsk.HttpApi.Validation;
 
-namespace Tsk.HttpApi.Products.ForAdmins;
+namespace Tsk.HttpApi.Features.ForAdmins.Products;
 
 [ApiController]
 [Route("/management/products")]

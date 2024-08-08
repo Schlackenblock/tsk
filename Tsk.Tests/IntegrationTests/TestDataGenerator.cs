@@ -1,7 +1,6 @@
 using Tsk.HttpApi.Entities;
-using Tsk.HttpApi.Products.ForAdmins;
 
-namespace Tsk.Tests.IntegrationTests.Products;
+namespace Tsk.Tests.IntegrationTests;
 
 public static class TestDataGenerator
 {
@@ -42,19 +41,5 @@ public static class TestDataGenerator
             .Range(startIndex, count)
             .Select(index => GenerateProduct(index: index, code: code, pictures: pictures, isForSale: isForSale))
             .ToList();
-    }
-}
-
-public static class ProductModelConverter
-{
-    public static CreateProductDto ToCreateProductDto(this Product product)
-    {
-        return new CreateProductDto
-        {
-            Code = product.Code,
-            Title = product.Title,
-            Pictures = product.Pictures,
-            Price = product.Price
-        };
     }
 }
