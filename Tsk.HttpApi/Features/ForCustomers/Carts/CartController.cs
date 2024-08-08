@@ -77,10 +77,26 @@ public class CartController : ControllerBase
         return Ok(cartDto);
     }
 
-    // TODO: POST   "/carts" - create a cart.
-    // TODO: GET    "/carts/{cartId:guid}" - get the cart.
+    [HttpDelete("{cartId:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete([FromRoute] Guid cartId)
+    {
+        var cart = await dbContext.Carts
+            .Where(cart => cart.Id == cartId)
+            .SingleOrDefaultAsync();
+        if (cart is null)
+        {
+            return NotFound();
+        }
+
+        dbContext.Carts.Remove(cart);
+        await dbContext.SaveChangesAsync();
+
+        return Ok();
+    }
+
     // TODO: POST   "/carts/{cartId:guid}/product/{productId:guid}/add-to-cart" - add product to the cart.
     // TODO: POST   "/carts/{cartId:guid}/products/{productId:guid}/increase" - increase product quantity.
     // TODO: POST   "/carts/{cartId:guid}/products/{productId:guid}/decrease" - decrease product quantity.
-    // TODO: DELETE "/carts/{cartId:guid}" - delete (clear) the cart.
 }
