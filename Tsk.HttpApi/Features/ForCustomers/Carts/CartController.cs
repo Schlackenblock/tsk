@@ -77,10 +77,71 @@ public class CartController : ControllerBase
         return Ok(cartDto);
     }
 
+    // TODO: POST   "/carts/{cartId:guid}/products/{productId:guid}/add-to-cart" - add product to the cart.
+    // TODO: Maybe add a slight twist - if product is already in cart, prompt User if he want to add it again.
+
+    [HttpPost("{cartId:guid}/products/{productId:guid}/increase-quantity")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> IncreaseCartProductQuantity([FromRoute] Guid cartId, [FromRoute] Guid productId)
+    {
+        var cart = await dbContext.Carts
+            .Where(cart => cart.Id == cartId)
+            .SingleOrDefaultAsync();
+        if (cart is null)
+        {
+            return NotFound();
+        }
+
+        var specifiedCartProduct = cart.Products.SingleOrDefault(cartProduct => cartProduct.ProductId == productId);
+        if (specifiedCartProduct is null)
+        {
+            return NotFound();
+        }
+
+        specifiedCartProduct.Quantity += 1;
+        await dbContext.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    [HttpPost("{cartId:guid}/products/{productId:guid}/decrease-quantity")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DecreaseCartProductQuantity([FromRoute] Guid cartId, [FromRoute] Guid productId)
+    {
+        var cart = await dbContext.Carts
+            .Where(cart => cart.Id == cartId)
+            .SingleOrDefaultAsync();
+        if (cart is null)
+        {
+            return NotFound();
+        }
+
+        var specifiedCartProduct = cart.Products.SingleOrDefault(cartProduct => cartProduct.ProductId == productId);
+        if (specifiedCartProduct is null)
+        {
+            return NotFound();
+        }
+
+        specifiedCartProduct.Quantity -= 1;
+        if (specifiedCartProduct.Quantity == 0)
+        {
+            return BadRequest();
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    // TODO: DELETE "/carts/{cartId:guid}/products/{productId:guid}" - remove product from the cart.
+
     [HttpDelete("{cartId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete([FromRoute] Guid cartId)
+    public async Task<IActionResult> DeleteCart([FromRoute] Guid cartId)
     {
         var cart = await dbContext.Carts
             .Where(cart => cart.Id == cartId)
@@ -95,8 +156,4 @@ public class CartController : ControllerBase
 
         return Ok();
     }
-
-    // TODO: POST   "/carts/{cartId:guid}/product/{productId:guid}/add-to-cart" - add product to the cart.
-    // TODO: POST   "/carts/{cartId:guid}/products/{productId:guid}/increase" - increase product quantity.
-    // TODO: POST   "/carts/{cartId:guid}/products/{productId:guid}/decrease" - decrease product quantity.
 }

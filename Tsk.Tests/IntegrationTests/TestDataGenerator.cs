@@ -67,4 +67,19 @@ public static class TestDataGenerator
                 .ToList()
         };
     }
+
+    public static Cart GenerateCart(IDictionary<Product, int> cartProducts)
+    {
+        return new Cart
+        {
+            Id = Guid.NewGuid(),
+            Products = cartProducts
+                .Select(cartProduct => new CartProduct
+                {
+                    ProductId = cartProduct.Key.Id,
+                    Quantity = cartProduct.Value
+                })
+                .ToList()
+        };
+    }
 }
