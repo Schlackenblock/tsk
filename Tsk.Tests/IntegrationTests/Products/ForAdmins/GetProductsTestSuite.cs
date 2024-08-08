@@ -1,3 +1,4 @@
+using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.IntegrationTests.Products.ForAdmins;
@@ -338,21 +339,20 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
-    public async Task GetProducts_WhenNotForSaleExist_ShouldReturnOnlyForSale()
+    public async Task GetProducts_WhenNotForSaleExist_ShouldReturnBothForSaleAndNotForSale()
     {
         var productsForSale = TestDataGenerator.GenerateProducts(startIndex: 1, count: 3, isForSale: true);
-        await SeedInitialDataAsync(productsForSale);
-
         var productsNotForSale = TestDataGenerator.GenerateProducts(startIndex: 4, count: 2, isForSale: false);
-        await SeedInitialDataAsync(productsNotForSale);
+        var allProducts = productsForSale.Concat(productsNotForSale).ToList();
+        await SeedInitialDataAsync(allProducts);
 
         var response = await HttpClient.GetAsync("/management/products?orderBy=priceAscending&pageNumber=0&pageSize=5");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var expectedProductDtos = productsForSale.Select(ProductDto.FromProductEntity);
+        var expectedProductDtos = allProducts.Select(ProductDto.FromProductEntity);
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
-        productsPageDto!.ProductsCount.Should().Be(productsForSale.Count);
+        productsPageDto!.ProductsCount.Should().Be(allProducts.Count);
         productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
     }
 
