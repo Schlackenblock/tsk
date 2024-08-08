@@ -1,4 +1,3 @@
-using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Products.ForAdmins;
 
 namespace Tsk.Tests.IntegrationTests.Products.ForAdmins;
@@ -98,6 +97,58 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
 
         var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
         productsPageDto!.ProductsCount.Should().Be(expectedProductDtos.Count);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
+    }
+
+    [Fact]
+    public async Task GetProducts_WhenIsForSaleFilterApplied_ShouldReturnOnlyForSale()
+    {
+        var productsForSale = TestDataGenerator.GenerateProducts(startIndex: 1, count: 3, isForSale: true);
+        var productsNotForSale = TestDataGenerator.GenerateProducts(startIndex: 4, count: 2, isForSale: false);
+        await SeedInitialDataAsync(productsForSale.Concat(productsNotForSale));
+
+        var response = await HttpClient.GetAsync("/management/products?orderBy=priceAscending&pageNumber=0&pageSize=5&isForSale=true");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var expectedProductDtos = productsForSale.Select(ProductDto.FromProductEntity);
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(productsForSale.Count);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
+    }
+
+    [Fact]
+    public async Task GetProducts_WhenIsNotForSaleFilterApplied_ShouldReturnOnlyNotForSale()
+    {
+        var productsForSale = TestDataGenerator.GenerateProducts(startIndex: 1, count: 3, isForSale: true);
+        var productsNotForSale = TestDataGenerator.GenerateProducts(startIndex: 4, count: 2, isForSale: false);
+        await SeedInitialDataAsync(productsForSale.Concat(productsNotForSale));
+
+        var response = await HttpClient.GetAsync("/management/products?orderBy=priceAscending&pageNumber=0&pageSize=5&isForSale=false");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var expectedProductDtos = productsNotForSale.Select(ProductDto.FromProductEntity);
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(productsNotForSale.Count);
+        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
+    }
+
+    [Fact]
+    public async Task GetProducts_WhenIsForSaleFilterNotApplied_ShouldReturnBothForSaleAndNotForSale()
+    {
+        var productsForSale = TestDataGenerator.GenerateProducts(startIndex: 1, count: 3, isForSale: true);
+        var productsNotForSale = TestDataGenerator.GenerateProducts(startIndex: 4, count: 2, isForSale: false);
+        var allProducts = productsForSale.Concat(productsNotForSale).ToList();
+        await SeedInitialDataAsync(allProducts);
+
+        var response = await HttpClient.GetAsync("/management/products?orderBy=priceAscending&pageNumber=0&pageSize=5");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var expectedProductDtos = allProducts.Select(ProductDto.FromProductEntity);
+
+        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
+        productsPageDto!.ProductsCount.Should().Be(allProducts.Count);
         productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
     }
 
@@ -336,24 +387,6 @@ public class GetProductsTestSuite : IntegrationTestSuiteBase
 
         var response = await HttpClient.GetAsync("/management/products?pageNumber=0&pageSize=10");
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
-    [Fact]
-    public async Task GetProducts_WhenNotForSaleExist_ShouldReturnBothForSaleAndNotForSale()
-    {
-        var productsForSale = TestDataGenerator.GenerateProducts(startIndex: 1, count: 3, isForSale: true);
-        var productsNotForSale = TestDataGenerator.GenerateProducts(startIndex: 4, count: 2, isForSale: false);
-        var allProducts = productsForSale.Concat(productsNotForSale).ToList();
-        await SeedInitialDataAsync(allProducts);
-
-        var response = await HttpClient.GetAsync("/management/products?orderBy=priceAscending&pageNumber=0&pageSize=5");
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var expectedProductDtos = allProducts.Select(ProductDto.FromProductEntity);
-
-        var productsPageDto = await response.Content.ReadFromJsonAsync<ProductsPageDto>();
-        productsPageDto!.ProductsCount.Should().Be(allProducts.Count);
-        productsPageDto.Products.Should().BeEquivalentTo(expectedProductDtos);
     }
 
     [Fact]

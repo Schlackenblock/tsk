@@ -30,7 +30,8 @@ public class ProductController : ControllerBase
         [Required][FromQuery][Range(1, 50)] int pageSize,
         [FromQuery] string? search = null,
         [FromQuery][Price] decimal? minPrice = null,
-        [FromQuery][Price] decimal? maxPrice = null)
+        [FromQuery][Price] decimal? maxPrice = null,
+        [FromQuery] bool? isForSale = null)
     {
         var products = await dbContext.Products
             .Where(product =>
@@ -40,6 +41,7 @@ public class ProductController : ControllerBase
             )
             .Where(product => minPrice == null || product.Price >= minPrice)
             .Where(product => maxPrice == null || product.Price <= maxPrice)
+            .Where(product => isForSale == null || product.IsForSale == isForSale)
             .ApplyOrdering(orderBy switch
             {
                 ProductsOrder.PriceAscending => products => products.OrderBy(product => product.Price),
