@@ -42,4 +42,29 @@ public static class TestDataGenerator
             .Select(index => GenerateProduct(index: index, code: code, pictures: pictures, isForSale: isForSale))
             .ToList();
     }
+
+    public static Cart GenerateCart()
+    {
+        return GenerateCart([]);
+    }
+
+    public static Cart GenerateCart(Product product)
+    {
+        return GenerateCart(Enumerable.Repeat(product, 1));
+    }
+
+    public static Cart GenerateCart(IEnumerable<Product> products)
+    {
+        return new Cart
+        {
+            Id = Guid.NewGuid(),
+            Products = products
+                .Select((product, index) => new CartProduct
+                {
+                    ProductId = product.Id,
+                    Quantity = index + 1
+                })
+                .ToList()
+        };
+    }
 }

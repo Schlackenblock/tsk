@@ -29,9 +29,9 @@ public class CartEntityTypeConfiguration : IEntityTypeConfiguration<Cart>
             .Property(cart => cart.Id)
             .HasColumnName("id");
 
-        cartEntity
-            .Property(cart => cart.Products)
-            .HasColumnType("jsonb")
-            .HasColumnName("products");
+        cartEntity.OwnsMany(
+            cart => cart.Products,
+            products => products.ToJson("products")
+        );
     }
 }
