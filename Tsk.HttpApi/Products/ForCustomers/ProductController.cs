@@ -32,6 +32,7 @@ public class ProductController : ControllerBase
         [FromQuery][Price] decimal? maxPrice = null)
     {
         var products = await dbContext.Products
+            .AsNoTracking()
             .Where(product => product.IsForSale)
             .Where(product =>
                 search == null ||

@@ -34,6 +34,7 @@ public class ProductController : ControllerBase
         [FromQuery] bool? isForSale = null)
     {
         var products = await dbContext.Products
+            .AsNoTracking()
             .Where(product =>
                 search == null ||
                 EF.Functions.ILike(product.Title, $"%{search}%") ||
