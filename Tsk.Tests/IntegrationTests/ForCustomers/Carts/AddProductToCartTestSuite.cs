@@ -36,6 +36,26 @@ public class AddProductToCartTestSuite : IntegrationTestSuiteBase
     }
 
     [Fact]
+    public async Task AddProductToCart_WhenProductIsNotForSale_ShouldReturnBadRequest()
+    {
+        var anotherProduct = TestDataGenerator.GenerateProduct(index: 1, isForSale: true);
+        var productNotForSale = TestDataGenerator.GenerateProduct(index: 2, isForSale: false);
+        await SeedInitialDataAsync([anotherProduct, productNotForSale]);
+
+        var initialCart = TestDataGenerator.GenerateCart(anotherProduct);
+        await SeedInitialDataAsync(initialCart);
+
+        var response = await HttpClient.PostAsync($"/carts/{initialCart.Id}/products/{productNotForSale.Id}/add-to-cart", null);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        await AssertDbStateAsync(async dbContext =>
+        {
+            var updatedCart = await dbContext.Carts.SingleAsync();
+            updatedCart.Should().BeEquivalentTo(initialCart);
+        });
+    }
+
+    [Fact]
     public async Task AddProductToCart_WhenCartAlreadyHasSpecifiedProduct_ShouldReturnBadRequest()
     {
         var anotherProduct = TestDataGenerator.GenerateProduct(index: 1);

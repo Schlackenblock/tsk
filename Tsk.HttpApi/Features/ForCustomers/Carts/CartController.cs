@@ -68,7 +68,8 @@ public class CartController : ControllerBase
                     Id = cartProduct.ProductId,
                     Title = product.Title,
                     Picture = product.Pictures.FirstOrDefault(),
-                    Price = product.Price,
+                    Price = product.IsForSale ? product.Price : null,
+                    IsForSale = product.IsForSale,
                     Quantity = cartProduct.Quantity
                 };
             })
@@ -96,15 +97,19 @@ public class CartController : ControllerBase
             return BadRequest();
         }
 
-        var productExists = await dbContext.Products
+        var product = await dbContext.Products
             .Where(product => product.Id == productId)
-            .AnyAsync();
-        if (!productExists)
+            .SingleOrDefaultAsync();
+        if (product is null)
         {
             return NotFound();
         }
+        if (!product.IsForSale)
+        {
+            return BadRequest();
+        }
 
-        var cartProduct = new CartProduct { ProductId = productId, Quantity = 1 };
+        var cartProduct = new CartProduct { ProductId = product.Id, Quantity = 1 };
         cart.Products.Add(cartProduct);
         await dbContext.SaveChangesAsync();
 
