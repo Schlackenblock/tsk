@@ -77,8 +77,40 @@ public class CartController : ControllerBase
         return Ok(cartDto);
     }
 
-    // TODO: POST "/carts/{cartId:guid}/products/{productId:guid}/add-to-cart" - add product to the cart.
-    // TODO: Maybe add a slight twist - if product is already in cart, prompt User if he want to add it again.
+    [HttpPost("{cartId:guid}/products/{productId:guid}/add-to-cart")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddProductToCart([FromRoute] Guid cartId, [FromRoute] Guid productId)
+    {
+        var cart = await dbContext.Carts
+            .Where(cart => cart.Id == cartId)
+            .SingleOrDefaultAsync();
+        if (cart is null)
+        {
+            return NotFound();
+        }
+
+        var productAlreadyInCart = cart.Products.Any(cartProduct => cartProduct.ProductId == productId);
+        if (productAlreadyInCart)
+        {
+            return BadRequest();
+        }
+
+        var productExists = await dbContext.Products
+            .Where(product => product.Id == productId)
+            .AnyAsync();
+        if (!productExists)
+        {
+            return NotFound();
+        }
+
+        var cartProduct = new CartProduct { ProductId = productId, Quantity = 1 };
+        cart.Products.Add(cartProduct);
+        await dbContext.SaveChangesAsync();
+
+        return Ok();
+    }
 
     [HttpPost("{cartId:guid}/products/{productId:guid}/increase-quantity")]
     [ProducesResponseType(StatusCodes.Status200OK)]
