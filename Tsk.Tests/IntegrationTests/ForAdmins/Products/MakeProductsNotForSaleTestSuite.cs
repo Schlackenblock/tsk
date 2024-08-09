@@ -1,7 +1,7 @@
 using Tsk.HttpApi.Entities;
-using Tsk.HttpApi.Products.ForAdmins;
+using Tsk.HttpApi.Features.ForAdmins.Products;
 
-namespace Tsk.Tests.IntegrationTests.Products.ForAdmins;
+namespace Tsk.Tests.IntegrationTests.ForAdmins.Products;
 
 public class MakeProductsNotForSaleTestSuite : IntegrationTestSuiteBase
 {

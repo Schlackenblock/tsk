@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Validation;
 
-namespace Tsk.HttpApi.Products.ForAdmins;
+namespace Tsk.HttpApi.Features.ForAdmins.Products;
 
 [PublicAPI]
 public class ProductDto

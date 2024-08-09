@@ -6,7 +6,7 @@ using Tsk.HttpApi.Entities;
 using Tsk.HttpApi.Querying;
 using Tsk.HttpApi.Validation;
 
-namespace Tsk.HttpApi.Products.ForAdmins;
+namespace Tsk.HttpApi.Features.ForAdmins.Products;
 
 [ApiController]
 [Route("/management/products")]
@@ -258,22 +258,5 @@ public class ProductController : ControllerBase
 
         var productDtos = products.Select(ProductDto.FromProductEntity);
         return Ok(productDtos);
-    }
-
-    [HttpDelete("{id:guid}")]
-    [ProducesResponseType<ProductDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
-    {
-        var product = await dbContext.Products.SingleOrDefaultAsync(product => product.Id == id);
-        if (product is null)
-        {
-            return NotFound();
-        }
-
-        dbContext.Products.Remove(product);
-        await dbContext.SaveChangesAsync();
-
-        return Ok();
     }
 }

@@ -1,7 +1,6 @@
 using Tsk.HttpApi.Entities;
-using Tsk.HttpApi.Products.ForAdmins;
 
-namespace Tsk.Tests.IntegrationTests.Products;
+namespace Tsk.Tests.IntegrationTests;
 
 public static class TestDataGenerator
 {
@@ -43,18 +42,44 @@ public static class TestDataGenerator
             .Select(index => GenerateProduct(index: index, code: code, pictures: pictures, isForSale: isForSale))
             .ToList();
     }
-}
 
-public static class ProductModelConverter
-{
-    public static CreateProductDto ToCreateProductDto(this Product product)
+    public static Cart GenerateCart()
     {
-        return new CreateProductDto
+        return GenerateCart([]);
+    }
+
+    public static Cart GenerateCart(Product product)
+    {
+        return GenerateCart(Enumerable.Repeat(product, 1));
+    }
+
+    public static Cart GenerateCart(IEnumerable<Product> products)
+    {
+        return new Cart
         {
-            Code = product.Code,
-            Title = product.Title,
-            Pictures = product.Pictures,
-            Price = product.Price
+            Id = Guid.NewGuid(),
+            Products = products
+                .Select((product, index) => new CartProduct
+                {
+                    ProductId = product.Id,
+                    Quantity = index + 1
+                })
+                .ToList()
+        };
+    }
+
+    public static Cart GenerateCart(IDictionary<Product, int> cartProducts)
+    {
+        return new Cart
+        {
+            Id = Guid.NewGuid(),
+            Products = cartProducts
+                .Select(cartProduct => new CartProduct
+                {
+                    ProductId = cartProduct.Key.Id,
+                    Quantity = cartProduct.Value
+                })
+                .ToList()
         };
     }
 }

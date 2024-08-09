@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Tsk.HttpApi.Querying;
 using Tsk.HttpApi.Validation;
 
-namespace Tsk.HttpApi.Products.ForCustomers;
+namespace Tsk.HttpApi.Features.ForCustomers.Products;
 
 [ApiController]
 [Route("/products")]
