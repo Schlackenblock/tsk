@@ -77,7 +77,7 @@ public class CartController : ControllerBase
         return Ok(cartDto);
     }
 
-    // TODO: POST   "/carts/{cartId:guid}/products/{productId:guid}/add-to-cart" - add product to the cart.
+    // TODO: POST "/carts/{cartId:guid}/products/{productId:guid}/add-to-cart" - add product to the cart.
     // TODO: Maybe add a slight twist - if product is already in cart, prompt User if he want to add it again.
 
     [HttpPost("{cartId:guid}/products/{productId:guid}/increase-quantity")]
@@ -136,7 +136,30 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    // TODO: DELETE "/carts/{cartId:guid}/products/{productId:guid}" - remove product from the cart.
+    [HttpDelete("{cartId:guid}/products/{productId:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteCartProduct([FromRoute] Guid cartId, [FromRoute] Guid productId)
+    {
+        var cart = await dbContext.Carts
+            .Where(cart => cart.Id == cartId)
+            .SingleOrDefaultAsync();
+        if (cart is null)
+        {
+            return NotFound();
+        }
+
+        var cartProduct = cart.Products.SingleOrDefault(cartProduct => cartProduct.ProductId == productId);
+        if (cartProduct is null)
+        {
+            return NotFound();
+        }
+
+        cart.Products.Remove(cartProduct);
+        await dbContext.SaveChangesAsync();
+
+        return Ok();
+    }
 
     [HttpDelete("{cartId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
