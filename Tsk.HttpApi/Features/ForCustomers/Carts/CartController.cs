@@ -47,7 +47,6 @@ public class CartController : ControllerBase
             return NotFound();
         }
 
-        // TODO: Remove ability to completely delete products.
         var productIds = cart.Products.ConvertAll(cartProduct => cartProduct.ProductId);
         var products = await dbContext.Products
             .Where(product => productIds.Contains(product.Id))
