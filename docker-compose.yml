@@ -21,13 +21,8 @@ services:
     environment:
       KEYCLOAK_ADMIN: keycloak
       KEYCLOAK_ADMIN_PASSWORD: keycloak
-      DB_VENDOR: h2
       KC_HEALTH_ENABLED: true
-    command:
-      - start-dev
-      - --import-realm
-    volumes:
-      - keycloak_volume:/opt/keycloak/data/import
+    command: start-dev
     healthcheck:
       test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;"]
       interval: 5s
@@ -67,6 +62,5 @@ services:
       - pgadmin_volume:/var/lib/pgadmin
 
 volumes:
-  keycloak_volume:
   postgres_volume:
   pgadmin_volume:
