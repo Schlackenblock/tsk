@@ -44,7 +44,7 @@ public class CartController : ControllerBase
             .SingleOrDefaultAsync();
         if (cart is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't exist.");
         }
 
         var productIds = cart.Products.ConvertAll(cartProduct => cartProduct.ProductId);
@@ -88,13 +88,13 @@ public class CartController : ControllerBase
             .SingleOrDefaultAsync();
         if (cart is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't exist.");
         }
 
         var productAlreadyInCart = cart.Products.Any(cartProduct => cartProduct.ProductId == productId);
         if (productAlreadyInCart)
         {
-            return BadRequest();
+            return BadRequest("Cart already has the specified product.");
         }
 
         var product = await dbContext.Products
@@ -102,11 +102,11 @@ public class CartController : ControllerBase
             .SingleOrDefaultAsync();
         if (product is null)
         {
-            return NotFound();
+            return NotFound("Specified product doesn't exist.");
         }
         if (!product.IsForSale)
         {
-            return BadRequest();
+            return BadRequest("Specified product isn't available for sale.");
         }
 
         var cartProduct = new CartProduct { ProductId = product.Id, Quantity = 1 };
@@ -126,13 +126,13 @@ public class CartController : ControllerBase
             .SingleOrDefaultAsync();
         if (cart is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't exist.");
         }
 
         var specifiedCartProduct = cart.Products.SingleOrDefault(cartProduct => cartProduct.ProductId == productId);
         if (specifiedCartProduct is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't have the specified product.");
         }
 
         specifiedCartProduct.Quantity += 1;
@@ -152,19 +152,19 @@ public class CartController : ControllerBase
             .SingleOrDefaultAsync();
         if (cart is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't exist.");
         }
 
         var specifiedCartProduct = cart.Products.SingleOrDefault(cartProduct => cartProduct.ProductId == productId);
         if (specifiedCartProduct is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't have the specified product.");
         }
 
         specifiedCartProduct.Quantity -= 1;
         if (specifiedCartProduct.Quantity == 0)
         {
-            return BadRequest();
+            return BadRequest("Can't decrease product quantity any further.");
         }
 
         await dbContext.SaveChangesAsync();
@@ -182,13 +182,13 @@ public class CartController : ControllerBase
             .SingleOrDefaultAsync();
         if (cart is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't exist.");
         }
 
         var cartProduct = cart.Products.SingleOrDefault(cartProduct => cartProduct.ProductId == productId);
         if (cartProduct is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't have the specified product.");
         }
 
         cart.Products.Remove(cartProduct);
@@ -207,7 +207,7 @@ public class CartController : ControllerBase
             .SingleOrDefaultAsync();
         if (cart is null)
         {
-            return NotFound();
+            return NotFound("Cart doesn't exist.");
         }
 
         dbContext.Carts.Remove(cart);
