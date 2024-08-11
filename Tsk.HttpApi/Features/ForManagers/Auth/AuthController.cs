@@ -6,7 +6,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tsk.HttpApi.Features.ForAdmins.Auth;
+namespace Tsk.HttpApi.Features.ForManagers.Auth;
 
 [ApiController]
 [Route("/management/auth")]

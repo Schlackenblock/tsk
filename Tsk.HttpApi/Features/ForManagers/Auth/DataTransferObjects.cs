@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 
-namespace Tsk.HttpApi.Features.ForAdmins.Auth;
+namespace Tsk.HttpApi.Features.ForManagers.Auth;
 
 [PublicAPI]
 public class TokenPairDto
