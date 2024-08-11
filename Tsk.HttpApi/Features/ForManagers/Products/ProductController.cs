@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tsk.HttpApi.Entities;
@@ -9,6 +10,7 @@ using Tsk.HttpApi.Validation;
 namespace Tsk.HttpApi.Features.ForManagers.Products;
 
 [ApiController]
+[Authorize("Manager")]
 [Route("/management/products")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]

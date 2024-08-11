@@ -1,6 +1,7 @@
 using HealthChecks.UI.Client;
 using JetBrains.Annotations;
 using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -44,7 +45,13 @@ builder.Services.AddDbContext<TskDbContext>(options =>
 });
 
 builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration);
-builder.Services.AddAuthorization();
+
+builder.Services
+    .AddAuthorization(options =>
+    {
+        options.AddPolicy("Manager", policy => policy.RequireResourceRoles("manage-products"));
+    })
+    .AddKeycloakAuthorization(builder.Configuration);
 
 builder.Services
     .AddHealthChecks()
