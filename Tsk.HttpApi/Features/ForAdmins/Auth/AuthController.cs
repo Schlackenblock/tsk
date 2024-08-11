@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Mime;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Tsk.HttpApi.Features.ForAdmins.Auth;
@@ -37,54 +37,39 @@ public class AuthController : ControllerBase
             { "username", userCredentials.Username },
             { "password", userCredentials.Password }
         };
-        var response = await keycloakHttpClient.PostAsync("realms/tsk/protocol/openid-connect/token", new FormUrlEncodedContent(form));
+        var urlEncodedForm = new FormUrlEncodedContent(form);
+        var response = await keycloakHttpClient.PostAsync("realms/tsk/protocol/openid-connect/token", urlEncodedForm);
 
         if (response.StatusCode is HttpStatusCode.Unauthorized)
         {
-            var failureResponse = await response.Content.ReadFromJsonAsync<KeycloakFailureResponse>();
-            return BadRequest(failureResponse!.ErrorDescription);
+            var failureResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, JsonElement>>();
+            return BadRequest(failureResponse!["error_description"].GetString());
         }
         if (response.StatusCode is not HttpStatusCode.OK)
         {
-            var failureResponse = await response.Content.ReadFromJsonAsync<KeycloakFailureResponse>();
-            throw new Exception($"Keycloak responded with \"{response.StatusCode}\": \"{failureResponse!.ErrorDescription}\" for the \"{userCredentials.Username}\" user.");
+            var failureResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, JsonElement>>();
+            var errorDescription = failureResponse!["error_description"].GetString();
+
+            throw new Exception(
+                $"Keycloak responded with \"{response.StatusCode}\": \"{errorDescription}\" " +
+                $"for the \"{userCredentials.Username}\" user."
+            );
         }
 
-        var successResponse = await response.Content.ReadFromJsonAsync<KeycloakSuccessResponse>();
+        var successResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, JsonElement>>();
         var tokenPairDto = new TokenPairDto
         {
             AccessToken = new TokenDto
             {
-                Value = successResponse!.AccessToken,
-                ExpiresIn = successResponse.ExpiresIn
+                Value = successResponse!["access_token"].GetString()!,
+                ExpiresIn = successResponse["expires_in"].GetInt32()
             },
             RefreshToken = new TokenDto
             {
-                Value = successResponse.RefreshToken,
-                ExpiresIn = successResponse.RefreshExpiresIn
+                Value = successResponse["refresh_token"].GetString()!,
+                ExpiresIn = successResponse["refresh_expires_in"].GetInt32()
             }
         };
         return Ok(tokenPairDto);
-    }
-
-    private class KeycloakSuccessResponse
-    {
-        [JsonPropertyName("access_token")]
-        public required string AccessToken { get; init; }
-
-        [JsonPropertyName("expires_in")]
-        public required int ExpiresIn { get; init; }
-
-        [JsonPropertyName("refresh_token")]
-        public required string RefreshToken { get; init; }
-
-        [JsonPropertyName("refresh_expires_in")]
-        public required int RefreshExpiresIn { get; init; }
-    }
-
-    private class KeycloakFailureResponse
-    {
-        [JsonPropertyName("error_description")]
-        public required string ErrorDescription { get; init; }
     }
 }
