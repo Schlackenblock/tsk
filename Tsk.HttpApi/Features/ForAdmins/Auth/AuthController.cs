@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Mime;
+using System.Security.Claims;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Tsk.HttpApi.Features.ForAdmins.Auth;
@@ -24,7 +26,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SignIn([FromBody][Required] UserCredentialsDto userCredentials)
     {
-        var keycloakBaseUrl = configuration["Keycloak:BaseUrl"];
+        var keycloakBaseUrl = configuration["Keycloak:auth-server-url"];
         var keycloakHttpClient = new HttpClient
         {
             BaseAddress = new Uri(keycloakBaseUrl!)
@@ -71,5 +73,15 @@ public class AuthController : ControllerBase
             }
         };
         return Ok(tokenPairDto);
+    }
+
+    [Authorize]
+    [HttpGet]
+    [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public IActionResult WhoAmI()
+    {
+        var currentUserId = User.Claims.Single(claim => claim.Type is ClaimTypes.NameIdentifier).Value;
+        return Ok(currentUserId);
     }
 }
